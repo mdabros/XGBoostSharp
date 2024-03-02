@@ -7,10 +7,10 @@ namespace XGBoostSharp.lib;
 
 public class Booster : IDisposable
 {
-    private bool disposed;
-    private readonly IntPtr handle;
-    private const int normalPrediction = 0;  // optionMask value for XGBoostSharperPredict
-    private int numClass = 1;
+    bool disposed;
+    readonly IntPtr handle;
+    const int normalPrediction = 0;  // optionMask value for XGBoostSharperPredict
+    int numClass = 1;
 
     public IntPtr Handle => handle;
 
