@@ -6,36 +6,36 @@ namespace XGBoostSharp;
 
 public class BaseXgbModel : IDisposable
 {
-    protected IDictionary<string, object> parameters = new Dictionary<string, object>();
-    protected Booster booster;
+    protected IDictionary<string, object> m_parameters = new Dictionary<string, object>();
+    protected Booster m_booster;
 
     public void SaveModelToFile(string fileName)
     {
-        booster.Save(fileName);
+        m_booster.Save(fileName);
     }
 
     public static XGBClassifier LoadClassifierFromFile(string fileName)
     {
-        return new XGBClassifier { booster = new Booster(fileName) };
+        return new XGBClassifier { m_booster = new Booster(fileName) };
     }
 
     public static XGBRegressor LoadRegressorFromFile(string fileName)
     {
-        return new XGBRegressor { booster = new Booster(fileName) };
+        return new XGBRegressor { m_booster = new Booster(fileName) };
     }
 
     public string[] DumpModelEx(string fmap = "",
       int with_stats = 0,
       string format = "json")
     {
-        return booster.DumpModelEx(fmap, with_stats, format);
+        return m_booster.DumpModelEx(fmap, with_stats, format);
     }
 
     void DisposeManagedResources()
     {
-        if (booster != null)
+        if (m_booster != null)
         {
-            booster.Dispose();
+            m_booster.Dispose();
         }
     }
 

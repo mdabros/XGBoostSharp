@@ -73,42 +73,42 @@ public class XGBClassifier : BaseXgbModel
           float scalePosWeight = 1, float baseScore = 0.5F, int seed = 0,
           float missing = float.NaN, int numClass = 1)
     {
-        parameters["max_depth"] = maxDepth;
-        parameters["learning_rate"] = learningRate;
-        parameters["n_estimators"] = nEstimators;
-        parameters["silent"] = silent;
-        parameters["objective"] = objective;
-        parameters["booster"] = "gbtree";
-        parameters["tree_method"] = "auto";
+        m_parameters["max_depth"] = maxDepth;
+        m_parameters["learning_rate"] = learningRate;
+        m_parameters["n_estimators"] = nEstimators;
+        m_parameters["silent"] = silent;
+        m_parameters["objective"] = objective;
+        m_parameters["booster"] = "gbtree";
+        m_parameters["tree_method"] = "auto";
 
-        parameters["nthread"] = nThread;
-        parameters["gamma"] = gamma;
-        parameters["min_child_weight"] = minChildWeight;
-        parameters["max_delta_step"] = maxDeltaStep;
-        parameters["subsample"] = subsample;
-        parameters["colsample_bytree"] = colSampleByTree;
-        parameters["colsample_bylevel"] = colSampleByLevel;
-        parameters["reg_alpha"] = regAlpha;
-        parameters["reg_lambda"] = regLambda;
-        parameters["scale_pos_weight"] = scalePosWeight;
+        m_parameters["nthread"] = nThread;
+        m_parameters["gamma"] = gamma;
+        m_parameters["min_child_weight"] = minChildWeight;
+        m_parameters["max_delta_step"] = maxDeltaStep;
+        m_parameters["subsample"] = subsample;
+        m_parameters["colsample_bytree"] = colSampleByTree;
+        m_parameters["colsample_bylevel"] = colSampleByLevel;
+        m_parameters["reg_alpha"] = regAlpha;
+        m_parameters["reg_lambda"] = regLambda;
+        m_parameters["scale_pos_weight"] = scalePosWeight;
 
-        parameters["sample_type"] = "uniform";
-        parameters["normalize_type"] = "tree";
-        parameters["rate_drop"] = 0f;
-        parameters["one_drop"] = 0;
-        parameters["skip_drop"] = 0f;
+        m_parameters["sample_type"] = "uniform";
+        m_parameters["normalize_type"] = "tree";
+        m_parameters["rate_drop"] = 0f;
+        m_parameters["one_drop"] = 0;
+        m_parameters["skip_drop"] = 0f;
 
-        parameters["base_score"] = baseScore;
-        parameters["seed"] = seed;
-        parameters["missing"] = missing;
-        parameters["_Booster"] = null;
-        parameters["num_class"] = numClass;
+        m_parameters["base_score"] = baseScore;
+        m_parameters["seed"] = seed;
+        m_parameters["missing"] = missing;
+        m_parameters["_Booster"] = null;
+        m_parameters["num_class"] = numClass;
     }
 
 
     public XGBClassifier(IDictionary<string, object> p_parameters)
     {
-        parameters = p_parameters;
+        m_parameters = p_parameters;
     }
 
     /// <summary>
@@ -122,18 +122,14 @@ public class XGBClassifier : BaseXgbModel
     /// </param>
     public void Fit(float[][] data, float[] labels)
     {
-        using (var train = new DMatrix(data, labels))
-        {
-            booster = Train(parameters, train, ((int)parameters["n_estimators"]));
-        }
+        using var train = new DMatrix(data, labels);
+        m_booster = Train(m_parameters, train, ((int)m_parameters["n_estimators"]));
     }
 
     public void Fit(float[][] data, float[] labels, IDictionary<string, object> p_parameters)
     {
-        using (var train = new DMatrix(data, labels))
-        {
-            booster = Train(parameters, train, ((int)parameters["n_estimators"]), p_parameters);
-        }
+        using var train = new DMatrix(data, labels);
+        m_booster = Train(m_parameters, train, ((int)m_parameters["n_estimators"]), p_parameters);
     }
 
     public static Dictionary<string, object> GetDefaultParameters()
@@ -174,7 +170,7 @@ public class XGBClassifier : BaseXgbModel
 
     public void SetParameter(string parameterName, object parameterValue)
     {
-        parameters[parameterName] = parameterValue;
+        m_parameters[parameterName] = parameterValue;
     }
 
     /// <summary>
@@ -188,20 +184,16 @@ public class XGBClassifier : BaseXgbModel
     /// </returns>
     public float[] Predict(float[][] data)
     {
-        using (var test = new DMatrix(data))
-        {
-            var retArray = booster.Predict(test).Select(v => v > 0.5f ? 1f : 0f).ToArray();
-            return retArray;
-        }
+        using var test = new DMatrix(data);
+        var retArray = m_booster.Predict(test).Select(v => v > 0.5f ? 1f : 0f).ToArray();
+        return retArray;
     }
 
     public float[] PredictRaw(float[][] data)
     {
-        using (var test = new DMatrix(data))
-        {
-            var retArray = booster.Predict(test);
-            return retArray;
-        }
+        using var test = new DMatrix(data);
+        var retArray = m_booster.Predict(test);
+        return retArray;
     }
     /// <summary>
     ///   Predict using the gradient boosted model
@@ -215,43 +207,41 @@ public class XGBClassifier : BaseXgbModel
     /// </returns>
     public float[][] PredictProba(float[][] data)
     {
-        using (var dTest = new DMatrix(data))
+        using var dTest = new DMatrix(data);
+        var preds = m_booster.Predict(dTest);
+        float[][] retArray;
+        var numClass = (int)m_parameters["num_class"];
+        if (numClass >= 2)
         {
-            var preds = booster.Predict(dTest);
-            float[][] retArray;
-            var numClass = (int)parameters["num_class"];
-            if (numClass >= 2)
+            var length = preds.Length / numClass;
+            retArray = new float[length][];
+            for (var i = 0; i < length; i++)
             {
-                var length = preds.Length / numClass;
-                retArray = new float[length][];
-                for (var i = 0; i < length; i++)
-                {
-                    var p = new List<float>();
-                    for (var j = 0; j < numClass; j++)
-                        p.Add(preds[numClass * i + j]);
-                    retArray[i] = p.ToArray();
-                }
-
-                return retArray;
-
+                var p = new List<float>();
+                for (var j = 0; j < numClass; j++)
+                    p.Add(preds[numClass * i + j]);
+                retArray[i] = p.ToArray();
             }
-            retArray = preds.Select(v => new[] { 1 - v, v }).ToArray();
+
             return retArray;
+
         }
+        retArray = preds.Select(v => new[] { 1 - v, v }).ToArray();
+        return retArray;
     }
 
     static Booster Train(IDictionary<string, object> args, DMatrix dTrain, int numBoostRound = 10)
     {
         var bst = new Booster(args, dTrain);
-        for (int i = 0; i < numBoostRound; i++) { bst.Update(dTrain, i); }
+        for (var i = 0; i < numBoostRound; i++) { bst.Update(dTrain, i); }
         return bst;
     }
 
     Booster Train(IDictionary<string, object> args, DMatrix dTrain, int numBoostRound = 10, IDictionary<string, object> p_parameters = null)
     {
         var bst = new Booster(dTrain);
-        bst.SetParametersGeneric(parameters);
-        for (int i = 0; i < numBoostRound; i++) { bst.Update(dTrain, i); }
+        bst.SetParametersGeneric(m_parameters);
+        for (var i = 0; i < numBoostRound; i++) { bst.Update(dTrain, i); }
         return bst;
     }
 }

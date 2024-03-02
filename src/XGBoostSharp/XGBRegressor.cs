@@ -71,41 +71,41 @@ public class XGBRegressor : BaseXgbModel
             float scalePosWeight = 1, float baseScore = 0.5F, int seed = 0,
             float missing = float.NaN)
     {
-        parameters["max_depth"] = maxDepth;
-        parameters["learning_rate"] = learningRate;
-        parameters["n_estimators"] = nEstimators;
-        parameters["silent"] = silent;
-        parameters["objective"] = objective;
-        parameters["booster"] = "gbtree";
-        parameters["tree_method"] = "auto";
+        m_parameters["max_depth"] = maxDepth;
+        m_parameters["learning_rate"] = learningRate;
+        m_parameters["n_estimators"] = nEstimators;
+        m_parameters["silent"] = silent;
+        m_parameters["objective"] = objective;
+        m_parameters["booster"] = "gbtree";
+        m_parameters["tree_method"] = "auto";
 
-        parameters["nthread"] = nThread;
-        parameters["gamma"] = gamma;
-        parameters["min_child_weight"] = minChildWeight;
-        parameters["max_delta_step"] = maxDeltaStep;
-        parameters["subsample"] = subsample;
-        parameters["colsample_bytree"] = colSampleByTree;
-        parameters["colsample_bylevel"] = colSampleByLevel;
-        parameters["reg_alpha"] = regAlpha;
-        parameters["reg_lambda"] = regLambda;
-        parameters["scale_pos_weight"] = scalePosWeight;
+        m_parameters["nthread"] = nThread;
+        m_parameters["gamma"] = gamma;
+        m_parameters["min_child_weight"] = minChildWeight;
+        m_parameters["max_delta_step"] = maxDeltaStep;
+        m_parameters["subsample"] = subsample;
+        m_parameters["colsample_bytree"] = colSampleByTree;
+        m_parameters["colsample_bylevel"] = colSampleByLevel;
+        m_parameters["reg_alpha"] = regAlpha;
+        m_parameters["reg_lambda"] = regLambda;
+        m_parameters["scale_pos_weight"] = scalePosWeight;
 
-        parameters["sample_type"] = "uniform";
-        parameters["normalize_type"] = "tree";
-        parameters["rate_drop"] = 0f;
-        parameters["one_drop"] = 0;
-        parameters["skip_drop"] = 0f;
+        m_parameters["sample_type"] = "uniform";
+        m_parameters["normalize_type"] = "tree";
+        m_parameters["rate_drop"] = 0f;
+        m_parameters["one_drop"] = 0;
+        m_parameters["skip_drop"] = 0f;
 
-        parameters["base_score"] = baseScore;
-        parameters["seed"] = seed;
-        parameters["missing"] = missing;
-        parameters["_Booster"] = null;
+        m_parameters["base_score"] = baseScore;
+        m_parameters["seed"] = seed;
+        m_parameters["missing"] = missing;
+        m_parameters["_Booster"] = null;
     }
 
 
     public XGBRegressor(IDictionary<string, object> p_parameters)
     {
-        parameters = p_parameters;
+        m_parameters = p_parameters;
     }
     /// <summary>
     ///   Fit the gradient boosting model
@@ -118,10 +118,8 @@ public class XGBRegressor : BaseXgbModel
     /// </param>
     public void Fit(float[][] data, float[] labels)
     {
-        using (var train = new DMatrix(data, labels))
-        {
-            booster = Train(parameters, train, (int)parameters["n_estimators"]);
-        }
+        using var train = new DMatrix(data, labels);
+        m_booster = Train(m_parameters, train, (int)m_parameters["n_estimators"]);
     }
 
     public static Dictionary<string, object> GetDefaultParameters()
@@ -161,7 +159,7 @@ public class XGBRegressor : BaseXgbModel
 
     public void SetParameter(string parameterName, object parameterValue)
     {
-        parameters[parameterName] = parameterValue;
+        m_parameters[parameterName] = parameterValue;
     }
 
     /// <summary>
@@ -175,10 +173,8 @@ public class XGBRegressor : BaseXgbModel
     /// </returns>
     public float[] Predict(float[][] data)
     {
-        using (var test = new DMatrix(data))
-        {
-            return booster.Predict(test);
-        }
+        using var test = new DMatrix(data);
+        return m_booster.Predict(test);
     }
 
     static Booster Train(IDictionary<string, object> args, DMatrix train, int numBoostRound = 10)

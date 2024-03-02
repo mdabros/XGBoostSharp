@@ -11,48 +11,44 @@ public static class TestUtils
         var trainCols = 4;
         var trainRows = 891;
 
-        using (var parser = new TextFieldParser(@"../../../../test_files/train.csv"))
+        using var parser = new TextFieldParser(@"../../../../test_files/train.csv");
+        parser.TextFieldType = FieldType.Delimited;
+        parser.SetDelimiters(",");
+        var dataTrain = new float[trainRows][];
+        var row = 0;
+
+        while (!parser.EndOfData)
         {
-            parser.TextFieldType = FieldType.Delimited;
-            parser.SetDelimiters(",");
-            var dataTrain = new float[trainRows][];
-            var row = 0;
+            dataTrain[row] = new float[trainCols - 1];
+            var fields = parser.ReadFields();
 
-            while (!parser.EndOfData)
-            {
-                dataTrain[row] = new float[trainCols - 1];
-                var fields = parser.ReadFields();
-
-                // skip label column in csv file
-                for (var col = 1; col < fields.Length; col++)
-                    dataTrain[row][col - 1] = float.Parse(fields[col]);
-                row += 1;
-            }
-
-            return dataTrain;
+            // skip label column in csv file
+            for (var col = 1; col < fields.Length; col++)
+                dataTrain[row][col - 1] = float.Parse(fields[col]);
+            row += 1;
         }
+
+        return dataTrain;
     }
 
     public static float[] GetClassifierLabelsTrain()
     {
         var trainRows = 891;
 
-        using (var parser = new TextFieldParser(@"../../../../test_files/train.csv"))
+        using var parser = new TextFieldParser(@"../../../../test_files/train.csv");
+        parser.TextFieldType = FieldType.Delimited;
+        parser.SetDelimiters(",");
+        var labelsTrain = new float[trainRows];
+        var row = 0;
+
+        while (!parser.EndOfData)
         {
-            parser.TextFieldType = FieldType.Delimited;
-            parser.SetDelimiters(",");
-            var labelsTrain = new float[trainRows];
-            var row = 0;
-
-            while (!parser.EndOfData)
-            {
-                var fields = parser.ReadFields();
-                labelsTrain[row] = float.Parse(fields[0]);
-                row += 1;
-            }
-
-            return labelsTrain;
+            var fields = parser.ReadFields();
+            labelsTrain[row] = float.Parse(fields[0]);
+            row += 1;
         }
+
+        return labelsTrain;
     }
 
     public static float[][] GetClassifierDataTest()
@@ -60,73 +56,67 @@ public static class TestUtils
         var testCols = 3;
         var testRows = 418;
 
-        using (var parser = new TextFieldParser(@"../../../../test_files/test.csv"))
+        using var parser = new TextFieldParser(@"../../../../test_files/test.csv");
+        parser.TextFieldType = FieldType.Delimited;
+        parser.SetDelimiters(",");
+        var dataTest = new float[testRows][];
+        var row = 0;
+
+        while (!parser.EndOfData)
         {
-            parser.TextFieldType = FieldType.Delimited;
-            parser.SetDelimiters(",");
-            var dataTest = new float[testRows][];
-            var row = 0;
+            dataTest[row] = new float[testCols];
+            var fields = parser.ReadFields();
 
-            while (!parser.EndOfData)
-            {
-                dataTest[row] = new float[testCols];
-                var fields = parser.ReadFields();
-
-                for (var col = 0; col < fields.Length; col++)
-                    dataTest[row][col] = float.Parse(fields[col]);
-                row += 1;
-            }
-
-            return dataTest;
+            for (var col = 0; col < fields.Length; col++)
+                dataTest[row][col] = float.Parse(fields[col]);
+            row += 1;
         }
+
+        return dataTest;
     }
 
     public static bool ClassifierPredsCorrect(float[] preds)
     {
-        using (var parser = new TextFieldParser(@"../../../../test_files/predsclas.csv"))
+        using var parser = new TextFieldParser(@"../../../../test_files/predsclas.csv");
+        parser.TextFieldType = FieldType.Delimited;
+        parser.SetDelimiters(",");
+        var row = 0;
+        var predInd = 0;
+
+        while (!parser.EndOfData)
         {
-            parser.TextFieldType = FieldType.Delimited;
-            parser.SetDelimiters(",");
-            var row = 0;
-            var predInd = 0;
+            var fields = parser.ReadFields();
 
-            while (!parser.EndOfData)
+            for (var col = 0; col < fields.Length; col++)
             {
-                var fields = parser.ReadFields();
-
-                for (var col = 0; col < fields.Length; col++)
-                {
-                    var absDiff = Math.Abs(float.Parse(fields[col]) - preds[predInd]);
-                    if (absDiff > 0.01F)
-                        return false;
-                    predInd += 1;
-                }
-                row += 1;
+                var absDiff = Math.Abs(float.Parse(fields[col]) - preds[predInd]);
+                if (absDiff > 0.01F)
+                    return false;
+                predInd += 1;
             }
+            row += 1;
         }
         return true; // we haven't returned from a wrong prediction so everything is right
     }
 
     public static bool ClassifierPredsProbaCorrect(float[][] preds)
     {
-        using (var parser = new TextFieldParser(@"../../../../test_files/predsclasproba.csv"))
+        using var parser = new TextFieldParser(@"../../../../test_files/predsclasproba.csv");
+        parser.TextFieldType = FieldType.Delimited;
+        parser.SetDelimiters(",");
+        var row = 0;
+
+        while (!parser.EndOfData)
         {
-            parser.TextFieldType = FieldType.Delimited;
-            parser.SetDelimiters(",");
-            var row = 0;
+            var fields = parser.ReadFields();
 
-            while (!parser.EndOfData)
+            for (var col = 0; col < fields.Length; col++)
             {
-                var fields = parser.ReadFields();
-
-                for (var col = 0; col < fields.Length; col++)
-                {
-                    var absDiff = Math.Abs(float.Parse(fields[col]) - preds[row][col]);
-                    if (absDiff > 0.0001F)
-                        return false;
-                }
-                row += 1;
+                var absDiff = Math.Abs(float.Parse(fields[col]) - preds[row][col]);
+                if (absDiff > 0.0001F)
+                    return false;
             }
+            row += 1;
         }
         return true; // we haven't returned from a wrong prediction so everything is right
     }
@@ -136,48 +126,44 @@ public static class TestUtils
         var trainCols = 4;
         var trainRows = 891;
 
-        using (var parser = new TextFieldParser(@"../../../../test_files/train.csv"))
+        using var parser = new TextFieldParser(@"../../../../test_files/train.csv");
+        parser.TextFieldType = FieldType.Delimited;
+        parser.SetDelimiters(",");
+        var dataTrain = new float[trainRows][];
+        var row = 0;
+
+        while (!parser.EndOfData)
         {
-            parser.TextFieldType = FieldType.Delimited;
-            parser.SetDelimiters(",");
-            var dataTrain = new float[trainRows][];
-            var row = 0;
+            dataTrain[row] = new float[trainCols - 1];
+            var fields = parser.ReadFields();
 
-            while (!parser.EndOfData)
-            {
-                dataTrain[row] = new float[trainCols - 1];
-                var fields = parser.ReadFields();
-
-                // skip label column in csv file
-                for (var col = 1; col < fields.Length; col++)
-                    dataTrain[row][col - 1] = float.Parse(fields[col]);
-                row += 1;
-            }
-
-            return dataTrain;
+            // skip label column in csv file
+            for (var col = 1; col < fields.Length; col++)
+                dataTrain[row][col - 1] = float.Parse(fields[col]);
+            row += 1;
         }
+
+        return dataTrain;
     }
 
     public static float[] GetRegressorLabelsTrain()
     {
         var trainRows = 891;
 
-        using (var parser = new TextFieldParser(@"../../../../test_files//train.csv"))
+        using var parser = new TextFieldParser(@"../../../../test_files//train.csv");
+        parser.TextFieldType = FieldType.Delimited;
+        parser.SetDelimiters(",");
+        var labelsTrain = new float[trainRows];
+        var row = 0;
+
+        while (!parser.EndOfData)
         {
-            parser.TextFieldType = FieldType.Delimited;
-            parser.SetDelimiters(",");
-            var labelsTrain = new float[trainRows];
-            var row = 0;
-
-            while (!parser.EndOfData)
-            {
-                var fields = parser.ReadFields();
-                labelsTrain[row] = float.Parse(fields[0]);
-                row += 1;
-            }
-
-            return labelsTrain;
+            var fields = parser.ReadFields();
+            labelsTrain[row] = float.Parse(fields[0]);
+            row += 1;
         }
+
+        return labelsTrain;
     }
 
     public static float[][] GetRegressorDataTest()
@@ -185,49 +171,45 @@ public static class TestUtils
         var testCols = 3;
         var testRows = 418;
 
-        using (var parser = new TextFieldParser(@"../../../../test_files//test.csv"))
+        using var parser = new TextFieldParser(@"../../../../test_files//test.csv");
+        parser.TextFieldType = FieldType.Delimited;
+        parser.SetDelimiters(",");
+        var dataTest = new float[testRows][];
+        var row = 0;
+
+        while (!parser.EndOfData)
         {
-            parser.TextFieldType = FieldType.Delimited;
-            parser.SetDelimiters(",");
-            var dataTest = new float[testRows][];
-            var row = 0;
+            dataTest[row] = new float[testCols];
+            var fields = parser.ReadFields();
 
-            while (!parser.EndOfData)
-            {
-                dataTest[row] = new float[testCols];
-                var fields = parser.ReadFields();
-
-                for (var col = 0; col < fields.Length; col++)
-                    dataTest[row][col] = float.Parse(fields[col]);
-                row += 1;
-            }
-
-            return dataTest;
+            for (var col = 0; col < fields.Length; col++)
+                dataTest[row][col] = float.Parse(fields[col]);
+            row += 1;
         }
+
+        return dataTest;
     }
 
     public static bool RegressorPredsCorrect(float[] preds)
     {
-        using (var parser = new TextFieldParser(@"../../../../test_files//predsreg.csv"))
+        using var parser = new TextFieldParser(@"../../../../test_files//predsreg.csv");
+        parser.TextFieldType = FieldType.Delimited;
+        parser.SetDelimiters(",");
+        var row = 0;
+        var predInd = 0;
+
+        while (!parser.EndOfData)
         {
-            parser.TextFieldType = FieldType.Delimited;
-            parser.SetDelimiters(",");
-            var row = 0;
-            var predInd = 0;
+            var fields = parser.ReadFields();
 
-            while (!parser.EndOfData)
+            for (var col = 0; col < fields.Length; col++)
             {
-                var fields = parser.ReadFields();
-
-                for (var col = 0; col < fields.Length; col++)
-                {
-                    var absDiff = Math.Abs(float.Parse(fields[col]) - preds[predInd]);
-                    if (absDiff > 0.01F)
-                        return false;
-                    predInd += 1;
-                }
-                row += 1;
+                var absDiff = Math.Abs(float.Parse(fields[col]) - preds[predInd]);
+                if (absDiff > 0.01F)
+                    return false;
+                predInd += 1;
             }
+            row += 1;
         }
         return true; // we haven't returned from a wrong prediction so everything is right
     }

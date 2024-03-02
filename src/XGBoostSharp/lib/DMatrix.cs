@@ -27,7 +27,7 @@ public class DMatrix : IDisposable
 
     public DMatrix(float[] data1D, ulong nrows, ulong ncols, float[] labels = null)
     {
-        int output = XGBOOST_NATIVE_METHODS.XGDMatrixCreateFromMat(data1D, nrows, ncols, m_missing, out m_handle);
+        var output = XGBOOST_NATIVE_METHODS.XGDMatrixCreateFromMat(data1D, nrows, ncols, m_missing, out m_handle);
         if (output == -1)
             throw new DllFailException(XGBOOST_NATIVE_METHODS.XGBGetLastError());
 
@@ -39,17 +39,17 @@ public class DMatrix : IDisposable
 
     static float[] Flatten2DArray(float[][] data2D)
     {
-        int elementsNo = 0;
-        for (int row = 0; row < data2D.Length; row++)
+        var elementsNo = 0;
+        for (var row = 0; row < data2D.Length; row++)
         {
             elementsNo += data2D[row].Length;
         }
 
-        float[] data1D = new float[elementsNo];
-        int ind = 0;
-        for (int row = 0; row < data2D.Length; row++)
+        var data1D = new float[elementsNo];
+        var ind = 0;
+        for (var row = 0; row < data2D.Length; row++)
         {
-            for (int col = 0; col < data2D[row].Length; col++)
+            for (var col = 0; col < data2D[row].Length; col++)
             {
                 data1D[ind] = data2D[row][col];
                 ind += 1;
@@ -62,20 +62,20 @@ public class DMatrix : IDisposable
     {
         ulong lenULong;
         IntPtr result;
-        int output = XGBOOST_NATIVE_METHODS.XGDMatrixGetFloatInfo(m_handle, field, out lenULong, out result);
+        var output = XGBOOST_NATIVE_METHODS.XGDMatrixGetFloatInfo(m_handle, field, out lenULong, out result);
         if (output == -1)
             throw new DllFailException(XGBOOST_NATIVE_METHODS.XGBGetLastError());
 
-        int len = unchecked((int)lenULong);
-        float[] floatInfo = new float[len];
-        for (int i = 0; i < len; i++)
+        var len = unchecked((int)lenULong);
+        var floatInfo = new float[len];
+        for (var i = 0; i < len; i++)
         {
-            byte[] floatBytes = new byte[4];
+            var floatBytes = new byte[4];
             floatBytes[0] = Marshal.ReadByte(result, 4 * i + 0);
             floatBytes[1] = Marshal.ReadByte(result, 4 * i + 1);
             floatBytes[2] = Marshal.ReadByte(result, 4 * i + 2);
             floatBytes[3] = Marshal.ReadByte(result, 4 * i + 3);
-            float f = BitConverter.ToSingle(floatBytes, 0);
+            var f = BitConverter.ToSingle(floatBytes, 0);
             floatInfo[i] = f;
         }
         return floatInfo;
@@ -83,8 +83,8 @@ public class DMatrix : IDisposable
 
     void SetFloatInfo(string field, float[] floatInfo)
     {
-        ulong len = (ulong)floatInfo.Length;
-        int output = XGBOOST_NATIVE_METHODS.XGDMatrixSetFloatInfo(m_handle, field, floatInfo, len);
+        var len = (ulong)floatInfo.Length;
+        var output = XGBOOST_NATIVE_METHODS.XGDMatrixSetFloatInfo(m_handle, field, floatInfo, len);
         if (output == -1)
             throw new DllFailException(XGBOOST_NATIVE_METHODS.XGBGetLastError());
     }
@@ -102,7 +102,7 @@ public class DMatrix : IDisposable
         if (m_disposed)
             return;
 
-        int output = XGBOOST_NATIVE_METHODS.XGDMatrixFree(m_handle);
+        var output = XGBOOST_NATIVE_METHODS.XGDMatrixFree(m_handle);
         if (output == -1)
             throw new DllFailException(XGBOOST_NATIVE_METHODS.XGBGetLastError());
 
