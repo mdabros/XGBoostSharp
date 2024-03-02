@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using XGBoostSharp;
 
@@ -32,7 +31,7 @@ public class SaveLoadAndDumpTests
         var sutLoaded = BaseXgbModel.LoadClassifierFromFile(TEST_FILE);
         var actual = sutLoaded.PredictProba(dataTest);
 
-        TestUtils.AreEqual(expected, actual);
+        TestUtils.AssertAreEqual(expected, actual);
     }
 
     [TestMethod]
@@ -50,7 +49,7 @@ public class SaveLoadAndDumpTests
         var sutLoaded = BaseXgbModel.LoadRegressorFromFile(TEST_FILE);
         var actual = sutLoaded.Predict(dataTest);
 
-        TestUtils.AreEqual(expected, actual);
+        TestUtils.AssertAreEqual(expected, actual);
     }
 
     [TestMethod]
@@ -69,7 +68,7 @@ public class SaveLoadAndDumpTests
         var sutLoaded = BaseXgbModel.LoadClassifierFromFile(TEST_FILE);
         var actual = sutLoaded.PredictProba(dataTest);
 
-        TestUtils.AreEqual(expected, actual);
+        TestUtils.AssertAreEqual(expected, actual);
     }
 
     [TestMethod]
@@ -87,7 +86,7 @@ public class SaveLoadAndDumpTests
         var sutLoaded = BaseXgbModel.LoadRegressorFromFile(TEST_FILE);
         var expected = sutLoaded.Predict(dataTest);
 
-        TestUtils.AreEqual(expected, actual);
+        TestUtils.AssertAreEqual(expected, actual);
     }
 
     [TestMethod]
@@ -97,12 +96,12 @@ public class SaveLoadAndDumpTests
         var labelsTrain = TestUtils.LabelsTrain;
         var dataTest = TestUtils.DataTest;
 
-        var sut = new XGBClassifier();
+        var sut = new XGBClassifier(maxDepth: 1, nEstimators: 3);
         sut.Fit(dataTrain, labelsTrain);
 
-        var preds1 = sut.PredictProba(dataTest);
         var actual = sut.DumpModelEx();
+        var expected = TestUtils.ExpectedModemDump;
 
-        Console.WriteLine("Model Dumped: " + actual);
+        TestUtils.AssertAreEqual(expected, actual);
     }
 }

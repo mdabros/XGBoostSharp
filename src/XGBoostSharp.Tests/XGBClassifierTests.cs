@@ -19,7 +19,7 @@ public class XGBClassifierTests
         var actual = sut.Predict(dataTest);
         var expected = TestUtils.ExpectedClassifierPredictions;
 
-        TestUtils.AreEqual(expected, actual);
+        TestUtils.AssertAreEqual(expected, actual);
     }
 
     [TestMethod]
@@ -35,6 +35,6 @@ public class XGBClassifierTests
         var actual = sut.PredictProba(dataTest);
         var expected = TestUtils.ExpectedClassifierProbabilityPredictions;
 
-        TestUtils.AreEqual(expected, actual);
+        TestUtils.AssertAreEqual(expected, actual);
     }
 }

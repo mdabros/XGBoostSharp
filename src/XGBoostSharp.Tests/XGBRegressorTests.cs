@@ -19,6 +19,6 @@ public class XGBRegressorTests
         var actual = sut.Predict(dataTest);
         var expected = TestUtils.ExpectedRegressionPredictions;
 
-        TestUtils.AreEqual(expected, actual);
+        TestUtils.AssertAreEqual(expected, actual);
     }
 }

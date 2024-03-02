@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace XGBoostSharpTests;
+﻿namespace XGBoostSharpTests;
 
 public static partial class TestUtils
 {
@@ -2587,5 +2585,12 @@ public static partial class TestUtils
         [0.8410333395004272f, 0.15896664559841156f],
         [0.4112412929534912f, 0.5887587070465088f],
 
+    ];
+
+    public static string[] ExpectedModemDump =>
+    [
+        "booster[0]\r\n0:[f0<3] yes=1,no=2,missing=2\r\n\t1:leaf=0.0227722786\r\n\t2:leaf=-0.102222227\r\n",
+        "booster[1]\r\n0:[f0<3] yes=1,no=2,missing=2\r\n\t1:leaf=0.0205203202\r\n\t2:leaf=-0.0923302621\r\n",
+        "booster[2]\r\n0:[f1<52.5541992] yes=1,no=2,missing=2\r\n\t1:leaf=-0.0608263575\r\n\t2:leaf=0.0751752257"
     ];
 }
