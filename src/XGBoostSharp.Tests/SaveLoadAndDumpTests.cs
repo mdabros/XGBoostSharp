@@ -8,7 +8,7 @@ namespace XGBoostSharpTests;
 [TestClass]
 public class SaveLoadAndDumpTests
 {
-    private const string TEST_FILE = "tmpfile.tmp";
+    const string TEST_FILE = "tmpfile.tmp";
 
     [TestInitialize, TestCleanup]
     public void Reset()
