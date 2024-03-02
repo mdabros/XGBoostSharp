@@ -7,6 +7,25 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XGBoostSharp", "src\XGBoost
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XGBoostSharp.Test", "src\XGBoostSharp.Tests\XGBoostSharp.Test.csproj", "{5A580B11-A16B-4DA9-BC01-399EAB45A240}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{67F4B1F5-4BAF-418A-BA59-569EB09BAAEA}"
+	ProjectSection(SolutionItems) = preProject
+		src\Directory.Build.props = src\Directory.Build.props
+		src\Directory.Build.targets = src\Directory.Build.targets
+		src\OutputBuildProject.props = src\OutputBuildProject.props
+		src\OutputBuildProps.props = src\OutputBuildProps.props
+		src\OutputBuildTargets.props = src\OutputBuildTargets.props
+		src\SourceLink.GitHub.props = src\SourceLink.GitHub.props
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "root", "root", "{42B0E836-F2AD-40DB-8D48-6B8648BBBB67}"
+	ProjectSection(SolutionItems) = preProject
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		LICENSE = LICENSE
+		README.md = README.md
+		rename.ps1 = rename.ps1
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

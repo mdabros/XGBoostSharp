@@ -1,15 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <PackageId>PicNet.XGBoostSharp</PackageId>
-    <Version>0.2.2</Version>
-    <Authors>Guido Tapia, Adam Dobrzycki</Authors>
-    <Company></Company>
-    <Description>.Net wrapper for the XGBoostSharp machine learning library. Targeted for x64 and .NET Framework 4 and above, and .NET Standard 2.0 and above.</Description>
-    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/PicNet/XGBoostSharp.Net</PackageProjectUrl>
-    <Platforms>AnyCPU;x64</Platforms>
+    <TargetFrameworks>$(LibraryTargetFramework)</TargetFrameworks>
+    <PackageId>SharpLearning.AdaBoost</PackageId>
+    <Description>.Net wrapper for the XGBoost machine learning library. Targeted for x64, and .NET standard 2.0 and above.</Description>
+    <PackageTags>xgboost machine-learning classification regression machine learning</PackageTags>
   </PropertyGroup>
 
 </Project>
