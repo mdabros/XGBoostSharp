@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8</TargetFramework>
+    <!--Disable warnings specifically for this project-->
+    <NoWarn>$(NoWarn);NU1701;MSB3270</NoWarn>
+    <Platforms>AnyCPU;x64</Platforms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0-release-23619-01" />
+    <PackageReference Include="MSTest.TestAdapter" Version="3.2.0-preview.24069.3" />
+    <PackageReference Include="MSTest.TestFramework" Version="3.2.0-preview.24069.3" />
+    <PackageReference Include="xgboost.dll" Version="0.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\XGBoost\XGBoost.csproj" />
+  </ItemGroup>
+
+</Project>
