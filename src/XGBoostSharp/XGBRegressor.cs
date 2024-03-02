@@ -181,7 +181,7 @@ public class XGBRegressor : BaseXgbModel
         }
     }
 
-    private Booster Train(IDictionary<string, object> args, DMatrix train, int numBoostRound = 10)
+    static Booster Train(IDictionary<string, object> args, DMatrix train, int numBoostRound = 10)
     {
         var bst = new Booster(args, train);
         for (var i = 0; i < numBoostRound; i++) { bst.Update(train, i); }

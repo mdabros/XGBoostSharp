@@ -5,13 +5,13 @@ namespace XGBoostSharp.lib;
 
 public class DMatrix : IDisposable
 {
-    private bool disposed = false;
-    private IntPtr _handle;
-    private float Missing = -1.0F; // arbitrary value used to represent a missing value
+    bool m_disposed = false;
+    readonly IntPtr m_handle;
+    readonly float m_missing = -1.0F; // arbitrary value used to represent a missing value
 
     public IntPtr Handle
     {
-        get { return _handle; }
+        get { return m_handle; }
     }
 
     public float[] Label
@@ -27,7 +27,7 @@ public class DMatrix : IDisposable
 
     public DMatrix(float[] data1D, ulong nrows, ulong ncols, float[] labels = null)
     {
-        int output = XGBOOST_NATIVE_METHODS.XGDMatrixCreateFromMat(data1D, nrows, ncols, Missing, out _handle);
+        int output = XGBOOST_NATIVE_METHODS.XGDMatrixCreateFromMat(data1D, nrows, ncols, m_missing, out m_handle);
         if (output == -1)
             throw new DllFailException(XGBOOST_NATIVE_METHODS.XGBGetLastError());
 
@@ -37,7 +37,7 @@ public class DMatrix : IDisposable
         }
     }
 
-    private static float[] Flatten2DArray(float[][] data2D)
+    static float[] Flatten2DArray(float[][] data2D)
     {
         int elementsNo = 0;
         for (int row = 0; row < data2D.Length; row++)
@@ -58,11 +58,11 @@ public class DMatrix : IDisposable
         return data1D;
     }
 
-    private float[] GetFloatInfo(string field)
+    float[] GetFloatInfo(string field)
     {
         ulong lenULong;
         IntPtr result;
-        int output = XGBOOST_NATIVE_METHODS.XGDMatrixGetFloatInfo(_handle, field, out lenULong, out result);
+        int output = XGBOOST_NATIVE_METHODS.XGDMatrixGetFloatInfo(m_handle, field, out lenULong, out result);
         if (output == -1)
             throw new DllFailException(XGBOOST_NATIVE_METHODS.XGBGetLastError());
 
@@ -81,10 +81,10 @@ public class DMatrix : IDisposable
         return floatInfo;
     }
 
-    private void SetFloatInfo(string field, float[] floatInfo)
+    void SetFloatInfo(string field, float[] floatInfo)
     {
         ulong len = (ulong)floatInfo.Length;
-        int output = XGBOOST_NATIVE_METHODS.XGDMatrixSetFloatInfo(_handle, field, floatInfo, len);
+        int output = XGBOOST_NATIVE_METHODS.XGDMatrixSetFloatInfo(m_handle, field, floatInfo, len);
         if (output == -1)
             throw new DllFailException(XGBOOST_NATIVE_METHODS.XGBGetLastError());
     }
@@ -99,13 +99,13 @@ public class DMatrix : IDisposable
     // Dispose pattern from MSDN documentation
     protected virtual void Dispose(bool disposing)
     {
-        if (disposed)
+        if (m_disposed)
             return;
 
-        int output = XGBOOST_NATIVE_METHODS.XGDMatrixFree(_handle);
+        int output = XGBOOST_NATIVE_METHODS.XGDMatrixFree(m_handle);
         if (output == -1)
             throw new DllFailException(XGBOOST_NATIVE_METHODS.XGBGetLastError());
 
-        disposed = true;
+        m_disposed = true;
     }
 }

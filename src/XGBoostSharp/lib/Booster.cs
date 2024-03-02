@@ -57,7 +57,7 @@ public class Booster : IDisposable
         return GetPredictionsArray(predsPtr, predsLen);
     }
 
-    public float[] GetPredictionsArray(IntPtr predsPtr, ulong predsLen)
+    public static float[] GetPredictionsArray(IntPtr predsPtr, ulong predsLen)
     {
         var length = unchecked((int)predsLen);
         var preds = new float[length];
@@ -124,7 +124,7 @@ public class Booster : IDisposable
         }
     }
 
-    public void PrintParameters(IDictionary<string, Object> parameters)
+    public static void PrintParameters(IDictionary<string, Object> parameters)
     {
         Console.WriteLine("max_depth: " + (int)parameters["max_depth"]);
         Console.WriteLine("learning_rate: " + (float)parameters["learning_rate"]);

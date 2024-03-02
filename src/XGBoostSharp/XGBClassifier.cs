@@ -240,19 +240,14 @@ public class XGBClassifier : BaseXgbModel
         }
     }
 
-    public string[] DumpModelEx(string fmap = "", int with_stats = 0, string format = "text")
-    {
-        return booster.DumpModelEx(fmap, with_stats, format);
-    }
-
-    private Booster Train(IDictionary<string, object> args, DMatrix dTrain, int numBoostRound = 10)
+    static Booster Train(IDictionary<string, object> args, DMatrix dTrain, int numBoostRound = 10)
     {
         var bst = new Booster(args, dTrain);
         for (int i = 0; i < numBoostRound; i++) { bst.Update(dTrain, i); }
         return bst;
     }
 
-    private Booster Train(IDictionary<string, object> args, DMatrix dTrain, int numBoostRound = 10, IDictionary<string, object> p_parameters = null)
+    Booster Train(IDictionary<string, object> args, DMatrix dTrain, int numBoostRound = 10, IDictionary<string, object> p_parameters = null)
     {
         var bst = new Booster(dTrain);
         bst.SetParametersGeneric(parameters);
