@@ -1,15 +1,14 @@
 ﻿using System;
 
-namespace XGBoostSharp.lib
-{
-    class DllFailException : Exception
-    {
-        public DllFailException()
-        {
-        }
+namespace XGBoostSharp.lib;
 
-        public DllFailException(string message) : base(message)
-        {
-        }
+class DllFailException : Exception
+{
+    public DllFailException()
+    {
+    }
+
+    public DllFailException(string message) : base(message)
+    {
     }
 }

@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace XGBoostSharp.lib
+namespace XGBoostSharp.lib;
+
+public static class DllLoader
 {
 
-    public class DllLoader
-    {
-
-        [DllImport("kernel32", SetLastError = true, CharSet = CharSet.Unicode)] public static extern IntPtr LoadLibrary(string lpFileName);
-    }
+    [DllImport("kernel32", SetLastError = true, CharSet = CharSet.Unicode)] public static extern IntPtr LoadLibrary(string lpFileName);
 }
