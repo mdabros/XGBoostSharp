@@ -7,18 +7,18 @@ namespace XGBoostSharp.lib;
 
 public class Booster : IDisposable
 {
-    bool disposed;
-    readonly IntPtr handle;
-    const int normalPrediction = 0;  // optionMask value for XGBoostSharperPredict
-    int numClass = 1;
+    bool m_disposed;
+    readonly IntPtr m_handle;
+    const int NormalPrediction = 0;  // optionMask value for XGBoostSharperPredict
+    int m_numClass = 1;
 
-    public IntPtr Handle => handle;
+    public IntPtr Handle => m_handle;
 
     public Booster(IDictionary<string, object> parameters, DMatrix train)
     {
         var dmats = new[] { train.Handle };
         var len = unchecked((ulong)dmats.Length);
-        var output = XGBOOST_NATIVE_METHODS.XGBoostSharperCreate(dmats, len, out handle);
+        var output = XGBOOST_NATIVE_METHODS.XGBoostSharperCreate(dmats, len, out m_handle);
         if (output == -1) throw new DllFailException(XGBOOST_NATIVE_METHODS.XGBGetLastError());
 
         SetParameters(parameters);
@@ -28,7 +28,7 @@ public class Booster : IDisposable
     {
         var dmats = new[] { train.Handle };
         var len = unchecked((ulong)dmats.Length);
-        var output = XGBOOST_NATIVE_METHODS.XGBoostSharperCreate(dmats, len, out handle);
+        var output = XGBOOST_NATIVE_METHODS.XGBoostSharperCreate(dmats, len, out m_handle);
         if (output == -1) throw new DllFailException(XGBOOST_NATIVE_METHODS.XGBGetLastError());
     }
 
@@ -38,7 +38,7 @@ public class Booster : IDisposable
         var newBooster = XGBOOST_NATIVE_METHODS.XGBoostSharperCreate(null, 0, out tempPtr);
         var output = XGBOOST_NATIVE_METHODS.XGBoostSharperLoadModel(tempPtr, fileName);
         if (output == -1) throw new DllFailException(XGBOOST_NATIVE_METHODS.XGBGetLastError());
-        handle = tempPtr;
+        m_handle = tempPtr;
     }
 
     public void Update(DMatrix train, int iter)
@@ -52,7 +52,7 @@ public class Booster : IDisposable
         ulong predsLen;
         IntPtr predsPtr;
         var output = XGBOOST_NATIVE_METHODS.XGBoostSharperPredict(
-            handle, test.Handle, normalPrediction, 0, out predsLen, out predsPtr);
+            m_handle, test.Handle, NormalPrediction, 0, out predsLen, out predsPtr);
         if (output == -1) throw new DllFailException(XGBOOST_NATIVE_METHODS.XGBGetLastError());
         return GetPredictionsArray(predsPtr, predsLen);
     }
@@ -109,8 +109,8 @@ public class Booster : IDisposable
 
         if (parameters.TryGetValue("num_class", out var value))
         {
-            numClass = (int)value;
-            SetParameter("num_class", numClass.ToString());
+            m_numClass = (int)value;
+            SetParameter("num_class", m_numClass.ToString());
         }
     }
 
@@ -158,13 +158,13 @@ public class Booster : IDisposable
 
     public void SetParameter(string name, string val)
     {
-        int output = XGBOOST_NATIVE_METHODS.XGBoostSharperSetParam(handle, name, val);
+        int output = XGBOOST_NATIVE_METHODS.XGBoostSharperSetParam(m_handle, name, val);
         if (output == -1) throw new DllFailException(XGBOOST_NATIVE_METHODS.XGBGetLastError());
     }
 
     public void Save(string fileName)
     {
-        XGBOOST_NATIVE_METHODS.XGBoostSharperSaveModel(handle, fileName);
+        XGBOOST_NATIVE_METHODS.XGBoostSharperSaveModel(m_handle, fileName);
     }
 
     public string[] DumpModelEx(string fmap, int with_stats, string format)
@@ -172,7 +172,7 @@ public class Booster : IDisposable
         int length;
         IntPtr treePtr;
         var intptrSize = IntPtr.Size;
-        XGBOOST_NATIVE_METHODS.XGBoostSharperDumpModel(handle, fmap, with_stats, out length, out treePtr);
+        XGBOOST_NATIVE_METHODS.XGBoostSharperDumpModel(m_handle, fmap, with_stats, out length, out treePtr);
         var trees = new string[length];
         int readSize = 0;
         var handle2 = GCHandle.Alloc(treePtr, GCHandleType.Pinned);
@@ -199,8 +199,8 @@ public class Booster : IDisposable
 
     protected virtual void Dispose(bool disposing)
     {
-        if (disposed) return;
-        XGBOOST_NATIVE_METHODS.XGBoostSharperFree(handle);
-        disposed = true;
+        if (m_disposed) return;
+        XGBOOST_NATIVE_METHODS.XGBoostSharperFree(m_handle);
+        m_disposed = true;
     }
 }
