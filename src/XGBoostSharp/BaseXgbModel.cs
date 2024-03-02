@@ -53,7 +53,7 @@ public class BaseXgbModel : IDisposable
     // If disposing equals false, the method has been called by the 
     // runtime from inside the finalizer and you should not reference 
     // other objects. Only unmanaged resources can be disposed.
-    virtual protected void Dispose(bool disposing)
+    protected virtual void Dispose(bool disposing)
     {
         // Dispose only if we have not already disposed.
         if (!m_disposed)
