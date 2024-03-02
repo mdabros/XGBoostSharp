@@ -2,14 +2,14 @@
 
 namespace XGBoostSharp.lib
 {
-  class DllFailException : Exception
-  {
-    public DllFailException()
+    class DllFailException : Exception
     {
-    }
+        public DllFailException()
+        {
+        }
 
-    public DllFailException(string message) : base(message)
-    {
+        public DllFailException(string message) : base(message)
+        {
+        }
     }
-  }
 }
