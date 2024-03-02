@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\XGBoost\XGBoost.csproj" />
+    <ProjectReference Include="..\XGBoostSharp\XGBoostSharp.csproj" />
   </ItemGroup>
 
 </Project>

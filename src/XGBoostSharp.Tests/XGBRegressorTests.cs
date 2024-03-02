@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using XGBoost;
+using XGBoostSharp;
 
-namespace XGBoostTests {
+namespace XGBoostSharpTests {
   [TestClass] public class XGBRegressorTests {
     [TestMethod] public void Predict() {
       var dataTrain = TestUtils.GetRegressorDataTrain();

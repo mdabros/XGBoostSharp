@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace XGBoost.lib
+namespace XGBoostSharp.lib
 {
   public class DMatrix : IDisposable
   {

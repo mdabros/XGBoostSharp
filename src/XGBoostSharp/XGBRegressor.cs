@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
-using XGBoost.lib;
+using XGBoostSharp.lib;
 
-namespace XGBoost
+namespace XGBoostSharp
 {
   public class XGBRegressor : BaseXgbModel
   {    
     /// <summary>
-    ///   Implementation of the Scikit-Learn API for XGBoost
+    ///   Implementation of the Scikit-Learn API for XGBoostSharp
     /// </summary>
     /// <param name="maxDepth">
     ///   Maximum tree depth for base learners

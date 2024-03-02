@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using XGBoost.lib;
+using XGBoostSharp.lib;
 
-namespace XGBoost
+namespace XGBoostSharp
 {
     public class BaseXgbModel : IDisposable
     {

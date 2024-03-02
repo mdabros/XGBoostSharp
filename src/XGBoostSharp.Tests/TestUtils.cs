@@ -2,7 +2,7 @@
 using System.Linq;
 using Microsoft.VisualBasic.FileIO;
 
-namespace XGBoostTests {
+namespace XGBoostSharpTests {
   public static class TestUtils {
     public static float[][] GetClassifierDataTrain() {
       var trainCols = 4;

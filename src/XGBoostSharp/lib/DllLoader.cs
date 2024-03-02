@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
-namespace XGBoost.lib {
+namespace XGBoostSharp.lib {
   
   public class DllLoader {
 

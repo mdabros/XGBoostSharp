@@ -1,8 +1,8 @@
-﻿using XGBoost;
+﻿using XGBoostSharp;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 
-namespace XGBoostTests
+namespace XGBoostSharpTests
 {
     [TestClass]
     public class XGBClassifierTests

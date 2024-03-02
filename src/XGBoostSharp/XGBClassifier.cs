@@ -1,15 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Data.SqlTypes;
 using System.Linq;
-using XGBoost.lib;
+using XGBoostSharp.lib;
 
-namespace XGBoost
+namespace XGBoostSharp
 {
   public class XGBClassifier : BaseXgbModel
   {
 
     /// <summary>
-    ///   Implementation of the Scikit-Learn API for XGBoost
+    ///   Implementation of the Scikit-Learn API for XGBoostSharp
     /// </summary>
     /// <param name="maxDepth">
     ///   Maximum tree depth for base learners

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using XGBoost;
+using XGBoostSharp;
 
-namespace XGBoostTests {
+namespace XGBoostSharpTests {
   [TestClass] public class SaveLoadAndDumpTests {
     private const string TEST_FILE = "tmpfile.tmp";
 
