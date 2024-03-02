@@ -20,84 +20,89 @@ public class SaveLoadAndDumpTests
     public void TestClassifierSaveAndLoad()
     {
         var dataTrain = TestUtils.DataTrain;
-        var labelsTrain = TestUtils.DataTrainLabels;
+        var labelsTrain = TestUtils.LabelsTrain;
         var dataTest = TestUtils.DataTest;
 
-        var xgbc = new XGBClassifier();
-        xgbc.Fit(dataTrain, labelsTrain);
+        var sut = new XGBClassifier();
+        sut.Fit(dataTrain, labelsTrain);
 
-        var preds1 = xgbc.PredictProba(dataTest);
-        xgbc.SaveModelToFile(TEST_FILE);
+        var expected = sut.PredictProba(dataTest);
+        sut.SaveModelToFile(TEST_FILE);
 
-        var xgbc2 = BaseXgbModel.LoadClassifierFromFile(TEST_FILE);
-        var preds2 = xgbc2.PredictProba(dataTest);
-        Assert.IsTrue(TestUtils.AreEqual(preds1, preds2));
+        var sutLoaded = BaseXgbModel.LoadClassifierFromFile(TEST_FILE);
+        var actual = sutLoaded.PredictProba(dataTest);
+
+        TestUtils.AreEqual(expected, actual);
     }
 
     [TestMethod]
     public void TestRegressorSaveAndLoad()
     {
         var dataTrain = TestUtils.DataTrain;
-        var labelsTrain = TestUtils.DataTrainLabels;
+        var labelsTrain = TestUtils.LabelsTrain;
         var dataTest = TestUtils.DataTest;
 
-        var xgbr = new XGBRegressor();
-        xgbr.Fit(dataTrain, labelsTrain);
-        var preds1 = xgbr.Predict(dataTest);
-        xgbr.SaveModelToFile(TEST_FILE);
+        var sut = new XGBRegressor();
+        sut.Fit(dataTrain, labelsTrain);
+        var expected = sut.Predict(dataTest);
+        sut.SaveModelToFile(TEST_FILE);
 
-        var xgbr2 = BaseXgbModel.LoadRegressorFromFile(TEST_FILE);
-        var preds2 = xgbr2.Predict(dataTest);
-        Assert.IsTrue(TestUtils.AreEqual(preds1, preds2));
+        var sutLoaded = BaseXgbModel.LoadRegressorFromFile(TEST_FILE);
+        var actual = sutLoaded.Predict(dataTest);
+
+        TestUtils.AreEqual(expected, actual);
     }
 
     [TestMethod]
     public void TestClassifierSaveAndLoadWithParameters()
     {
         var dataTrain = TestUtils.DataTrain;
-        var labelsTrain = TestUtils.DataTrainLabels;
+        var labelsTrain = TestUtils.LabelsTrain;
         var dataTest = TestUtils.DataTest;
 
-        var xgbc = new XGBClassifier(10, 0.01f, 50);
-        xgbc.Fit(dataTrain, labelsTrain);
+        var sut = new XGBClassifier(10, 0.01f, 50);
+        sut.Fit(dataTrain, labelsTrain);
 
-        var preds1 = xgbc.PredictProba(dataTest);
-        xgbc.SaveModelToFile(TEST_FILE);
+        var expected = sut.PredictProba(dataTest);
+        sut.SaveModelToFile(TEST_FILE);
 
-        var xgbc2 = BaseXgbModel.LoadClassifierFromFile(TEST_FILE);
-        var preds2 = xgbc2.PredictProba(dataTest);
-        Assert.IsTrue(TestUtils.AreEqual(preds1, preds2));
+        var sutLoaded = BaseXgbModel.LoadClassifierFromFile(TEST_FILE);
+        var actual = sutLoaded.PredictProba(dataTest);
+
+        TestUtils.AreEqual(expected, actual);
     }
 
     [TestMethod]
     public void TestRegressorSaveAndLoadWithParameters()
     {
         var dataTrain = TestUtils.DataTrain;
-        var labelsTrain = TestUtils.DataTrainLabels;
+        var labelsTrain = TestUtils.LabelsTrain;
         var dataTest = TestUtils.DataTest;
 
-        var xgbr = new XGBRegressor();
-        xgbr.Fit(dataTrain, labelsTrain);
-        var preds1 = xgbr.Predict(dataTest);
-        xgbr.SaveModelToFile(TEST_FILE);
+        var sut = new XGBRegressor();
+        sut.Fit(dataTrain, labelsTrain);
+        var actual = sut.Predict(dataTest);
+        sut.SaveModelToFile(TEST_FILE);
 
-        var xgbr2 = BaseXgbModel.LoadRegressorFromFile(TEST_FILE);
-        var preds2 = xgbr2.Predict(dataTest);
-        Assert.IsTrue(TestUtils.AreEqual(preds1, preds2));
+        var sutLoaded = BaseXgbModel.LoadRegressorFromFile(TEST_FILE);
+        var expected = sutLoaded.Predict(dataTest);
+
+        TestUtils.AreEqual(expected, actual);
     }
 
     [TestMethod]
     public void TestClassifierDump()
     {
         var dataTrain = TestUtils.DataTrain;
-        var labelsTrain = TestUtils.DataTrainLabels;
+        var labelsTrain = TestUtils.LabelsTrain;
         var dataTest = TestUtils.DataTest;
 
-        var xgbc = new XGBClassifier();
-        xgbc.Fit(dataTrain, labelsTrain);
+        var sut = new XGBClassifier();
+        sut.Fit(dataTrain, labelsTrain);
 
-        var preds1 = xgbc.PredictProba(dataTest);
-        var description = xgbc.DumpModelEx();
-        Console.WriteLine("Model Dumped: " + description);
+        var preds1 = sut.PredictProba(dataTest);
+        var actual = sut.DumpModelEx();
+
+        Console.WriteLine("Model Dumped: " + actual);
     }
 }

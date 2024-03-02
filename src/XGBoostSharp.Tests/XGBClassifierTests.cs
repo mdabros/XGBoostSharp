@@ -10,25 +10,31 @@ public class XGBClassifierTests
     public void Predict()
     {
         var dataTrain = TestUtils.DataTrain;
-        var labelsTrain = TestUtils.DataTrainLabels;
+        var labelsTrain = TestUtils.LabelsTrain;
         var dataTest = TestUtils.DataTest;
 
-        var xgbc = new XGBClassifier();
-        xgbc.Fit(dataTrain, labelsTrain);
-        var preds = xgbc.Predict(dataTest);
-        Assert.IsTrue(TestUtils.ClassifierPredsCorrect(preds));
+        var sut = new XGBClassifier();
+        sut.Fit(dataTrain, labelsTrain);
+
+        var actual = sut.Predict(dataTest);
+        var expected = TestUtils.ExpectedClassifierPredictions;
+
+        TestUtils.AreEqual(expected, actual);
     }
 
     [TestMethod]
     public void PredictProba()
     {
         var dataTrain = TestUtils.DataTrain;
-        var labelsTrain = TestUtils.DataTrainLabels;
+        var labelsTrain = TestUtils.LabelsTrain;
         var dataTest = TestUtils.DataTest;
 
-        var xgbc = new XGBClassifier();
-        xgbc.Fit(dataTrain, labelsTrain);
-        var preds = xgbc.PredictProba(dataTest);
-        Assert.IsTrue(TestUtils.ClassifierPredsProbaCorrect(preds));
+        var sut = new XGBClassifier();
+        sut.Fit(dataTrain, labelsTrain);
+
+        var actual = sut.PredictProba(dataTest);
+        var expected = TestUtils.ExpectedClassifierProbabilityPredictions;
+
+        TestUtils.AreEqual(expected, actual);
     }
 }

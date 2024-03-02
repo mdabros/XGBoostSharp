@@ -9,13 +9,16 @@ public class XGBRegressorTests
     [TestMethod]
     public void Predict()
     {
-        var dataTrain = TestUtils.GetRegressorDataTrain();
-        var labelsTrain = TestUtils.GetRegressorLabelsTrain();
-        var dataTest = TestUtils.GetRegressorDataTest();
+        var dataTrain = TestUtils.DataTrain;
+        var labelsTrain = TestUtils.LabelsTrain;
+        var dataTest = TestUtils.DataTest;
 
-        var xgbr = new XGBRegressor();
-        xgbr.Fit(dataTrain, labelsTrain);
-        var preds = xgbr.Predict(dataTest);
-        Assert.IsTrue(TestUtils.RegressorPredsCorrect(preds));
+        var sut = new XGBRegressor();
+        sut.Fit(dataTrain, labelsTrain);
+
+        var actual = sut.Predict(dataTest);
+        var expected = TestUtils.ExpectedRegressionPredictions;
+
+        TestUtils.AreEqual(expected, actual);
     }
 }
