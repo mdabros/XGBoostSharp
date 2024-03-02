@@ -19,9 +19,9 @@ public class SaveLoadAndDumpTests
     [TestMethod]
     public void TestClassifierSaveAndLoad()
     {
-        var dataTrain = TestUtils.GetClassifierDataTrain();
-        var labelsTrain = TestUtils.GetClassifierLabelsTrain();
-        var dataTest = TestUtils.GetClassifierDataTest();
+        var dataTrain = TestUtils.DataTrain;
+        var labelsTrain = TestUtils.DataTrainLabels;
+        var dataTest = TestUtils.DataTest;
 
         var xgbc = new XGBClassifier();
         xgbc.Fit(dataTrain, labelsTrain);
@@ -37,9 +37,9 @@ public class SaveLoadAndDumpTests
     [TestMethod]
     public void TestRegressorSaveAndLoad()
     {
-        var dataTrain = TestUtils.GetRegressorDataTrain();
-        var labelsTrain = TestUtils.GetRegressorLabelsTrain();
-        var dataTest = TestUtils.GetRegressorDataTest();
+        var dataTrain = TestUtils.DataTrain;
+        var labelsTrain = TestUtils.DataTrainLabels;
+        var dataTest = TestUtils.DataTest;
 
         var xgbr = new XGBRegressor();
         xgbr.Fit(dataTrain, labelsTrain);
@@ -54,9 +54,9 @@ public class SaveLoadAndDumpTests
     [TestMethod]
     public void TestClassifierSaveAndLoadWithParameters()
     {
-        var dataTrain = TestUtils.GetClassifierDataTrain();
-        var labelsTrain = TestUtils.GetClassifierLabelsTrain();
-        var dataTest = TestUtils.GetClassifierDataTest();
+        var dataTrain = TestUtils.DataTrain;
+        var labelsTrain = TestUtils.DataTrainLabels;
+        var dataTest = TestUtils.DataTest;
 
         var xgbc = new XGBClassifier(10, 0.01f, 50);
         xgbc.Fit(dataTrain, labelsTrain);
@@ -72,9 +72,9 @@ public class SaveLoadAndDumpTests
     [TestMethod]
     public void TestRegressorSaveAndLoadWithParameters()
     {
-        var dataTrain = TestUtils.GetRegressorDataTrain();
-        var labelsTrain = TestUtils.GetRegressorLabelsTrain();
-        var dataTest = TestUtils.GetRegressorDataTest();
+        var dataTrain = TestUtils.DataTrain;
+        var labelsTrain = TestUtils.DataTrainLabels;
+        var dataTest = TestUtils.DataTest;
 
         var xgbr = new XGBRegressor();
         xgbr.Fit(dataTrain, labelsTrain);
@@ -89,9 +89,9 @@ public class SaveLoadAndDumpTests
     [TestMethod]
     public void TestClassifierDump()
     {
-        var dataTrain = TestUtils.GetClassifierDataTrain();
-        var labelsTrain = TestUtils.GetClassifierLabelsTrain();
-        var dataTest = TestUtils.GetClassifierDataTest();
+        var dataTrain = TestUtils.DataTrain;
+        var labelsTrain = TestUtils.DataTrainLabels;
+        var dataTest = TestUtils.DataTest;
 
         var xgbc = new XGBClassifier();
         xgbc.Fit(dataTrain, labelsTrain);

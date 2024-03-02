@@ -9,9 +9,9 @@ public class XGBClassifierTests
     [TestMethod]
     public void Predict()
     {
-        var dataTrain = TestUtils.GetClassifierDataTrain();
-        var labelsTrain = TestUtils.GetClassifierLabelsTrain();
-        var dataTest = TestUtils.GetClassifierDataTest();
+        var dataTrain = TestUtils.DataTrain;
+        var labelsTrain = TestUtils.DataTrainLabels;
+        var dataTest = TestUtils.DataTest;
 
         var xgbc = new XGBClassifier();
         xgbc.Fit(dataTrain, labelsTrain);
@@ -22,9 +22,9 @@ public class XGBClassifierTests
     [TestMethod]
     public void PredictProba()
     {
-        var dataTrain = TestUtils.GetClassifierDataTrain();
-        var labelsTrain = TestUtils.GetClassifierLabelsTrain();
-        var dataTest = TestUtils.GetClassifierDataTest();
+        var dataTrain = TestUtils.DataTrain;
+        var labelsTrain = TestUtils.DataTrainLabels;
+        var dataTest = TestUtils.DataTest;
 
         var xgbc = new XGBClassifier();
         xgbc.Fit(dataTrain, labelsTrain);
