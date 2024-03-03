@@ -43,24 +43,22 @@ public class DMatrix : IDisposable
 
     float[] GetFloatInfo(string field)
     {
-        ulong lenULong;
+        ulong lengthULong;
         IntPtr result;
-        var output = XGBOOST_NATIVE_METHODS.XGDMatrixGetFloatInfo(m_handle, field, out lenULong, out result);
+        var output = XGBOOST_NATIVE_METHODS.XGDMatrixGetFloatInfo(m_handle, field, out lengthULong, out result);
         if (output == -1)
             throw new DllFailException(XGBOOST_NATIVE_METHODS.XGBGetLastError());
 
-        var len = unchecked((int)lenULong);
-        var floatInfo = new float[len];
-        for (var i = 0; i < len; i++)
+        var length = unchecked((int)lengthULong);
+        var floatInfo = new float[length];
+        var floatBytes = new byte[length * 4];
+        Marshal.Copy(result, floatBytes, 0, floatBytes.Length);
+
+        for (var i = 0; i < length; i++)
         {
-            var floatBytes = new byte[4];
-            floatBytes[0] = Marshal.ReadByte(result, 4 * i + 0);
-            floatBytes[1] = Marshal.ReadByte(result, 4 * i + 1);
-            floatBytes[2] = Marshal.ReadByte(result, 4 * i + 2);
-            floatBytes[3] = Marshal.ReadByte(result, 4 * i + 3);
-            var f = BitConverter.ToSingle(floatBytes, 0);
-            floatInfo[i] = f;
+            floatInfo[i] = BitConverter.ToSingle(floatBytes, i * 4);
         }
+
         return floatInfo;
     }
 
