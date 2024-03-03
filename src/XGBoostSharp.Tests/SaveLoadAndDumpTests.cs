@@ -25,11 +25,11 @@ public class SaveLoadAndDumpTests
         var sut = new XGBClassifier();
         sut.Fit(dataTrain, labelsTrain);
 
-        var expected = sut.PredictProba(dataTest);
+        var expected = sut.PredictProbability(dataTest);
         sut.SaveModelToFile(TEST_FILE);
 
         var sutLoaded = BaseXGBModel.LoadClassifierFromFile(TEST_FILE);
-        var actual = sutLoaded.PredictProba(dataTest);
+        var actual = sutLoaded.PredictProbability(dataTest);
 
         TestUtils.AssertAreEqual(expected, actual);
     }
@@ -62,11 +62,11 @@ public class SaveLoadAndDumpTests
         var sut = new XGBClassifier(10, 0.01f, 50);
         sut.Fit(dataTrain, labelsTrain);
 
-        var expected = sut.PredictProba(dataTest);
+        var expected = sut.PredictProbability(dataTest);
         sut.SaveModelToFile(TEST_FILE);
 
         var sutLoaded = BaseXGBModel.LoadClassifierFromFile(TEST_FILE);
-        var actual = sutLoaded.PredictProba(dataTest);
+        var actual = sutLoaded.PredictProbability(dataTest);
 
         TestUtils.AssertAreEqual(expected, actual);
     }

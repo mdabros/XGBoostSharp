@@ -195,29 +195,33 @@ public class XGBClassifier : BaseXGBModel
     ///   The probabilities for each classification being the actual
     ///   classification for each row
     /// </returns>
-    public float[][] PredictProba(float[][] data)
+    public float[][] PredictProbability(float[][] data)
     {
-        using var dTest = new DMatrix(data);
-        var preds = m_booster.Predict(dTest);
-        float[][] retArray;
-        var numClass = (int)m_parameters["num_class"];
-        if (numClass >= 2)
+        using var dMatrix = new DMatrix(data);
+        var predictions = m_booster.Predict(dMatrix);
+        var classCount = (int)m_parameters["num_class"];
+        var observationCount = predictions.Length / classCount;
+        var results = new float[observationCount][];
+
+        if (classCount >= 2)
         {
-            var length = preds.Length / numClass;
-            retArray = new float[length][];
-            for (var i = 0; i < length; i++)
+            results = new float[observationCount][];
+            for (var i = 0; i < observationCount; i++)
             {
-                var p = new List<float>();
-                for (var j = 0; j < numClass; j++)
-                    p.Add(preds[numClass * i + j]);
-                retArray[i] = p.ToArray();
+                var p = new float[classCount];
+                for (var j = 0; j < classCount; j++)
+                {
+                    p[j] = predictions[classCount * i + j];
+                }
+                results[i] = p;
             }
-
-            return retArray;
-
         }
-        retArray = preds.Select(v => new[] { 1 - v, v }).ToArray();
-        return retArray;
+        else
+        {
+            results = predictions.Select(v => new[] { 1 - v, v }).ToArray();
+        }
+
+        return results;
     }
 
     static Booster Train(IDictionary<string, object> parameters, DMatrix dTrain, int iterations = 10)
