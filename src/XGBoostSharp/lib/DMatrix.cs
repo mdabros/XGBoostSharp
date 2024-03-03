@@ -31,10 +31,7 @@ public class DMatrix : IDisposable
         if (output == -1)
             throw new DllFailException(XGBOOST_NATIVE_METHODS.XGBGetLastError());
 
-        if (labels != null)
-        {
-            Label = labels;
-        }
+        Label = labels ?? Label;
     }
 
     static float[] Flatten2DArray(float[][] data2D) =>
