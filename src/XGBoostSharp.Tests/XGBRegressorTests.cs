@@ -69,4 +69,19 @@ public class XGBRegressorTests
 
         TestUtils.AssertAreEqual(expected, actual);
     }
+
+    [TestMethod]
+    public void XGBRegressorTests_DumpModelEx()
+    {
+        var dataTrain = TestUtils.DataTrain;
+        var labelsTrain = TestUtils.LabelsTrain;
+
+        var sut = new XGBRegressor(maxDepth: 1, nEstimators: 3);
+        sut.Fit(dataTrain, labelsTrain);
+
+        var actual = sut.DumpModelEx();
+        var expected = TestUtils.ExpectedRegressorModelDump;
+
+        TestUtils.AssertAreEqual(expected, actual);
+    }
 }

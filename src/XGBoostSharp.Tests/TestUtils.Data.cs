@@ -2593,4 +2593,11 @@ public static partial class TestUtils
         "booster[1]\n0:[f0<2.5] yes=1,no=2,missing=1\n\t1:leaf=0.0205203\n\t2:leaf=-0.0923302\n",
         "booster[2]\n0:[f1<52.2771] yes=1,no=2,missing=1\n\t1:leaf=-0.0608264\n\t2:leaf=0.0751752\n"
     ];
+
+    public static string[] ExpectedRegressorModelDump =>
+    [
+        "booster[0]\n0:[f0<2.5] yes=1,no=2,missing=1\n\t1:leaf=0.00573566\n\t2:leaf=-0.0257114\n",
+        "booster[1]\n0:[f0<2.5] yes=1,no=2,missing=1\n\t1:leaf=0.00516353\n\t2:leaf=-0.0231455\n",
+        "booster[2]\n0:[f1<52.2771] yes=1,no=2,missing=1\n\t1:leaf=-0.0151526\n\t2:leaf=0.0191417\n"
+    ];
 }

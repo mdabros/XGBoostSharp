@@ -93,7 +93,6 @@ public class XGBClassifierTests
     {
         var dataTrain = TestUtils.DataTrain;
         var labelsTrain = TestUtils.LabelsTrain;
-        var dataTest = TestUtils.DataTest;
 
         var sut = new XGBClassifier(maxDepth: 1, nEstimators: 3);
         sut.Fit(dataTrain, labelsTrain);
