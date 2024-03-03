@@ -124,12 +124,6 @@ public class XGBClassifier : BaseXGBModel
         m_booster = Train(m_parameters, train, ((int)m_parameters["n_estimators"]));
     }
 
-    public void Fit(float[][] data, float[] labels, IDictionary<string, object> p_parameters)
-    {
-        using var train = new DMatrix(data, labels);
-        m_booster = Train(m_parameters, train, ((int)m_parameters["n_estimators"]), p_parameters);
-    }
-
     public static Dictionary<string, object> GetDefaultParameters()
     {
         var defaultParameters = new Dictionary<string, object>
@@ -226,18 +220,13 @@ public class XGBClassifier : BaseXGBModel
         return retArray;
     }
 
-    static Booster Train(IDictionary<string, object> args, DMatrix dTrain, int numBoostRound = 10)
+    static Booster Train(IDictionary<string, object> parameters, DMatrix dTrain, int iterations = 10)
     {
-        var bst = new Booster(args, dTrain);
-        for (var i = 0; i < numBoostRound; i++) { bst.Update(dTrain, i); }
-        return bst;
-    }
-
-    Booster Train(IDictionary<string, object> args, DMatrix dTrain, int numBoostRound = 10, IDictionary<string, object> p_parameters = null)
-    {
-        var bst = new Booster(dTrain);
-        bst.SetParametersGeneric(m_parameters);
-        for (var i = 0; i < numBoostRound; i++) { bst.Update(dTrain, i); }
-        return bst;
+        var booster = new Booster(parameters, dTrain);
+        for (var i = 0; i < iterations; i++)
+        {
+            booster.Update(dTrain, i);
+        }
+        return booster;
     }
 }
