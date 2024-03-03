@@ -7,7 +7,7 @@ namespace XGBoostSharpTests;
 public class XGBClassifierTests
 {
     [TestMethod]
-    public void Predict()
+    public void XGBClassifierTests_Predict()
     {
         var dataTrain = TestUtils.DataTrain;
         var labelsTrain = TestUtils.LabelsTrain;
@@ -23,7 +23,7 @@ public class XGBClassifierTests
     }
 
     [TestMethod]
-    public void PredictProba()
+    public void XGBClassifierTests_PredictProbability()
     {
         var dataTrain = TestUtils.DataTrain;
         var labelsTrain = TestUtils.LabelsTrain;
