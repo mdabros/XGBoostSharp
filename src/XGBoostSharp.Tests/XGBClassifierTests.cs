@@ -25,7 +25,7 @@ public class XGBClassifierTests
         var labelsTrain = TestUtils.LabelsTrain;
         var dataTest = TestUtils.DataTest;
 
-        var sut = new XGBClassifier();
+        using var sut = new XGBClassifier();
         sut.Fit(dataTrain, labelsTrain);
 
         var actual = sut.Predict(dataTest);
@@ -41,7 +41,7 @@ public class XGBClassifierTests
         var labelsTrain = TestUtils.LabelsTrain;
         var dataTest = TestUtils.DataTest;
 
-        var sut = new XGBClassifier();
+        using var sut = new XGBClassifier();
         sut.Fit(dataTrain, labelsTrain);
 
         var actual = sut.PredictProbability(dataTest);
@@ -57,7 +57,7 @@ public class XGBClassifierTests
         var labelsTrain = TestUtils.LabelsTrain;
         var dataTest = TestUtils.DataTest;
 
-        var sut = new XGBClassifier();
+        using var sut = new XGBClassifier();
         sut.Fit(dataTrain, labelsTrain);
 
         var expected = sut.PredictProbability(dataTest);
@@ -76,13 +76,13 @@ public class XGBClassifierTests
         var labelsTrain = TestUtils.LabelsTrain;
         var dataTest = TestUtils.DataTest;
 
-        var sut = new XGBClassifier(10, 0.01f, 50);
+        using var sut = new XGBClassifier(10, 0.01f, 50);
         sut.Fit(dataTrain, labelsTrain);
 
         var expected = sut.PredictProbability(dataTest);
         sut.SaveModelToFile(TEST_FILE);
 
-        var sutLoaded = BaseXGBModel.LoadClassifierFromFile(TEST_FILE);
+        using var sutLoaded = BaseXGBModel.LoadClassifierFromFile(TEST_FILE);
         var actual = sutLoaded.PredictProbability(dataTest);
 
         TestUtils.AssertAreEqual(expected, actual);
@@ -94,7 +94,7 @@ public class XGBClassifierTests
         var dataTrain = TestUtils.DataTrain;
         var labelsTrain = TestUtils.LabelsTrain;
 
-        var sut = new XGBClassifier(maxDepth: 1, nEstimators: 3);
+        using var sut = new XGBClassifier(maxDepth: 1, nEstimators: 3);
         sut.Fit(dataTrain, labelsTrain);
 
         var actual = sut.DumpModelEx();

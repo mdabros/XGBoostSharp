@@ -25,7 +25,7 @@ public class XGBRegressorTests
         var labelsTrain = TestUtils.LabelsTrain;
         var dataTest = TestUtils.DataTest;
 
-        var sut = new XGBRegressor();
+        using var sut = new XGBRegressor();
         sut.Fit(dataTrain, labelsTrain);
 
         var actual = sut.Predict(dataTest);
@@ -41,7 +41,7 @@ public class XGBRegressorTests
         var labelsTrain = TestUtils.LabelsTrain;
         var dataTest = TestUtils.DataTest;
 
-        var sut = new XGBRegressor();
+        using var sut = new XGBRegressor();
         sut.Fit(dataTrain, labelsTrain);
         var expected = sut.Predict(dataTest);
         sut.SaveModelToFile(TEST_FILE);
@@ -59,12 +59,12 @@ public class XGBRegressorTests
         var labelsTrain = TestUtils.LabelsTrain;
         var dataTest = TestUtils.DataTest;
 
-        var sut = new XGBRegressor();
+        using var sut = new XGBRegressor();
         sut.Fit(dataTrain, labelsTrain);
         var actual = sut.Predict(dataTest);
         sut.SaveModelToFile(TEST_FILE);
 
-        var sutLoaded = BaseXGBModel.LoadRegressorFromFile(TEST_FILE);
+        using var sutLoaded = BaseXGBModel.LoadRegressorFromFile(TEST_FILE);
         var expected = sutLoaded.Predict(dataTest);
 
         TestUtils.AssertAreEqual(expected, actual);
@@ -76,7 +76,7 @@ public class XGBRegressorTests
         var dataTrain = TestUtils.DataTrain;
         var labelsTrain = TestUtils.LabelsTrain;
 
-        var sut = new XGBRegressor(maxDepth: 1, nEstimators: 3);
+        using var sut = new XGBRegressor(maxDepth: 1, nEstimators: 3);
         sut.Fit(dataTrain, labelsTrain);
 
         var actual = sut.DumpModelEx();
