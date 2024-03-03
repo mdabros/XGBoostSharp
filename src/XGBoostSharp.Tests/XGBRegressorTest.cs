@@ -2,7 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using XGBoostSharp;
 
-namespace XGBoostSharpTests;
+namespace XGBoostSharpTest;
 
 [TestClass]
 public class XGBRegressorTest

@@ -1,4 +1,4 @@
-﻿namespace XGBoostSharpTests;
+﻿namespace XGBoostSharpTest;
 
 public static partial class TestUtils
 {

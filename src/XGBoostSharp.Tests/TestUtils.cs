@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace XGBoostSharpTests;
+namespace XGBoostSharpTest;
 
 public static partial class TestUtils
 {
