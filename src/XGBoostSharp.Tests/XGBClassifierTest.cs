@@ -25,7 +25,7 @@ public class XGBClassifierTest
         var labelsTrain = TestUtils.LabelsTrain;
         var dataTest = TestUtils.DataTest;
 
-        using var sut = new XGBClassifier(maxDepth: 3, learningRate: 0.1f, nEstimators: 100);
+        using var sut = new XGBClassifier();
         sut.Fit(dataTrain, labelsTrain);
 
         var actual = sut.Predict(dataTest);
