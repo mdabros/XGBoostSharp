@@ -23,7 +23,6 @@ jobs:
       matrix:
         os: [windows-latest]
         configuration: [Debug, Release]
-        platform: [x64]
 
     runs-on: ${{ matrix.os }}
 
@@ -36,13 +35,13 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet build -c ${{ matrix.configuration }} -r ${{ matrix.platform }} --no-restore 
+      run: dotnet build -c ${{ matrix.configuration }} --no-restore 
     - name: dotnet format verify-no-changes
       run: dotnet format --verify-no-changes --no-restore
           
     # dispabed until native package is on nuget.
     # - name: Test
-    #   run: dotnet test -c ${{ matrix.configuration }} -r ${{ matrix.platform }} --no-build --verbosity normal
+    #   run: dotnet test -c ${{ matrix.configuration }} --no-build --verbosity normal
     # - name: Upload coverage reports to Codecov
     #   uses: codecov/codecov-action@v3
     #   with:
