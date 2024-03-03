@@ -64,8 +64,8 @@ public class DMatrix : IDisposable
 
     void SetFloatInfo(string field, float[] floatInfo)
     {
-        var len = (ulong)floatInfo.Length;
-        var output = XGBOOST_NATIVE_METHODS.XGDMatrixSetFloatInfo(m_handle, field, floatInfo, len);
+        var length = (ulong)floatInfo.Length;
+        var output = XGBOOST_NATIVE_METHODS.XGDMatrixSetFloatInfo(m_handle, field, floatInfo, length);
         if (output == -1)
             throw new DllFailException(XGBOOST_NATIVE_METHODS.XGBGetLastError());
     }
