@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using XGBoostSharp.lib;
 
@@ -201,24 +202,18 @@ public class XGBClassifier : BaseXGBModel
         var predictions = m_booster.Predict(dMatrix);
         var classCount = (int)m_parameters["num_class"];
         var observationCount = predictions.Length / classCount;
-        var results = new float[observationCount][];
 
-        if (classCount >= 2)
+        if (classCount < 2)
         {
-            results = new float[observationCount][];
-            for (var i = 0; i < observationCount; i++)
-            {
-                var p = new float[classCount];
-                for (var j = 0; j < classCount; j++)
-                {
-                    p[j] = predictions[classCount * i + j];
-                }
-                results[i] = p;
-            }
+            return predictions.Select(v => new[] { 1 - v, v }).ToArray();
         }
-        else
+
+        var results = new float[observationCount][];
+        for (var i = 0; i < observationCount; i++)
         {
-            results = predictions.Select(v => new[] { 1 - v, v }).ToArray();
+            var p = new float[classCount];
+            Array.Copy(predictions, i * classCount, p, 0, classCount);
+            results[i] = p;
         }
 
         return results;
