@@ -35,7 +35,7 @@ public static partial class TestUtils
             Assert.AreEqual(expected.Length, actual.Length);
             for (var col = 0; col < expected.Length; col++)
             {
-                Assert.AreEqual(expected[row], actual[row], Delta);
+                Assert.AreEqual(expected[col], actual[col], Delta);
             }
         }
     }
