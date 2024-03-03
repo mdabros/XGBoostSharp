@@ -106,24 +106,8 @@ public class XGBClassifier : BaseXGBModel
         m_parameters["num_class"] = numClass;
     }
 
-
-    public XGBClassifier(IDictionary<string, object> p_parameters) =>
-        m_parameters = p_parameters;
-
-    /// <summary>
-    ///   Fit the gradient boosting model
-    /// </summary>
-    /// <param name="data">
-    ///   Feature matrix
-    /// </param>
-    /// <param name="labels">
-    ///   Labels
-    /// </param>
-    public void Fit(float[][] data, float[] labels)
-    {
-        using var train = new DMatrix(data, labels);
-        m_booster = Train(m_parameters, train, ((int)m_parameters["n_estimators"]));
-    }
+    public static XGBClassifier LoadFromFile(string fileName) =>
+        new() { m_booster = new Booster(fileName) };
 
     public static Dictionary<string, object> GetDefaultParameters()
     {
@@ -159,6 +143,24 @@ public class XGBClassifier : BaseXGBModel
         };
 
         return defaultParameters;
+    }
+
+    public XGBClassifier(IDictionary<string, object> p_parameters) =>
+        m_parameters = p_parameters;
+
+    /// <summary>
+    ///   Fit the gradient boosting model
+    /// </summary>
+    /// <param name="data">
+    ///   Feature matrix
+    /// </param>
+    /// <param name="labels">
+    ///   Labels
+    /// </param>
+    public void Fit(float[][] data, float[] labels)
+    {
+        using var train = new DMatrix(data, labels);
+        m_booster = Train(m_parameters, train, ((int)m_parameters["n_estimators"]));
     }
 
     public void SetParameter(string parameterName, object parameterValue) =>

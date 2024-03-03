@@ -46,7 +46,7 @@ public class XGBRegressorTest
         var expected = sut.Predict(dataTest);
         sut.SaveModelToFile(TEST_FILE);
 
-        var sutLoaded = BaseXGBModel.LoadRegressorFromFile(TEST_FILE);
+        var sutLoaded = XGBRegressor.LoadFromFile(TEST_FILE);
         var actual = sutLoaded.Predict(dataTest);
 
         TestUtils.AssertAreEqual(expected, actual);
@@ -64,7 +64,7 @@ public class XGBRegressorTest
         var actual = sut.Predict(dataTest);
         sut.SaveModelToFile(TEST_FILE);
 
-        using var sutLoaded = BaseXGBModel.LoadRegressorFromFile(TEST_FILE);
+        using var sutLoaded = XGBRegressor.LoadFromFile(TEST_FILE);
         var expected = sutLoaded.Predict(dataTest);
 
         TestUtils.AssertAreEqual(expected, actual);
