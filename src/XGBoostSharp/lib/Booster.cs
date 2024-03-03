@@ -175,17 +175,13 @@ public class Booster : IDisposable
         var intptrSize = IntPtr.Size;
         XGBOOST_NATIVE_METHODS.XGBoosterDumpModel(m_handle, fmap, with_stats, out length, out treePtr);
         var trees = new string[length];
-        var readSize = 0;
         var handle2 = GCHandle.Alloc(treePtr, GCHandleType.Pinned);
 
-        //iterate through the length of the tree ensemble and pull the strings out from the returned pointer's array of pointers. prepend python's api convention of adding booster[i] to the beginning of the tree
         for (var i = 0; i < length; i++)
         {
             var ipt1 = Marshal.ReadIntPtr(Marshal.ReadIntPtr(handle2.AddrOfPinnedObject()), intptrSize * i);
             var s = Marshal.PtrToStringAnsi(ipt1);
-            trees[i] = string.Format("booster[{0}]\n{1}", i, s);
-            var bytesToRead = (s.Length * 2) + IntPtr.Size;
-            readSize += bytesToRead;
+            trees[i] = $"booster[{i}]\n{s}";
         }
         handle2.Free();
         return trees;
