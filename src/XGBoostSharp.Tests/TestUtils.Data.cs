@@ -1,7 +1,4 @@
-﻿using System.Diagnostics;
-using System.Text;
-
-namespace XGBoostSharpTest;
+﻿namespace XGBoostSharpTest;
 
 public static partial class TestUtils
 {
