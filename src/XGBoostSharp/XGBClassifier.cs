@@ -174,16 +174,16 @@ public class XGBClassifier : BaseXGBModel
     /// </returns>
     public float[] Predict(float[][] data)
     {
-        using var test = new DMatrix(data);
-        var retArray = m_booster.Predict(test).Select(v => v > 0.5f ? 1f : 0f).ToArray();
-        return retArray;
+        using var dMatrix = new DMatrix(data);
+        var predictions = m_booster.Predict(dMatrix).Select(v => v > 0.5f ? 1f : 0f).ToArray();
+        return predictions;
     }
 
     public float[] PredictRaw(float[][] data)
     {
-        using var test = new DMatrix(data);
-        var retArray = m_booster.Predict(test);
-        return retArray;
+        using var dMatrix = new DMatrix(data);
+        var predictions = m_booster.Predict(dMatrix);
+        return predictions;
     }
     /// <summary>
     ///   Predict using the gradient boosted model
