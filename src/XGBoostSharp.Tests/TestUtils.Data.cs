@@ -2587,7 +2587,7 @@ public static partial class TestUtils
 
     ];
 
-    public static string[] ExpectedModemDump =>
+    public static string[] ExpectedClassifierModelDump =>
     [
         "booster[0]\n0:[f0<2.5] yes=1,no=2,missing=1\n\t1:leaf=0.0227723\n\t2:leaf=-0.102222\n",
         "booster[1]\n0:[f0<2.5] yes=1,no=2,missing=1\n\t1:leaf=0.0205203\n\t2:leaf=-0.0923302\n",
