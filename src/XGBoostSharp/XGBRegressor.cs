@@ -103,10 +103,9 @@ public class XGBRegressor : BaseXGBModel
     }
 
 
-    public XGBRegressor(IDictionary<string, object> p_parameters)
-    {
+    public XGBRegressor(IDictionary<string, object> p_parameters) =>
         m_parameters = p_parameters;
-    }
+    
     /// <summary>
     ///   Fit the gradient boosting model
     /// </summary>
@@ -157,10 +156,8 @@ public class XGBRegressor : BaseXGBModel
         return defaultParameters;
     }
 
-    public void SetParameter(string parameterName, object parameterValue)
-    {
+    public void SetParameter(string parameterName, object parameterValue) =>
         m_parameters[parameterName] = parameterValue;
-    }
 
     /// <summary>
     ///   Predict using the gradient boosted model
