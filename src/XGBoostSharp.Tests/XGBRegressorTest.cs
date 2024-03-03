@@ -5,7 +5,7 @@ using XGBoostSharp;
 namespace XGBoostSharpTests;
 
 [TestClass]
-public class XGBClassifierTests
+public class XGBRegressorTest
 {
     const string TEST_FILE = "tmpfile.tmp";
 
@@ -19,86 +19,68 @@ public class XGBClassifierTests
     }
 
     [TestMethod]
-    public void XGBClassifierTests_Predict()
+    public void XGBRegressorTest_Predict()
     {
         var dataTrain = TestUtils.DataTrain;
         var labelsTrain = TestUtils.LabelsTrain;
         var dataTest = TestUtils.DataTest;
 
-        using var sut = new XGBClassifier();
+        using var sut = new XGBRegressor();
         sut.Fit(dataTrain, labelsTrain);
 
         var actual = sut.Predict(dataTest);
-        var expected = TestUtils.ExpectedClassifierPredictions;
+        var expected = TestUtils.ExpectedRegressionPredictions;
 
         TestUtils.AssertAreEqual(expected, actual);
     }
 
     [TestMethod]
-    public void XGBClassifierTests_PredictProbability()
+    public void XGBRegressorTest_SaveAndLoad()
     {
         var dataTrain = TestUtils.DataTrain;
         var labelsTrain = TestUtils.LabelsTrain;
         var dataTest = TestUtils.DataTest;
 
-        using var sut = new XGBClassifier();
+        using var sut = new XGBRegressor();
         sut.Fit(dataTrain, labelsTrain);
-
-        var actual = sut.PredictProbability(dataTest);
-        var expected = TestUtils.ExpectedClassifierProbabilityPredictions;
-
-        TestUtils.AssertAreEqual(expected, actual);
-    }
-
-    [TestMethod]
-    public void XGBClassifierTests_SaveAndLoad()
-    {
-        var dataTrain = TestUtils.DataTrain;
-        var labelsTrain = TestUtils.LabelsTrain;
-        var dataTest = TestUtils.DataTest;
-
-        using var sut = new XGBClassifier();
-        sut.Fit(dataTrain, labelsTrain);
-
-        var expected = sut.PredictProbability(dataTest);
+        var expected = sut.Predict(dataTest);
         sut.SaveModelToFile(TEST_FILE);
 
-        var sutLoaded = BaseXGBModel.LoadClassifierFromFile(TEST_FILE);
-        var actual = sutLoaded.PredictProbability(dataTest);
+        var sutLoaded = BaseXGBModel.LoadRegressorFromFile(TEST_FILE);
+        var actual = sutLoaded.Predict(dataTest);
 
         TestUtils.AssertAreEqual(expected, actual);
     }
 
     [TestMethod]
-    public void XGBClassifierTests_SaveAndLoadWithParameters()
+    public void XGBRegressorTest_SaveAndLoadWithParameters()
     {
         var dataTrain = TestUtils.DataTrain;
         var labelsTrain = TestUtils.LabelsTrain;
         var dataTest = TestUtils.DataTest;
 
-        using var sut = new XGBClassifier(10, 0.01f, 50);
+        using var sut = new XGBRegressor();
         sut.Fit(dataTrain, labelsTrain);
-
-        var expected = sut.PredictProbability(dataTest);
+        var actual = sut.Predict(dataTest);
         sut.SaveModelToFile(TEST_FILE);
 
-        using var sutLoaded = BaseXGBModel.LoadClassifierFromFile(TEST_FILE);
-        var actual = sutLoaded.PredictProbability(dataTest);
+        using var sutLoaded = BaseXGBModel.LoadRegressorFromFile(TEST_FILE);
+        var expected = sutLoaded.Predict(dataTest);
 
         TestUtils.AssertAreEqual(expected, actual);
     }
 
     [TestMethod]
-    public void XGBClassifierTests_DumpModelEx()
+    public void XGBRegressorTest_DumpModelEx()
     {
         var dataTrain = TestUtils.DataTrain;
         var labelsTrain = TestUtils.LabelsTrain;
 
-        using var sut = new XGBClassifier(maxDepth: 1, nEstimators: 3);
+        using var sut = new XGBRegressor(maxDepth: 1, nEstimators: 3);
         sut.Fit(dataTrain, labelsTrain);
 
         var actual = sut.DumpModelEx();
-        var expected = TestUtils.ExpectedClassifierModelDump;
+        var expected = TestUtils.ExpectedRegressorModelDump;
 
         TestUtils.AssertAreEqual(expected, actual);
     }
