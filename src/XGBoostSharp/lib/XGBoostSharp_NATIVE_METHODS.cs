@@ -3,6 +3,11 @@ using System.Runtime.InteropServices;
 
 namespace XGBoostSharp.lib;
 
+// Relevant links:
+// https://github.com/dmlc/xgboost/blob/7a6121669097745f57b8aaad1dd3a162fef96612/jvm-packages/xgboost4j/src/main/java/ml/dmlc/xgboost4j/java/XGBoostJNI.java#L105
+// https://github.com/dmlc/xgboost/blob/7a6121669097745f57b8aaad1dd3a162fef96612/src/c_api/c_api.cc#L895
+// https://xgboost.readthedocs.io/en/stable/tutorials/c_api_tutorial.html
+
 public static class XGBOOST_NATIVE_METHODS
 {
     const string DllLocation = @"runtimes\win-x64\native\xgboost.dll";
@@ -44,6 +49,7 @@ public static class XGBOOST_NATIVE_METHODS
     [DllImport(DllLocation)]
     public static extern int XGBoosterPredict(IntPtr bHandle, IntPtr dHandle,
                                               int optionMask, int ntreeLimit,
+                                              int training, // Only relevant for DART training. See https://github.com/dmlc/xgboost/issues/5601.
                                               out ulong predsLen, out IntPtr predsPtr);
 
     [DllImport(DllLocation)]

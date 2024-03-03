@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System.Diagnostics;
+using System.Linq;
+using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace XGBoostSharpTest;
@@ -46,6 +48,30 @@ public static partial class TestUtils
         for (var i = 0; i < expected.Length; i++)
         {
             Assert.AreEqual(expected[i], actual[i]);
+        }
+    }
+
+    public static void TracePredictions(float[] predictions)
+    {
+        for (var i = 0; i < predictions.Length; i++)
+        {
+            var prediction = predictions[i];
+            Trace.WriteLine($"{prediction:F12}f,");
+        }
+    }
+
+    public static void TracePredictions(float[][] predictions)
+    {
+        for (var r = 0; r < predictions.Length; r++)
+        {
+            var row = predictions[r];
+            var sb = new StringBuilder();
+            for (var c = 0; c < row.Length; c++)
+            {
+                var prediction = row[c];
+                sb.Append($"{prediction:F12}f, ");
+            }
+            Trace.WriteLine($"[{sb.ToString()}],");
         }
     }
 }

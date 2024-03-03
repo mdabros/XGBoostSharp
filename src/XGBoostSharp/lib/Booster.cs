@@ -51,7 +51,7 @@ public class Booster : IDisposable
         ulong predsLen;
         IntPtr predsPtr;
         var output = XGBOOST_NATIVE_METHODS.XGBoosterPredict(
-            m_handle, test.Handle, NormalPrediction, 0, out predsLen, out predsPtr);
+            m_handle, test.Handle, NormalPrediction, ntreeLimit: 0, training: 0, out predsLen, out predsPtr);
         if (output == -1) throw new DllFailException(XGBOOST_NATIVE_METHODS.XGBGetLastError());
         return GetPredictionsArray(predsPtr, predsLen);
     }
