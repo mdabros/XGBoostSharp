@@ -3,7 +3,7 @@ using XGBoostSharp.lib;
 
 namespace XGBoostSharp;
 
-public class XGBRegressor : BaseXgbModel
+public class XGBRegressor : BaseXGBModel
 {
     /// <summary>
     ///   Implementation of the Scikit-Learn API for XGBoostSharp

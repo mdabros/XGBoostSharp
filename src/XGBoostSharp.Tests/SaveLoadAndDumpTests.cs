@@ -28,7 +28,7 @@ public class SaveLoadAndDumpTests
         var expected = sut.PredictProba(dataTest);
         sut.SaveModelToFile(TEST_FILE);
 
-        var sutLoaded = BaseXgbModel.LoadClassifierFromFile(TEST_FILE);
+        var sutLoaded = BaseXGBModel.LoadClassifierFromFile(TEST_FILE);
         var actual = sutLoaded.PredictProba(dataTest);
 
         TestUtils.AssertAreEqual(expected, actual);
@@ -46,7 +46,7 @@ public class SaveLoadAndDumpTests
         var expected = sut.Predict(dataTest);
         sut.SaveModelToFile(TEST_FILE);
 
-        var sutLoaded = BaseXgbModel.LoadRegressorFromFile(TEST_FILE);
+        var sutLoaded = BaseXGBModel.LoadRegressorFromFile(TEST_FILE);
         var actual = sutLoaded.Predict(dataTest);
 
         TestUtils.AssertAreEqual(expected, actual);
@@ -65,7 +65,7 @@ public class SaveLoadAndDumpTests
         var expected = sut.PredictProba(dataTest);
         sut.SaveModelToFile(TEST_FILE);
 
-        var sutLoaded = BaseXgbModel.LoadClassifierFromFile(TEST_FILE);
+        var sutLoaded = BaseXGBModel.LoadClassifierFromFile(TEST_FILE);
         var actual = sutLoaded.PredictProba(dataTest);
 
         TestUtils.AssertAreEqual(expected, actual);
@@ -83,7 +83,7 @@ public class SaveLoadAndDumpTests
         var actual = sut.Predict(dataTest);
         sut.SaveModelToFile(TEST_FILE);
 
-        var sutLoaded = BaseXgbModel.LoadRegressorFromFile(TEST_FILE);
+        var sutLoaded = BaseXGBModel.LoadRegressorFromFile(TEST_FILE);
         var expected = sutLoaded.Predict(dataTest);
 
         TestUtils.AssertAreEqual(expected, actual);
