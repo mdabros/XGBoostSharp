@@ -1,0 +1,48 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+
+name: dotnet
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  # workflow_dispatch:
+  #   inputs:
+  #     version:
+  #       description: 'Release version to tag and create'
+  #       required: false
+
+env:
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+  DOTNET_NOLOGO: true
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [windows-latest]
+        configuration: [Debug, Release]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        global-json-file: global.json
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build -c ${{ matrix.configuration }} --no-restore 
+    - name: dotnet format verify-no-changes
+      run: dotnet format --verify-no-changes --no-restore
+          
+    # dispabed until native package is on nuget.
+    # - name: Test
+    #   run: dotnet test -c ${{ matrix.configuration }} --no-build --verbosity normal
+    # - name: Upload coverage reports to Codecov
+    #   uses: codecov/codecov-action@v3
+    #   with:
+    #     flags: ${{ matrix.os }},${{ matrix.configuration }}

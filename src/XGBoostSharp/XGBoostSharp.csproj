@@ -1,0 +1,10 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>$(LibraryTargetFramework)</TargetFrameworks>
+    <PackageId>SharpLearning.AdaBoost</PackageId>
+    <Description>.Net wrapper for the XGBoost machine learning library. Targeted for x64, and .NET standard 2.0 and above.</Description>
+    <PackageTags>xgboost machine-learning classification regression machine learning</PackageTags>
+  </PropertyGroup>
+
+</Project>

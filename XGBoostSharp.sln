@@ -1,0 +1,58 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34511.84
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XGBoostSharp", "src\XGBoostSharp\XGBoostSharp.csproj", "{A3238B69-8B3D-4BA1-803D-FAE8F008A149}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XGBoostSharp.Test", "src\XGBoostSharp.Tests\XGBoostSharp.Test.csproj", "{5A580B11-A16B-4DA9-BC01-399EAB45A240}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{67F4B1F5-4BAF-418A-BA59-569EB09BAAEA}"
+	ProjectSection(SolutionItems) = preProject
+		src\Directory.Build.props = src\Directory.Build.props
+		src\Directory.Build.targets = src\Directory.Build.targets
+		src\OutputBuildProject.props = src\OutputBuildProject.props
+		src\OutputBuildProps.props = src\OutputBuildProps.props
+		src\OutputBuildTargets.props = src\OutputBuildTargets.props
+		src\SourceLink.GitHub.props = src\SourceLink.GitHub.props
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "root", "root", "{42B0E836-F2AD-40DB-8D48-6B8648BBBB67}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		CONTRIBUTING.md = CONTRIBUTING.md
+		global.json = global.json
+		LICENSE = LICENSE
+		README.md = README.md
+		rename.ps1 = rename.ps1
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ci", "ci", "{855E48F2-0D87-4AC7-8FAE-DFCDE4EEAA37}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\dotnet.yml = .github\workflows\dotnet.yml
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A3238B69-8B3D-4BA1-803D-FAE8F008A149}.Debug|x64.ActiveCfg = Release|x64
+		{A3238B69-8B3D-4BA1-803D-FAE8F008A149}.Debug|x64.Build.0 = Release|x64
+		{A3238B69-8B3D-4BA1-803D-FAE8F008A149}.Release|x64.ActiveCfg = Release|x64
+		{A3238B69-8B3D-4BA1-803D-FAE8F008A149}.Release|x64.Build.0 = Release|x64
+		{5A580B11-A16B-4DA9-BC01-399EAB45A240}.Debug|x64.ActiveCfg = Release|x64
+		{5A580B11-A16B-4DA9-BC01-399EAB45A240}.Debug|x64.Build.0 = Release|x64
+		{5A580B11-A16B-4DA9-BC01-399EAB45A240}.Release|x64.ActiveCfg = Release|x64
+		{5A580B11-A16B-4DA9-BC01-399EAB45A240}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {56DC450A-EAD0-4184-AA79-0EC5BE6D19AC}
+	EndGlobalSection
+EndGlobal
