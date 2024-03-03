@@ -9,27 +9,17 @@ public class BaseXGBModel : IDisposable
     protected IDictionary<string, object> m_parameters = new Dictionary<string, object>();
     protected Booster m_booster;
 
-    public void SaveModelToFile(string fileName)
-    {
+    public void SaveModelToFile(string fileName) =>
         m_booster.Save(fileName);
-    }
 
-    public static XGBClassifier LoadClassifierFromFile(string fileName)
-    {
-        return new XGBClassifier { m_booster = new Booster(fileName) };
-    }
+    public static XGBClassifier LoadClassifierFromFile(string fileName) =>
+        new() { m_booster = new Booster(fileName) };
 
-    public static XGBRegressor LoadRegressorFromFile(string fileName)
-    {
-        return new XGBRegressor { m_booster = new Booster(fileName) };
-    }
+    public static XGBRegressor LoadRegressorFromFile(string fileName) =>
+        new() { m_booster = new Booster(fileName) };
 
-    public string[] DumpModelEx(string fmap = "",
-      int with_stats = 0,
-      string format = "json")
-    {
-        return m_booster.DumpModelEx(fmap, with_stats, format);
-    }
+    public string[] DumpModelEx(string fmap = "", int with_stats = 0, string format = "json") =>
+        m_booster.DumpModelEx(fmap, with_stats, format);
 
     void DisposeManagedResources()
     {
