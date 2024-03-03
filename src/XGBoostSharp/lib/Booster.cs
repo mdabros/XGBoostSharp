@@ -5,10 +5,6 @@ using System.Runtime.InteropServices;
 
 namespace XGBoostSharp.lib;
 
-// https://github.com/dmlc/xgboost/blob/7a6121669097745f57b8aaad1dd3a162fef96612/jvm-packages/xgboost4j/src/main/java/ml/dmlc/xgboost4j/java/XGBoostJNI.java#L105
-// https://github.com/dmlc/xgboost/blob/7a6121669097745f57b8aaad1dd3a162fef96612/src/c_api/c_api.cc#L895
-// https://xgboost.readthedocs.io/en/stable/tutorials/c_api_tutorial.html
-
 public class Booster : IDisposable
 {
     readonly IntPtr m_handle;
