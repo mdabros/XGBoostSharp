@@ -7,7 +7,7 @@ namespace XGBoostSharpTests;
 public class XGBRegressorTests
 {
     [TestMethod]
-    public void Predict()
+    public void XGBRegressorTests_Predict()
     {
         var dataTrain = TestUtils.DataTrain;
         var labelsTrain = TestUtils.LabelsTrain;
