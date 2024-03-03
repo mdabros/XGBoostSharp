@@ -6,7 +6,6 @@ namespace XGBoostSharp.lib;
 
 public class DMatrix : IDisposable
 {
-    bool m_disposed = false;
     readonly IntPtr m_handle;
     readonly float m_missing = -1.0F; // arbitrary value used to represent a missing value
 
@@ -70,23 +69,45 @@ public class DMatrix : IDisposable
             throw new DllFailException(XGBOOST_NATIVE_METHODS.XGBGetLastError());
     }
 
-    // Dispose pattern from MSDN documentation
+    void DisposeManagedResources()
+    {
+        var output = XGBOOST_NATIVE_METHODS.XGDMatrixFree(m_handle);
+        if (output == -1)
+            throw new DllFailException(XGBOOST_NATIVE_METHODS.XGBGetLastError());
+    }
+
+    #region Dispose
     public void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);
     }
 
-    // Dispose pattern from MSDN documentation
+    // Dispose(bool disposing) executes in two distinct scenarios.
+    // If disposing equals true, the method has been called directly
+    // or indirectly by a user's code. Managed and unmanaged resources
+    // can be disposed.
+    // If disposing equals false, the method has been called by the 
+    // runtime from inside the finalizer and you should not reference 
+    // other objects. Only unmanaged resources can be disposed.
     protected virtual void Dispose(bool disposing)
     {
-        if (m_disposed)
-            return;
+        // Dispose only if we have not already disposed.
+        if (!m_disposed)
+        {
+            // If disposing equals true, dispose all managed and unmanaged resources.
+            // I.e. dispose managed resources only if true, unmanaged always.
+            if (disposing)
+            {
+                DisposeManagedResources();
+            }
 
-        var output = XGBOOST_NATIVE_METHODS.XGDMatrixFree(m_handle);
-        if (output == -1)
-            throw new DllFailException(XGBOOST_NATIVE_METHODS.XGBGetLastError());
-
+            // Call the appropriate methods to clean up unmanaged resources here.
+            // If disposing is false, only the following code is executed.
+        }
         m_disposed = true;
     }
+
+    volatile bool m_disposed = false;
+    #endregion
 }
