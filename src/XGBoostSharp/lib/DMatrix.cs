@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace XGBoostSharp.lib;
@@ -37,26 +38,8 @@ public class DMatrix : IDisposable
         }
     }
 
-    static float[] Flatten2DArray(float[][] data2D)
-    {
-        var elementsNo = 0;
-        for (var row = 0; row < data2D.Length; row++)
-        {
-            elementsNo += data2D[row].Length;
-        }
-
-        var data1D = new float[elementsNo];
-        var ind = 0;
-        for (var row = 0; row < data2D.Length; row++)
-        {
-            for (var col = 0; col < data2D[row].Length; col++)
-            {
-                data1D[ind] = data2D[row][col];
-                ind += 1;
-            }
-        }
-        return data1D;
-    }
+    static float[] Flatten2DArray(float[][] data2D) =>
+        data2D.SelectMany(row => row).ToArray();
 
     float[] GetFloatInfo(string field)
     {
