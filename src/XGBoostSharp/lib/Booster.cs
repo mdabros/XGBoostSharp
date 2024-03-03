@@ -17,8 +17,8 @@ public class Booster : IDisposable
     public Booster(IDictionary<string, object> parameters, DMatrix train)
     {
         var dmats = new[] { train.Handle };
-        var len = unchecked((ulong)dmats.Length);
-        var output = XGBOOST_NATIVE_METHODS.XGBoosterCreate(dmats, len, out m_handle);
+        var length = unchecked((ulong)dmats.Length);
+        var output = XGBOOST_NATIVE_METHODS.XGBoosterCreate(dmats, length, out m_handle);
         if (output == -1) throw new DllFailException(XGBOOST_NATIVE_METHODS.XGBGetLastError());
 
         SetParameters(parameters);
@@ -27,8 +27,8 @@ public class Booster : IDisposable
     public Booster(DMatrix train)
     {
         var dmats = new[] { train.Handle };
-        var len = unchecked((ulong)dmats.Length);
-        var output = XGBOOST_NATIVE_METHODS.XGBoosterCreate(dmats, len, out m_handle);
+        var length = unchecked((ulong)dmats.Length);
+        var output = XGBOOST_NATIVE_METHODS.XGBoosterCreate(dmats, length, out m_handle);
         if (output == -1) throw new DllFailException(XGBOOST_NATIVE_METHODS.XGBGetLastError());
     }
 
@@ -120,7 +120,9 @@ public class Booster : IDisposable
         foreach (var param in parameters)
         {
             if (param.Value != null)
+            {
                 SetParameter(param.Key, param.Value.ToString());
+            }
         }
     }
 
