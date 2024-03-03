@@ -44,6 +44,7 @@ public static class XGBOOST_NATIVE_METHODS
     [DllImport(DllLocation)]
     public static extern int XGBoosterPredict(IntPtr bHandle, IntPtr dHandle,
                                               int optionMask, int ntreeLimit,
+                                              int training, // Only relevant for DART training. See https://github.com/dmlc/xgboost/issues/5601.
                                               out ulong predsLen, out IntPtr predsPtr);
 
     [DllImport(DllLocation)]
