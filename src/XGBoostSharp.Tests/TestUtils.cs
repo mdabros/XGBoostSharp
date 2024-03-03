@@ -69,7 +69,7 @@ public static partial class TestUtils
             for (var c = 0; c < row.Length; c++)
             {
                 var prediction = row[c];
-                sb.Append($"${prediction:F12}f, ");
+                sb.Append($"{prediction:F12}f, ");
             }
             Trace.WriteLine($"[{sb.ToString()}],");
         }

@@ -45,6 +45,7 @@ public class XGBClassifierTest
         sut.Fit(dataTrain, labelsTrain);
 
         var actual = sut.PredictProbability(dataTest);
+        TestUtils.TracePredictions(actual);
         var expected = TestUtils.ExpectedClassifierProbabilityPredictions;
 
         TestUtils.AssertAreEqual(expected, actual);
