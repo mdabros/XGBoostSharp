@@ -38,5 +38,10 @@ regressor.SaveModelToFile(modelFileName)
 var loadedRegressor = XGBRegressor.LoadFromFile(modelFileName);
 ```
 
+## Installation
 
-
+1. Install the latest version of the managed package from nuget.org.
+   - Add link: 
+2. Install the latest version of the native package from nuget.org.
+   Select the version built for your platform (win-x64, linux-x64, osx-x64)
+   - Add link:
