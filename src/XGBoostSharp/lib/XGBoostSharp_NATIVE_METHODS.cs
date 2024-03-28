@@ -26,8 +26,6 @@ public static class XGBOOST_NATIVE_METHODS
     // See https://learn.microsoft.com/en-us/dotnet/standard/native-interop/native-library-loading.
     const string XGBoostNtvDllName = "xgboost";
 
-    static XGBOOST_NATIVE_METHODS() { DllLoader.LoadNativeLibrary(); }
-
     [DllImport(XGBoostNtvDllName)]
     public static extern string XGBGetLastError();
 
