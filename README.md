@@ -41,7 +41,7 @@ var loadedRegressor = XGBRegressor.LoadFromFile(modelFileName);
 ## Installation
 
 1. Install the latest version of the managed package from nuget.org.
-   - Add link: 
+   - TODO: Add package link when available.
 2. Install the latest version of the native package from nuget.org.
    Select the version built for your platform (win-x64, linux-x64, osx-x64)
-   - Add link:
+   - https://www.nuget.org/packages/libxgboost-2.0.3-win-x64/
