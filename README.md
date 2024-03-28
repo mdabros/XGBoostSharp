@@ -20,7 +20,7 @@ var probabilities = classifier.PredictProbability(dataTest);
 // Save and load the classifier.
 var modelFileName = "classifier.json";
 classifier.SaveModelToFile(modelFileName)
-var loadedClassifier = XGBClassifier.LoadClassifierFromFile(modelFileName);
+var loadedClassifier = XGBClassifier.LoadFromFile(modelFileName);
 ```
 
 ## XGBoostRegressor
