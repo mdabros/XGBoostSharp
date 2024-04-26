@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="libxgboost-2.0.3-osx-x64" Version="1.0.0-preview.11" />
     <PackageReference Include="libxgboost-2.0.3-win-x64" Version="1.0.0-preview.2" />
     <PackageReference Include="MSTest" Version="3.3.1" />
   </ItemGroup>
