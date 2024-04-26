@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>$(TestTargetFramework)</TargetFramework>
-    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
   </PropertyGroup>
 
   <ItemGroup>
