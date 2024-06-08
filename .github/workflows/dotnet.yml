@@ -21,7 +21,7 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [windows-latest, macos-13] # macos-13 is x64. See https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners/about-github-hosted-runners
+        os: [windows-latest, macos-13, ubuntu-latest] # macos-13 is x64. See https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners/about-github-hosted-runners
         configuration: [Debug, Release]
 
     runs-on: ${{ matrix.os }}
