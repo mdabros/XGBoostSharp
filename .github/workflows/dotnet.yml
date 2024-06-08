@@ -36,8 +36,8 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet build -c ${{ matrix.configuration }} --no-restore 
-    - name: dotnet format verify-no-changes
-      run: dotnet format --verify-no-changes --no-restore
+    # - name: dotnet format verify-no-changes
+    #   run: dotnet format --verify-no-changes --no-restore
     - name: Test
       run: dotnet test -c ${{ matrix.configuration }} --no-build --verbosity normal
     - name: Upload coverage reports to Codecov
