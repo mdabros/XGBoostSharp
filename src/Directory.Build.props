@@ -41,6 +41,6 @@
   
   <Import Project="$(MSBuildThisFileDirectory)\OutputBuildProps.props" />
 
-  <Import Project="$(MSBuildThisFileDirectory)\SourceLink.Github.props" />
+  <Import Project="$(MSBuildThisFileDirectory)\SourceLink.GitHub.props" />
 
 </Project>
