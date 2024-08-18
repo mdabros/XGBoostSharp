@@ -28,6 +28,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0 # Important for Nerdbank.GitVersioning to calculate versions
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
@@ -41,6 +43,7 @@ jobs:
     - name: Test
       run: dotnet test -c ${{ matrix.configuration }} --no-build --verbosity normal
     - name: Upload coverage reports to Codecov
+      if: matrix.os != 'macos-13' # Temporary disable for macos-13 until issue fixed. See https://github.com/codecov/codecov-action/issues/1549
       uses: codecov/codecov-action@v3
       with:
         flags: ${{ matrix.os }},${{ matrix.configuration }}

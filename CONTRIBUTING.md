@@ -4,7 +4,7 @@
 There are several ways to contribute to XGBoostSharp.
 
  1. Add new issues with bug descriptions or feature suggestions.
- 2. Solve existing issues by forking SharpLearning and creating a pull request.
+ 2. Solve existing issues by forking XGBoostSharp and creating a pull request.
 
 The procedure when contributing should follow the steps below:
 
