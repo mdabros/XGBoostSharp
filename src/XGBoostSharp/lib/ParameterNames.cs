@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace XGBoostSharp.lib;
+﻿namespace XGBoostSharp.lib;
 
 public static class ParameterNames
 {
