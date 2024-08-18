@@ -43,6 +43,7 @@ jobs:
     - name: Test
       run: dotnet test -c ${{ matrix.configuration }} --no-build --verbosity normal
     - name: Upload coverage reports to Codecov
+      if: matrix.os != macos-13
       uses: codecov/codecov-action@v3
       with:
         flags: ${{ matrix.os }},${{ matrix.configuration }}
