@@ -3,7 +3,7 @@
     <!--https://github.com/dotnet/sourcelink/blob/main/docs/README.md#includesourcerevisionininformationalversion-->
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 
-    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/mdabros/XGBoostSharp</PackageProjectUrl>
     <RepositoryUrl>https://github.com/mdabros/XGBoostSharp</RepositoryUrl>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
