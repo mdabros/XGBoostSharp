@@ -17,10 +17,7 @@ public class BaseXGBModel : IDisposable
 
     void DisposeManagedResources()
     {
-        if (m_booster != null)
-        {
-            m_booster.Dispose();
-        }
+        m_booster?.Dispose();
     }
 
     #region Dispose
