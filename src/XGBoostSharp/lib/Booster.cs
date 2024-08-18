@@ -31,7 +31,7 @@ public class Booster : IDisposable
         if (output == -1) throw new DllFailException(XGBOOST_NATIVE_METHODS.XGBGetLastError());
     }
 
-    public Booster(string fileName, int silent = 1)
+    public Booster(string fileName)
     {
         IntPtr tempPtr;
         var newBooster = XGBOOST_NATIVE_METHODS.XGBoosterCreate(null, 0, out tempPtr);
