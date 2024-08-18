@@ -17,7 +17,7 @@ public class Booster : IDisposable
     {
         var dmats = new[] { train.Handle };
         var length = unchecked((ulong)dmats.Length);
-        ThrowIfError(XGBOOST_NATIVE_METHODS.XGBoosterCreate(dmats, length, out m_handle);
+        ThrowIfError(XGBOOST_NATIVE_METHODS.XGBoosterCreate(dmats, length, out m_handle));
 
         SetParameters(parameters);
     }
@@ -68,7 +68,7 @@ public class Booster : IDisposable
         return preds;
     }
 
-    public void SetParameters(IDictionary<string, Object> parameters)
+    public void SetParameters(IDictionary<string, object> parameters)
     {
         // support internationalisation i.e. support floats with commas (e.g. 0,5F)
         var nfi = new NumberFormatInfo { NumberDecimalSeparator = "." };
@@ -110,7 +110,7 @@ public class Booster : IDisposable
     }
 
     // doesn't support floats with commas (e.g. 0,5F)
-    public void SetParametersGeneric(IDictionary<string, Object> parameters)
+    public void SetParametersGeneric(IDictionary<string, object> parameters)
     {
         foreach (var param in parameters)
         {
@@ -121,7 +121,7 @@ public class Booster : IDisposable
         }
     }
 
-    public static void PrintParameters(IDictionary<string, Object> parameters)
+    public static void PrintParameters(IDictionary<string, object> parameters)
     {
         Console.WriteLine("max_depth: " + (int)parameters["max_depth"]);
         Console.WriteLine("learning_rate: " + (float)parameters["learning_rate"]);
