@@ -17,8 +17,7 @@ public class Booster : IDisposable
     {
         var dmats = new[] { train.Handle };
         var length = unchecked((ulong)dmats.Length);
-        var output = XGBOOST_NATIVE_METHODS.XGBoosterCreate(dmats, length, out m_handle);
-        if (output == -1) throw new DllFailException(XGBOOST_NATIVE_METHODS.XGBGetLastError());
+        ThrowIfError(XGBOOST_NATIVE_METHODS.XGBoosterCreate(dmats, length, out m_handle);
 
         SetParameters(parameters);
     }
@@ -28,31 +27,28 @@ public class Booster : IDisposable
         var dmats = new[] { train.Handle };
         var length = unchecked((ulong)dmats.Length);
         var output = XGBOOST_NATIVE_METHODS.XGBoosterCreate(dmats, length, out m_handle);
-        if (output == -1) throw new DllFailException(XGBOOST_NATIVE_METHODS.XGBGetLastError());
+        ThrowIfError(output);
     }
 
     public Booster(string fileName)
     {
         IntPtr tempPtr;
-        var newBooster = XGBOOST_NATIVE_METHODS.XGBoosterCreate(null, 0, out tempPtr);
-        var output = XGBOOST_NATIVE_METHODS.XGBoosterLoadModel(tempPtr, fileName);
-        if (output == -1) throw new DllFailException(XGBOOST_NATIVE_METHODS.XGBGetLastError());
+        ThrowIfError(XGBOOST_NATIVE_METHODS.XGBoosterCreate(null, 0, out tempPtr));
+        ThrowIfError(XGBOOST_NATIVE_METHODS.XGBoosterLoadModel(tempPtr, fileName));
         m_handle = tempPtr;
     }
 
-    public void Update(DMatrix train, int iter)
+    public void Update(DMatrix train, int iteration)
     {
-        var output = XGBOOST_NATIVE_METHODS.XGBoosterUpdateOneIter(Handle, iter, train.Handle);
-        if (output == -1) throw new DllFailException(XGBOOST_NATIVE_METHODS.XGBGetLastError());
+        ThrowIfError(XGBOOST_NATIVE_METHODS.XGBoosterUpdateOneIter(Handle, iteration, train.Handle));
     }
 
     public float[] Predict(DMatrix test)
     {
         ulong predsLen;
         IntPtr predsPtr;
-        var output = XGBOOST_NATIVE_METHODS.XGBoosterPredict(
-            m_handle, test.Handle, NormalPrediction, ntreeLimit: 0, training: 0, out predsLen, out predsPtr);
-        if (output == -1) throw new DllFailException(XGBOOST_NATIVE_METHODS.XGBGetLastError());
+        ThrowIfError(XGBOOST_NATIVE_METHODS.XGBoosterPredict(
+            m_handle, test.Handle, NormalPrediction, ntreeLimit: 0, training: 0, out predsLen, out predsPtr));
         return GetPredictionsArray(predsPtr, predsLen);
     }
 
@@ -159,8 +155,7 @@ public class Booster : IDisposable
 
     public void SetParameter(string name, string val)
     {
-        var output = XGBOOST_NATIVE_METHODS.XGBoosterSetParam(m_handle, name, val);
-        if (output == -1) throw new DllFailException(XGBOOST_NATIVE_METHODS.XGBGetLastError());
+        ThrowIfError(XGBOOST_NATIVE_METHODS.XGBoosterSetParam(m_handle, name, val));
     }
 
     public void Save(string fileName)
@@ -190,6 +185,14 @@ public class Booster : IDisposable
     void DisposeManagedResources()
     {
         XGBOOST_NATIVE_METHODS.XGBoosterFree(m_handle);
+    }
+
+    static void ThrowIfError(int output)
+    {
+        if (output == -1)
+        {
+            throw new DllFailException(XGBOOST_NATIVE_METHODS.XGBGetLastError());
+        }
     }
 
     #region Dispose
