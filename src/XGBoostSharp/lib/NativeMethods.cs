@@ -17,7 +17,7 @@ namespace XGBoostSharp.lib;
 // https://learn.microsoft.com/en-us/samples/dotnet/samples/dllmap-demo/
 // https://learn.microsoft.com/en-us/dotnet/standard/native-interop/native-library-loading
 
-public static class XGBOOST_NATIVE_METHODS
+public static class NativeMethods
 {
     // We can use `xgboost` as dll name for all platforms
     // since .NET handles the platform-specific naming
