@@ -5,7 +5,7 @@ using XGBoostSharp.lib;
 
 namespace XGBoostSharp;
 
-public class XGBClassifier : BaseXGBModel
+public class XGBClassifier : XGBModelBase
 {
 
     /// <summary>

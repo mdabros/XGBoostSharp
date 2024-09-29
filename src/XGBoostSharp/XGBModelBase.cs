@@ -4,7 +4,7 @@ using XGBoostSharp.lib;
 
 namespace XGBoostSharp;
 
-public class BaseXGBModel : IDisposable
+public class XGBModelBase : IDisposable
 {
     protected IDictionary<string, object> m_parameters = new Dictionary<string, object>();
     protected Booster m_booster;
