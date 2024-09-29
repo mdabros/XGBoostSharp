@@ -19,9 +19,8 @@ namespace XGBoostSharp.lib;
 
 public static class NativeMethods
 {
-    // We can use `xgboost` as dll name for all platforms
-    // since .NET handles the platform-specific naming
-    // and file extension (e.g., .dll, .so, .dylib)
+    // We can use `xgboost` as dll name for all platforms since .NET handles the
+    // platform-specific naming and file extension (e.g., .dll, .so, .dylib)
     // when searching for the dll.
     // See https://learn.microsoft.com/en-us/dotnet/standard/native-interop/native-library-loading.
     const string XGBoostNtvDllName = "xgboost";
@@ -30,49 +29,61 @@ public static class NativeMethods
     public static extern string XGBGetLastError();
 
     [DllImport(XGBoostNtvDllName)]
-    public static extern int XGDMatrixCreateFromMat(float[] data, ulong nrow, ulong ncol,
-                                                    float missing, out IntPtr handle);
+    public static extern int XGDMatrixCreateFromMat(
+        float[] data, ulong nrow, ulong ncol,
+        float missing, out IntPtr handle);
 
     [DllImport(XGBoostNtvDllName)]
     public static extern int XGDMatrixFree(IntPtr handle);
 
     [DllImport(XGBoostNtvDllName)]
-    public static extern int XGDMatrixGetFloatInfo(IntPtr handle, string field,
-                                                   out ulong len, out IntPtr result);
+    public static extern int XGDMatrixGetFloatInfo(
+        IntPtr handle, string field,
+        out ulong len, out IntPtr result);
 
     [DllImport(XGBoostNtvDllName)]
-    public static extern int XGDMatrixSetFloatInfo(IntPtr handle, string field,
-                                                   float[] array, ulong len);
+    public static extern int XGDMatrixSetFloatInfo(
+        IntPtr handle, string field,
+        float[] array, ulong len);
 
     [DllImport(XGBoostNtvDllName)]
-    public static extern int XGBoosterCreate(IntPtr[] dmats,
-                                             ulong len, out IntPtr handle);
+    public static extern int XGBoosterCreate(
+        IntPtr[] dmats,
+        ulong len, out IntPtr handle);
 
     [DllImport(XGBoostNtvDllName)]
     public static extern int XGBoosterFree(IntPtr handle);
 
     [DllImport(XGBoostNtvDllName)]
-    public static extern int XGBoosterSetParam(IntPtr handle, string name, string val);
+    public static extern int XGBoosterSetParam(
+        IntPtr handle, string name, string val);
 
     [DllImport(XGBoostNtvDllName)]
-    public static extern int XGBoosterUpdateOneIter(IntPtr bHandle, int iter,
-                                                    IntPtr dHandle);
+    public static extern int XGBoosterUpdateOneIter(
+        IntPtr bHandle, int iter, IntPtr dHandle);
 
     [DllImport(XGBoostNtvDllName)]
-    public static extern int XGBoosterPredict(IntPtr bHandle, IntPtr dHandle,
-                                              int optionMask, int ntreeLimit,
-                                              int training, // Only relevant for DART training. See https://github.com/dmlc/xgboost/issues/5601.
-                                              out ulong predsLen, out IntPtr predsPtr);
+    public static extern int XGBoosterPredict(
+        IntPtr bHandle, IntPtr dHandle,
+        int optionMask, int ntreeLimit,
+        int training, // Only relevant for DART training. See https://github.com/dmlc/xgboost/issues/5601.
+        out ulong predsLen, out IntPtr predsPtr);
 
     [DllImport(XGBoostNtvDllName)]
-    public static extern int XGBoosterSaveModel(IntPtr bHandle, string fileName);
+    public static extern int XGBoosterSaveModel(
+        IntPtr bHandle, string fileName);
 
     [DllImport(XGBoostNtvDllName)]
-    public static extern int XGBoosterLoadModel(IntPtr bHandle, string fileName);
+    public static extern int XGBoosterLoadModel(
+        IntPtr bHandle, string fileName);
 
     [DllImport(XGBoostNtvDllName)]
-    public static extern int XGDMatrixCreateFromFile(string fname, int silent, out IntPtr DMtrxHandle);
+    public static extern int XGDMatrixCreateFromFile(
+        string fname, int silent, out IntPtr DMtrxHandle);
 
     [DllImport(XGBoostNtvDllName)]
-    public static extern int XGBoosterDumpModel(IntPtr handle, string fmap, int with_stats, out int out_len, out IntPtr dumpStr);
+    public static extern int XGBoosterDumpModel(
+        IntPtr handle, string fmap,
+        int with_stats, out int out_len,
+        out IntPtr dumpStr);
 }
