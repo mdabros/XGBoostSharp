@@ -7,6 +7,9 @@ namespace XGBoostSharp;
 
 public class XGBClassifier : XGBModelBase
 {
+    // TODO: Check defaults in:
+    // https://xgboost.readthedocs.io/en/stable/parameter.html
+    // https://xgboost.readthedocs.io/en/latest/python/python_api.html
     public XGBClassifier(
             int nEstimators = 100,
             int maxDepth = 3,

@@ -6,7 +6,9 @@ namespace XGBoostSharp;
 
 public class XGBRegressor : XGBModelBase
 {
-
+    // TODO: Check defaults in:
+    // https://xgboost.readthedocs.io/en/stable/parameter.html
+    // https://xgboost.readthedocs.io/en/latest/python/python_api.html
     public XGBRegressor(
             int nEstimators = 100,
             int maxDepth = 3,
