@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using XGBoostSharp.lib;
 using static XGBoostSharp.Parameters;
 
@@ -7,39 +6,36 @@ namespace XGBoostSharp;
 
 public class XGBRegressor : XGBModelBase
 {
-    // TODO: Check defaults in:
-    // https://xgboost.readthedocs.io/en/stable/parameter.html
-    // https://xgboost.readthedocs.io/en/latest/python/python_api.html
     public XGBRegressor(
-            int nEstimators = 100,
-            int maxDepth = 3,
-            int maxLeaves = 0,
-            int maxBin = 256,
-            string growPolicy = GrowPolicy.DepthWise,
-            float learningRate = 0.1f,
-            int verbosity = 0,
-            string objective = Objective.Reg.SquaredError,
-            string booster = BoosterType.Gbtree,
-            string treeMethod = TreeMethod.Auto,
-            int nThread = -1,
-            float gamma = 0,
-            int minChildWeight = 1,
-            int maxDeltaStep = 0,
-            float subsample = 1,
-            string samplingMethod = SamplingMethod.Uniform,
-            float colSampleByTree = 1,
-            float colSampleByLevel = 1,
-            float colSampleByNode = 1,
-            float regAlpha = 0,
-            float regLambda = 1,
-            float scalePosWeight = 1,
-            float baseScore = 0.5F,
-            int seed = 0,
-            float missing = float.NaN,
-            int numParallelTree = 0,
-            string importanceType = ImportanceType.Gain,
-            string device = Device.Cpu,
-            bool validateParameters = false)
+        int nEstimators = 100,
+        int maxDepth = 6,
+        int maxLeaves = 0,
+        int maxBin = 256,
+        string growPolicy = GrowPolicy.DepthWise,
+        float learningRate = 0.3f,
+        int verbosity = 0,
+        string objective = Objective.Reg.SquaredError,
+        string booster = BoosterType.Gbtree,
+        string treeMethod = TreeMethod.Auto,
+        int nThread = -1,
+        float gamma = 0,
+        int minChildWeight = 1,
+        int maxDeltaStep = 0,
+        float subsample = 1,
+        string samplingMethod = SamplingMethod.Uniform,
+        float colSampleByTree = 1,
+        float colSampleByLevel = 1,
+        float colSampleByNode = 1,
+        float regAlpha = 0,
+        float regLambda = 1,
+        float scalePosWeight = 1,
+        float baseScore = 0.5f,
+        int seed = 0,
+        float missing = float.NaN,
+        int numParallelTree = 1,
+        string importanceType = ImportanceType.Gain,
+        string device = Device.Cpu,
+        bool validateParameters = false)
     {
 
         m_parameters[ParameterNames.n_estimators] = nEstimators;
