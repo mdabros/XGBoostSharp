@@ -14,10 +14,10 @@ public class XGBRegressor : XGBModelBase
             int maxDepth = 3,
             int max_leaves = 0,
             int max_bin = 256,
-            string grow_policy = "depthwise",
+            string grow_policy = GrowPolicy.DepthWise,
             float learningRate = 0.1f,
             int verbosity = 0, // add ints for options
-            string objective = "reg:squarederror", // add strings for options
+            string objective = Objective.Reg.SquaredError, // add strings for options
             string booster = "gbtree",// add strings for options
             string treeMethod = "auto",// add strings for options
             int nThread = -1,
