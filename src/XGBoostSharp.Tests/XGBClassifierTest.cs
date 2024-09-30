@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static XGBoostSharp.Parameters;
 
 namespace XGBoostSharp.Test;
 
@@ -24,7 +25,7 @@ public class XGBClassifierTest
         var labelsTrain = TestUtils.LabelsTrain;
         var dataTest = TestUtils.DataTest;
 
-        using var sut = new XGBClassifier();
+        using var sut = CreateSut();
         sut.Fit(dataTrain, labelsTrain);
 
         var actual = sut.Predict(dataTest);
@@ -40,7 +41,7 @@ public class XGBClassifierTest
         var labelsTrain = TestUtils.LabelsTrain;
         var dataTest = TestUtils.DataTest;
 
-        using var sut = new XGBClassifier();
+        using var sut = CreateSut();
         sut.Fit(dataTrain, labelsTrain);
 
         var actual = sut.PredictProbability(dataTest);
@@ -56,7 +57,7 @@ public class XGBClassifierTest
         var labelsTrain = TestUtils.LabelsTrain;
         var dataTest = TestUtils.DataTest;
 
-        using var sut = new XGBClassifier();
+        using var sut = CreateSut();
         sut.Fit(dataTrain, labelsTrain);
 
         var expected = sut.PredictProbability(dataTest);
@@ -75,7 +76,7 @@ public class XGBClassifierTest
         var labelsTrain = TestUtils.LabelsTrain;
         var dataTest = TestUtils.DataTest;
 
-        using var sut = new XGBClassifier(10, 0.01f, 50);
+        using var sut = CreateSut(maxDepth: 10, learningRate: 0.01f, nEstimators: 50);
         sut.Fit(dataTrain, labelsTrain);
 
         var expected = sut.PredictProbability(dataTest);
@@ -93,12 +94,50 @@ public class XGBClassifierTest
         var dataTrain = TestUtils.DataTrain;
         var labelsTrain = TestUtils.LabelsTrain;
 
-        using var sut = new XGBClassifier(maxDepth: 1, nEstimators: 3);
+        using var sut = CreateSut(maxDepth: 1, nEstimators: 3);
         sut.Fit(dataTrain, labelsTrain);
 
         var actual = sut.DumpModelEx();
         var expected = TestUtils.ExpectedClassifierModelDump;
 
         TestUtils.AssertAreEqual(expected, actual);
+    }
+
+    // Specify all hyperparameters to make tests independant of changing
+    // defaults.
+    static XGBClassifier CreateSut(int nEstimators = 100,
+        int maxDepth = 3, float learningRate = 0.1f)
+    {
+        return new XGBClassifier(
+            nEstimators,
+            maxDepth,
+            maxLeaves: 0,
+            maxBin: 256,
+            growPolicy: GrowPolicy.DepthWise,
+            learningRate,
+            verbosity: 0,
+            objective: Objective.Binary.Logistic,
+            booster: BoosterType.Gbtree,
+            treeMethod: TreeMethod.Auto,
+            nThread: -1,
+            gamma: 0,
+            minChildWeight: 1,
+            maxDeltaStep: 0,
+            subsample: 1,
+            samplingMethod: SamplingMethod.Uniform,
+            colSampleByTree: 1,
+            colSampleByLevel: 1,
+            colSampleByNode: 1,
+            regAlpha: 0,
+            regLambda: 1,
+            scalePosWeight: 1,
+            baseScore: 0.5F,
+            seed: 0,
+            missing: float.NaN,
+            numParallelTree: 0,
+            importanceType: ImportanceType.Gain,
+            device: Device.Cpu,
+            validateParameters: false,
+            numClass: 1);
     }
 }
