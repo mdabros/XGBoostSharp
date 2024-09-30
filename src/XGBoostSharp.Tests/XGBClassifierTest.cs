@@ -2,7 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using XGBoostSharp;
 
-namespace XGBoostSharpTest;
+namespace XGBoostSharp.Test;
 
 [TestClass]
 public class XGBClassifierTest
