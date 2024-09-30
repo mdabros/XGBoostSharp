@@ -120,7 +120,7 @@ public class XGBRegressor : XGBModelBase
     public void Fit(float[][] data, float[] labels)
     {
         using var train = new DMatrix(data, labels);
-        m_booster = Train(m_parameters, train, (int)m_parameters["n_estimators"]);
+        m_booster = Train(m_parameters, train);
     }
 
     public void SetParameter(string parameterName, object parameterValue) =>
@@ -139,15 +139,5 @@ public class XGBRegressor : XGBModelBase
     {
         using var test = new DMatrix(data);
         return m_booster.Predict(test);
-    }
-
-    static Booster Train(IDictionary<string, object> parameters, DMatrix train, int iterations = 10)
-    {
-        var booster = new Booster(parameters, train);
-        for (var i = 0; i < iterations; i++)
-        {
-            booster.Update(train, i);
-        }
-        return booster;
     }
 }
