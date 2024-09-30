@@ -64,7 +64,7 @@ public class XGBRegressor : XGBModelBase
     ///   Value in the data which needs to be present as a missing value
     /// </param>
     public XGBRegressor(int maxDepth = 3, float learningRate = 0.1F, int nEstimators = 100,
-            bool silent = true, string objective = "reg:linear",
+            bool silent = true, string objective = "reg:squarederror",
             int nThread = -1, float gamma = 0, int minChildWeight = 1,
             int maxDeltaStep = 0, float subsample = 1, float colSampleByTree = 1,
             float colSampleByLevel = 1, float regAlpha = 0, float regLambda = 1,
