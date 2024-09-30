@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace XGBoostSharp;
+﻿namespace XGBoostSharp;
 
 public static class Parameters
 {

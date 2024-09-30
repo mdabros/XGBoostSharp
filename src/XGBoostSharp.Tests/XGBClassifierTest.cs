@@ -1,8 +1,6 @@
 ﻿using System.IO;
-using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static XGBoostSharp.Parameters;
-using XGBoostSharp.lib;
 
 namespace XGBoostSharp.Test;
 
