@@ -7,7 +7,6 @@ namespace XGBoostSharp;
 
 public class XGBClassifier : XGBModelBase
 {
-
     /// <summary>
     ///   Implementation of the Scikit-Learn API for XGBoostSharp
     /// </summary>
@@ -108,42 +107,6 @@ public class XGBClassifier : XGBModelBase
 
     public static XGBClassifier LoadFromFile(string fileName) =>
         new() { m_booster = new Booster(fileName) };
-
-    public static Dictionary<string, object> GetDefaultParameters()
-    {
-        var defaultParameters = new Dictionary<string, object>
-        {
-            ["max_depth"] = 3,
-            ["learning_rate"] = 0.1f,
-            ["n_estimators"] = 100,
-            ["silent"] = true,
-            ["objective"] = "binary:logistic",
-            ["booster"] = "gbtree",
-            ["tree_method"] = "auto",
-            ["nthread"] = -1,
-            ["gamma"] = 0,
-            ["min_child_weight"] = 1,
-            ["max_delta_step"] = 0,
-            ["subsample"] = 1,
-            ["colsample_bytree"] = 1,
-            ["colsample_bylevel"] = 1,
-            ["reg_alpha"] = 0,
-            ["reg_lambda"] = 1,
-            ["scale_pos_weight"] = 1,
-            ["sample_type"] = "uniform",
-            ["normalize_type"] = "tree",
-            ["rate_drop"] = 0.0f,
-            ["one_drop"] = 0,
-            ["skip_drop"] = 0f,
-            ["base_score"] = 0.5f,
-            ["seed"] = 0,
-            ["missing"] = float.NaN,
-            ["_Booster"] = null,
-            ["num_class"] = 0
-        };
-
-        return defaultParameters;
-    }
 
     public XGBClassifier(IDictionary<string, object> p_parameters) =>
         m_parameters = p_parameters;
