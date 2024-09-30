@@ -158,7 +158,7 @@ public class Booster : IDisposable
     public void Save(string fileName) =>
         NativeMethods.XGBoosterSaveModel(m_handle, fileName);
 
-    public string[] DumpModelEx(string fmap, int with_stats, string format)
+    public string[] DumpModelEx(string fmap, int with_stats)
     {
         int length;
         IntPtr treePtr;

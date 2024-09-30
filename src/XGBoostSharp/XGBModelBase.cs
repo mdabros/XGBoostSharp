@@ -12,8 +12,8 @@ public class XGBModelBase : IDisposable
     public void SaveModelToFile(string fileName) =>
         m_booster.Save(fileName);
 
-    public string[] DumpModelEx(string fmap = "", int with_stats = 0, string format = "json") =>
-        m_booster.DumpModelEx(fmap, with_stats, format);
+    public string[] DumpModelEx(string fmap = "", int with_stats = 0) =>
+        m_booster.DumpModelEx(fmap, with_stats);
 
     void DisposeManagedResources()
     {
