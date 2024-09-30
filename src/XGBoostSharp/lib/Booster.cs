@@ -108,18 +108,6 @@ public class Booster : IDisposable
         }
     }
 
-    // doesn't support floats with commas (e.g. 0,5F)
-    public void SetParametersGeneric(IDictionary<string, object> parameters)
-    {
-        foreach (var param in parameters)
-        {
-            if (param.Value != null)
-            {
-                SetParameter(param.Key, param.Value.ToString());
-            }
-        }
-    }
-
     public static void PrintParameters(IDictionary<string, object> parameters)
     {
         Console.WriteLine($"{nameof(max_depth)}: {(int)parameters[max_depth]}");
