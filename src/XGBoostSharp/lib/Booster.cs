@@ -69,37 +69,22 @@ public class Booster : IDisposable
 
     public void SetParameters(IDictionary<string, object> parameters)
     {
-        // support internationalisation i.e. support floats with commas (e.g. 0,5F)
+        // support internationalization i.e. support floats with commas (e.g. 0,5F)
         var nfi = new NumberFormatInfo { NumberDecimalSeparator = "." };
 
-        SetParameter(max_depth, ((int)parameters[max_depth]).ToString());
-        SetParameter(learning_rate, ((float)parameters[learning_rate]).ToString(nfi));
-        SetParameter(n_estimators, ((int)parameters[n_estimators]).ToString());
-        SetParameter(silent, ((bool)parameters[silent]).ToString());
-        SetParameter(objective, (string)parameters[objective]);
-        SetParameter(booster, (string)parameters[booster]);
-        SetParameter(tree_method, (string)parameters[tree_method]);
+        foreach (var kvp in parameters)
+        {
+            string valueAsString = kvp.Value switch
+            {
+                int intValue => intValue.ToString(),
+                float floatValue => floatValue.ToString(nfi),
+                bool boolValue => boolValue.ToString(),
+                string stringValue => stringValue,
+                _ => throw new ArgumentException($"Unsupported parameter type: {kvp.Value.GetType()}")
+            };
 
-        SetParameter(nthread, ((int)parameters[nthread]).ToString());
-        SetParameter(gamma, ((float)parameters[gamma]).ToString(nfi));
-        SetParameter(min_child_weight, ((int)parameters[min_child_weight]).ToString());
-        SetParameter(max_delta_step, ((int)parameters[max_delta_step]).ToString());
-        SetParameter(subsample, ((float)parameters[subsample]).ToString(nfi));
-        SetParameter(colsample_bytree, ((float)parameters[colsample_bytree]).ToString(nfi));
-        SetParameter(colsample_bylevel, ((float)parameters[colsample_bylevel]).ToString(nfi));
-        SetParameter(reg_alpha, ((float)parameters[reg_alpha]).ToString(nfi));
-        SetParameter(reg_lambda, ((float)parameters[reg_lambda]).ToString(nfi));
-        SetParameter(scale_pos_weight, ((float)parameters[scale_pos_weight]).ToString(nfi));
-
-        SetParameter(base_score, ((float)parameters[base_score]).ToString(nfi));
-        SetParameter(seed, ((int)parameters[seed]).ToString());
-        SetParameter(missing, ((float)parameters[missing]).ToString(nfi));
-
-        SetParameter(sample_type, (string)parameters[sample_type]);
-        SetParameter(normalize_type, (string)parameters[normalize_type]);
-        SetParameter(rate_drop, ((float)parameters[rate_drop]).ToString(nfi));
-        SetParameter(one_drop, ((int)parameters[one_drop]).ToString());
-        SetParameter(skip_drop, ((float)parameters[skip_drop]).ToString(nfi));
+            SetParameter(kvp.Key, valueAsString);
+        }
 
         if (parameters.TryGetValue(num_class, out var value))
         {
@@ -110,34 +95,19 @@ public class Booster : IDisposable
 
     public static void PrintParameters(IDictionary<string, object> parameters)
     {
-        Console.WriteLine($"{nameof(max_depth)}: {(int)parameters[max_depth]}");
-        Console.WriteLine($"{nameof(learning_rate)}: {(float)parameters[learning_rate]}");
-        Console.WriteLine($"{nameof(n_estimators)}: {(int)parameters[n_estimators]}");
-        Console.WriteLine($"{nameof(silent)}: {(bool)parameters[silent]}");
-        Console.WriteLine($"{nameof(objective)}: {(string)parameters[objective]}");
-        Console.WriteLine($"{nameof(booster)}: {(string)parameters[booster]}");
-        Console.WriteLine($"{nameof(tree_method)}: {(string)parameters[tree_method]}");
+        foreach (var kvp in parameters)
+        {
+            string valueAsString = kvp.Value switch
+            {
+                int intValue => intValue.ToString(),
+                float floatValue => floatValue.ToString(CultureInfo.InvariantCulture),
+                bool boolValue => boolValue.ToString(),
+                string stringValue => stringValue,
+                _ => throw new ArgumentException($"Unsupported parameter type: {kvp.Value.GetType()}")
+            };
 
-        Console.WriteLine($"{nameof(nthread)}: {(int)parameters[nthread]}");
-        Console.WriteLine($"{nameof(gamma)}: {(float)parameters[gamma]}");
-        Console.WriteLine($"{nameof(min_child_weight)}: {(int)parameters[min_child_weight]}");
-        Console.WriteLine($"{nameof(max_delta_step)}: {(int)parameters[max_delta_step]}");
-        Console.WriteLine($"{nameof(subsample)}: {(float)parameters[subsample]}");
-        Console.WriteLine($"{nameof(colsample_bytree)}: {(float)parameters[colsample_bytree]}");
-        Console.WriteLine($"{nameof(colsample_bylevel)}: {(float)parameters[colsample_bylevel]}");
-        Console.WriteLine($"{nameof(reg_alpha)}: {(float)parameters[reg_alpha]}");
-        Console.WriteLine($"{nameof(reg_lambda)}: {(float)parameters[reg_lambda]}");
-        Console.WriteLine($"{nameof(scale_pos_weight)}: {(float)parameters[scale_pos_weight]}");
-
-        Console.WriteLine($"{nameof(base_score)}: {(float)parameters[base_score]}");
-        Console.WriteLine($"{nameof(seed)}: {(int)parameters[seed]}");
-        Console.WriteLine($"{nameof(missing)}: {(float)parameters[missing]}");
-
-        Console.WriteLine($"{nameof(sample_type)}: {(float)parameters[sample_type]}");
-        Console.WriteLine($"{nameof(normalize_type)}: {(float)parameters[normalize_type]}");
-        Console.WriteLine($"{nameof(rate_drop)}: {(float)parameters[rate_drop]}");
-        Console.WriteLine($"{nameof(one_drop)}: {(int)parameters[one_drop]}");
-        Console.WriteLine($"{nameof(skip_drop)}: {(float)parameters[skip_drop]}");
+            Console.WriteLine($"{kvp.Key}: {valueAsString}");
+        }
     }
 
     public void SetParameter(string name, string val) =>
