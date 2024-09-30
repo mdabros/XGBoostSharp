@@ -9,6 +9,9 @@ public class XGBModelBase : IDisposable
     protected IDictionary<string, object> m_parameters = new Dictionary<string, object>();
     protected Booster m_booster;
 
+    // Note that file name extension decides which format the model is saved as.
+    // Options are *.json and *.ubj. *.json is recommended.
+    // See https://xgboost.readthedocs.io/en/stable/tutorials/saving_model.html
     public void SaveModelToFile(string fileName) =>
         m_booster.Save(fileName);
 
