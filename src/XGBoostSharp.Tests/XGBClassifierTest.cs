@@ -6,7 +6,7 @@ namespace XGBoostSharp.Test;
 [TestClass]
 public class XGBClassifierTest
 {
-    const string TEST_FILE = "tmpfile.tmp";
+    const string TEST_FILE = "tmpfile.json";
 
     [TestInitialize, TestCleanup]
     public void Reset()
