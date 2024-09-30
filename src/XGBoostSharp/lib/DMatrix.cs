@@ -9,10 +9,7 @@ public class DMatrix : IDisposable
     readonly IntPtr m_handle;
     readonly float m_missing = -1.0F; // arbitrary value used to represent a missing value
 
-    public IntPtr Handle
-    {
-        get { return m_handle; }
-    }
+    public IntPtr Handle => m_handle;
 
     public float[] Label
     {
@@ -27,9 +24,10 @@ public class DMatrix : IDisposable
 
     public DMatrix(float[] data1D, ulong nrows, ulong ncols, float[] labels = null)
     {
-        var output = NativeMethods.XGDMatrixCreateFromMat(data1D, nrows, ncols, m_missing, out m_handle);
-        if (output == -1)
-            throw new DllFailException(NativeMethods.XGBGetLastError());
+        var output = NativeMethods.XGDMatrixCreateFromMat(
+            data1D, nrows, ncols, m_missing, out m_handle);
+
+        ThrowIfInvalid(output);
 
         if (labels != null)
         {
@@ -45,8 +43,8 @@ public class DMatrix : IDisposable
         ulong lengthULong;
         IntPtr result;
         var output = NativeMethods.XGDMatrixGetFloatInfo(m_handle, field, out lengthULong, out result);
-        if (output == -1)
-            throw new DllFailException(NativeMethods.XGBGetLastError());
+
+        ThrowIfInvalid(output);
 
         var length = unchecked((int)lengthULong);
         var floatInfo = new float[length];
@@ -65,15 +63,21 @@ public class DMatrix : IDisposable
     {
         var length = (ulong)floatInfo.Length;
         var output = NativeMethods.XGDMatrixSetFloatInfo(m_handle, field, floatInfo, length);
+        ThrowIfInvalid(output);
+    }
+
+    static void ThrowIfInvalid(int output)
+    {
         if (output == -1)
+        {
             throw new DllFailException(NativeMethods.XGBGetLastError());
+        }
     }
 
     void DisposeManagedResources()
     {
         var output = NativeMethods.XGDMatrixFree(m_handle);
-        if (output == -1)
-            throw new DllFailException(NativeMethods.XGBGetLastError());
+        ThrowIfInvalid(output);
     }
 
     #region Dispose
