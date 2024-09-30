@@ -27,7 +27,7 @@ public class DMatrix : IDisposable
         var output = NativeMethods.XGDMatrixCreateFromMat(
             data1D, nrows, ncols, m_missing, out m_handle);
 
-        ThrowIfInvalid(output);
+        ThrowIfError(output);
 
         if (labels != null)
         {
@@ -44,7 +44,7 @@ public class DMatrix : IDisposable
         IntPtr result;
         var output = NativeMethods.XGDMatrixGetFloatInfo(m_handle, field, out lengthULong, out result);
 
-        ThrowIfInvalid(output);
+        ThrowIfError(output);
 
         var length = unchecked((int)lengthULong);
         var floatInfo = new float[length];
@@ -63,10 +63,10 @@ public class DMatrix : IDisposable
     {
         var length = (ulong)floatInfo.Length;
         var output = NativeMethods.XGDMatrixSetFloatInfo(m_handle, field, floatInfo, length);
-        ThrowIfInvalid(output);
+        ThrowIfError(output);
     }
 
-    static void ThrowIfInvalid(int output)
+    static void ThrowIfError(int output)
     {
         if (output == -1)
         {
@@ -77,7 +77,7 @@ public class DMatrix : IDisposable
     void DisposeManagedResources()
     {
         var output = NativeMethods.XGDMatrixFree(m_handle);
-        ThrowIfInvalid(output);
+        ThrowIfError(output);
     }
 
     #region Dispose
