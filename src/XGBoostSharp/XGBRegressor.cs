@@ -71,35 +71,35 @@ public class XGBRegressor : XGBModelBase
             float scalePosWeight = 1, float baseScore = 0.5F, int seed = 0,
             float missing = float.NaN)
     {
-        m_parameters["max_depth"] = maxDepth;
-        m_parameters["learning_rate"] = learningRate;
-        m_parameters["n_estimators"] = nEstimators;
-        m_parameters["silent"] = silent;
-        m_parameters["objective"] = objective;
-        m_parameters["booster"] = "gbtree";
-        m_parameters["tree_method"] = "auto";
+        m_parameters[ParameterNames.max_depth] = maxDepth;
+        m_parameters[ParameterNames.learning_rate] = learningRate;
+        m_parameters[ParameterNames.n_estimators] = nEstimators;
+        m_parameters[ParameterNames.silent] = silent;
+        m_parameters[ParameterNames.objective] = objective;
+        m_parameters[ParameterNames.booster] = "gbtree";
+        m_parameters[ParameterNames.tree_method] = "auto";
 
-        m_parameters["nthread"] = nThread;
-        m_parameters["gamma"] = gamma;
-        m_parameters["min_child_weight"] = minChildWeight;
-        m_parameters["max_delta_step"] = maxDeltaStep;
-        m_parameters["subsample"] = subsample;
-        m_parameters["colsample_bytree"] = colSampleByTree;
-        m_parameters["colsample_bylevel"] = colSampleByLevel;
-        m_parameters["reg_alpha"] = regAlpha;
-        m_parameters["reg_lambda"] = regLambda;
-        m_parameters["scale_pos_weight"] = scalePosWeight;
+        m_parameters[ParameterNames.nthread] = nThread;
+        m_parameters[ParameterNames.gamma] = gamma;
+        m_parameters[ParameterNames.min_child_weight] = minChildWeight;
+        m_parameters[ParameterNames.max_delta_step] = maxDeltaStep;
+        m_parameters[ParameterNames.subsample] = subsample;
+        m_parameters[ParameterNames.colsample_bytree] = colSampleByTree;
+        m_parameters[ParameterNames.colsample_bylevel] = colSampleByLevel;
+        m_parameters[ParameterNames.reg_alpha] = regAlpha;
+        m_parameters[ParameterNames.reg_lambda] = regLambda;
+        m_parameters[ParameterNames.scale_pos_weight] = scalePosWeight;
 
-        m_parameters["sample_type"] = "uniform";
-        m_parameters["normalize_type"] = "tree";
-        m_parameters["rate_drop"] = 0f;
-        m_parameters["one_drop"] = 0;
-        m_parameters["skip_drop"] = 0f;
+        m_parameters[ParameterNames.sample_type] = "uniform";
+        m_parameters[ParameterNames.normalize_type] = "tree";
+        m_parameters[ParameterNames.rate_drop] = 0f;
+        m_parameters[ParameterNames.one_drop] = 0;
+        m_parameters[ParameterNames.skip_drop] = 0f;
 
-        m_parameters["base_score"] = baseScore;
-        m_parameters["seed"] = seed;
-        m_parameters["missing"] = missing;
-        m_parameters["_Booster"] = null;
+        m_parameters[ParameterNames.base_score] = baseScore;
+        m_parameters[ParameterNames.seed] = seed;
+        m_parameters[ParameterNames.missing] = missing;
+        m_parameters[ParameterNames._Booster] = null;
     }
 
     public static XGBRegressor LoadFromFile(string fileName) =>
