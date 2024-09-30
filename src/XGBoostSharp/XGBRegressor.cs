@@ -13,7 +13,7 @@ public class XGBRegressor : XGBModelBase
         int maxBin = 256,
         string growPolicy = GrowPolicy.DepthWise,
         float learningRate = 0.3f,
-        int verbosity = 0,
+        int verbosity = Verbosity.Silent,
         string objective = Objective.Reg.SquaredError,
         string booster = BoosterType.Gbtree,
         string treeMethod = TreeMethod.Auto,

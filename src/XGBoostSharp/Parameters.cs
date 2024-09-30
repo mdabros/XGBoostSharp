@@ -1,4 +1,6 @@
-﻿namespace XGBoostSharp;
+﻿using System;
+
+namespace XGBoostSharp;
 
 public static class Parameters
 {
@@ -121,6 +123,14 @@ public static class Parameters
         /// Use GPU for training.
         /// </summary>
         public const string Gpu = "gpu";
+    }
+
+    public static class Verbosity
+    {
+        public const int Silent = 0;
+        public const int Warning = 1;
+        public const int Info = 2;
+        public const int Debug = 3;
     }
 
     /// <summary>
