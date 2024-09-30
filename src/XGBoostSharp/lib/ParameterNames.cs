@@ -31,5 +31,6 @@ public static class ParameterNames
     public const string one_drop = nameof(one_drop);
     public const string skip_drop = nameof(skip_drop);
     public const string num_class = nameof(num_class);
+    public const string _Booster = nameof(_Booster);
 #pragma warning restore IDE1006 // Naming Styles
 }

@@ -4,11 +4,25 @@ using XGBoostSharp.lib;
 
 namespace XGBoostSharp;
 
-public class XGBModelBase : IDisposable
+public abstract class XGBModelBase : IDisposable
 {
     protected IDictionary<string, object> m_parameters = new Dictionary<string, object>();
     protected Booster m_booster;
 
+    protected Booster Train(IDictionary<string, object> parameters, DMatrix dTrain)
+    {
+        var iterations = (int)m_parameters[ParameterNames.n_estimators];
+        var booster = new Booster(parameters, dTrain);
+        for (var i = 0; i < iterations; i++)
+        {
+            booster.Update(dTrain, i);
+        }
+        return booster;
+    }
+
+    // Note that file name extension decides which format the model is saved as.
+    // Options are *.json and *.ubj. *.json is recommended.
+    // See https://xgboost.readthedocs.io/en/stable/tutorials/saving_model.html
     public void SaveModelToFile(string fileName) =>
         m_booster.Save(fileName);
 
