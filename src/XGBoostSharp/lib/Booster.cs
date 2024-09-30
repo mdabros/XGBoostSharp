@@ -39,10 +39,8 @@ public class Booster : IDisposable
         m_handle = tempPtr;
     }
 
-    public void Update(DMatrix train, int iteration)
-    {
+    public void Update(DMatrix train, int iteration) =>
         ThrowIfError(NativeMethods.XGBoosterUpdateOneIter(Handle, iteration, train.Handle));
-    }
 
     public float[] Predict(DMatrix test)
     {
@@ -154,15 +152,11 @@ public class Booster : IDisposable
         Console.WriteLine($"{nameof(skip_drop)}: {(float)parameters[skip_drop]}");
     }
 
-    public void SetParameter(string name, string val)
-    {
+    public void SetParameter(string name, string val) =>
         ThrowIfError(NativeMethods.XGBoosterSetParam(m_handle, name, val));
-    }
 
-    public void Save(string fileName)
-    {
+    public void Save(string fileName) =>
         NativeMethods.XGBoosterSaveModel(m_handle, fileName);
-    }
 
     public string[] DumpModelEx(string fmap, int with_stats, string format)
     {
@@ -183,10 +177,8 @@ public class Booster : IDisposable
         return trees;
     }
 
-    void DisposeManagedResources()
-    {
+    void DisposeManagedResources() =>
         NativeMethods.XGBoosterFree(m_handle);
-    }
 
     static void ThrowIfError(int output)
     {
