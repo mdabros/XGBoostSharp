@@ -9,6 +9,7 @@ public static class ParameterNames
     public const string max_depth = nameof(max_depth);
     public const string max_leaves = nameof(max_leaves);
     public const string max_bin = nameof(max_bin);
+    public const string grow_policy = nameof(grow_policy);
     public const string learning_rate = nameof(learning_rate);
     public const string verbosity = nameof(verbosity);
     public const string objective = nameof(objective);

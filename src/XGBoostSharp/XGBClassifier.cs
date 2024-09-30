@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using XGBoostSharp.lib;
+using static XGBoostSharp.Parameters;
 
 namespace XGBoostSharp;
 
@@ -13,20 +14,20 @@ public class XGBClassifier : XGBModelBase
     public XGBClassifier(
             int nEstimators = 100,
             int maxDepth = 3,
-            int max_leaves = 0,
-            int max_bin = 256,
-            string grow_policy = GrowPolicy.DepthWise,
+            int maxLeaves = 0,
+            int maxBin = 256,
+            string growPolicy = GrowPolicy.DepthWise,
             float learningRate = 0.1f,
-            int verbosity = 0, // add ints for options
+            int verbosity = 0,
             string objective = Objective.Binary.Logistic,
-            string booster = "gbtree",// add strings for options
-            string treeMethod = "auto",// add strings for options
+            string booster = BoosterType.Gbtree,
+            string treeMethod = TreeMethod.Auto,
             int nThread = -1,
             float gamma = 0,
             int minChildWeight = 1,
             int maxDeltaStep = 0,
             float subsample = 1,
-            string sampling_method = "uniform", // add strings for options
+            string samplingMethod = SamplingMethod.Uniform,
             float colSampleByTree = 1,
             float colSampleByLevel = 1,
             float colSampleByNode = 1,
@@ -37,15 +38,16 @@ public class XGBClassifier : XGBModelBase
             int seed = 0,
             float missing = float.NaN,
             int numParallelTree = 0,
-            string importance_type = "gain", // add strings for options
-            string device = "cpu",
-            bool validate_parameters = false,
+            string importanceType = ImportanceType.Gain,
+            string device = Device.Cpu,
+            bool validateParameters = false,
             int numClass = 1)
     {
         m_parameters[ParameterNames.n_estimators] = nEstimators;
         m_parameters[ParameterNames.max_depth] = maxDepth;
-        m_parameters[ParameterNames.max_leaves] = max_leaves;
-        m_parameters[ParameterNames.max_bin] = max_bin;
+        m_parameters[ParameterNames.max_leaves] = maxLeaves;
+        m_parameters[ParameterNames.max_bin] = maxBin;
+        m_parameters[ParameterNames.grow_policy] = growPolicy;
         m_parameters[ParameterNames.learning_rate] = learningRate;
         m_parameters[ParameterNames.verbosity] = verbosity;
         m_parameters[ParameterNames.objective] = objective;
@@ -57,7 +59,7 @@ public class XGBClassifier : XGBModelBase
         m_parameters[ParameterNames.min_child_weight] = minChildWeight;
         m_parameters[ParameterNames.max_delta_step] = maxDeltaStep;
         m_parameters[ParameterNames.subsample] = subsample;
-        m_parameters[ParameterNames.sampling_method] = sampling_method;
+        m_parameters[ParameterNames.sampling_method] = samplingMethod;
         m_parameters[ParameterNames.colsample_bytree] = colSampleByTree;
         m_parameters[ParameterNames.colsample_bylevel] = colSampleByLevel;
         m_parameters[ParameterNames.colsample_byNode] = colSampleByNode;
@@ -68,17 +70,18 @@ public class XGBClassifier : XGBModelBase
         m_parameters[ParameterNames.seed] = seed;
         m_parameters[ParameterNames.missing] = missing;
         m_parameters[ParameterNames.numParallelTree] = numParallelTree;
-        m_parameters[ParameterNames.importance_type] = importance_type;
+        m_parameters[ParameterNames.importance_type] = importanceType;
         m_parameters[ParameterNames.device] = device;
-        m_parameters[ParameterNames.validate_parameters] = validate_parameters;
+        m_parameters[ParameterNames.validate_parameters] = validateParameters;
 
+        m_parameters[ParameterNames.num_class] = numClass;
+
+        // For DART only.
         m_parameters[ParameterNames.sampling_method] = "uniform";
         m_parameters[ParameterNames.normalize_type] = "tree";
         m_parameters[ParameterNames.rate_drop] = 0f;
         m_parameters[ParameterNames.one_drop] = 0;
         m_parameters[ParameterNames.skip_drop] = 0f;
-
-        m_parameters[ParameterNames.num_class] = numClass;
     }
 
     public static XGBClassifier LoadFromFile(string fileName) =>
