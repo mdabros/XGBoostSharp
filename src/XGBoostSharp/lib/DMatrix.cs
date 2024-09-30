@@ -9,10 +9,7 @@ public class DMatrix : IDisposable
     readonly IntPtr m_handle;
     readonly float m_missing = -1.0F; // arbitrary value used to represent a missing value
 
-    public IntPtr Handle
-    {
-        get { return m_handle; }
-    }
+    public IntPtr Handle => m_handle;
 
     public float[] Label
     {
@@ -27,9 +24,10 @@ public class DMatrix : IDisposable
 
     public DMatrix(float[] data1D, ulong nrows, ulong ncols, float[] labels = null)
     {
-        var output = XGBOOST_NATIVE_METHODS.XGDMatrixCreateFromMat(data1D, nrows, ncols, m_missing, out m_handle);
-        if (output == -1)
-            throw new DllFailException(XGBOOST_NATIVE_METHODS.XGBGetLastError());
+        var output = NativeMethods.XGDMatrixCreateFromMat(
+            data1D, nrows, ncols, m_missing, out m_handle);
+
+        ThrowIfError(output);
 
         if (labels != null)
         {
@@ -44,9 +42,9 @@ public class DMatrix : IDisposable
     {
         ulong lengthULong;
         IntPtr result;
-        var output = XGBOOST_NATIVE_METHODS.XGDMatrixGetFloatInfo(m_handle, field, out lengthULong, out result);
-        if (output == -1)
-            throw new DllFailException(XGBOOST_NATIVE_METHODS.XGBGetLastError());
+        var output = NativeMethods.XGDMatrixGetFloatInfo(m_handle, field, out lengthULong, out result);
+
+        ThrowIfError(output);
 
         var length = unchecked((int)lengthULong);
         var floatInfo = new float[length];
@@ -64,16 +62,22 @@ public class DMatrix : IDisposable
     void SetFloatInfo(string field, float[] floatInfo)
     {
         var length = (ulong)floatInfo.Length;
-        var output = XGBOOST_NATIVE_METHODS.XGDMatrixSetFloatInfo(m_handle, field, floatInfo, length);
+        var output = NativeMethods.XGDMatrixSetFloatInfo(m_handle, field, floatInfo, length);
+        ThrowIfError(output);
+    }
+
+    static void ThrowIfError(int output)
+    {
         if (output == -1)
-            throw new DllFailException(XGBOOST_NATIVE_METHODS.XGBGetLastError());
+        {
+            throw new DllFailException(NativeMethods.XGBGetLastError());
+        }
     }
 
     void DisposeManagedResources()
     {
-        var output = XGBOOST_NATIVE_METHODS.XGDMatrixFree(m_handle);
-        if (output == -1)
-            throw new DllFailException(XGBOOST_NATIVE_METHODS.XGBGetLastError());
+        var output = NativeMethods.XGDMatrixFree(m_handle);
+        ThrowIfError(output);
     }
 
     #region Dispose

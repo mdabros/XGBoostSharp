@@ -4,7 +4,7 @@ using XGBoostSharp.lib;
 
 namespace XGBoostSharp;
 
-public class BaseXGBModel : IDisposable
+public class XGBModelBase : IDisposable
 {
     protected IDictionary<string, object> m_parameters = new Dictionary<string, object>();
     protected Booster m_booster;
@@ -12,15 +12,12 @@ public class BaseXGBModel : IDisposable
     public void SaveModelToFile(string fileName) =>
         m_booster.Save(fileName);
 
-    public string[] DumpModelEx(string fmap = "", int with_stats = 0, string format = "json") =>
-        m_booster.DumpModelEx(fmap, with_stats, format);
+    public string[] DumpModelEx(string fmap = "", int with_stats = 0) =>
+        m_booster.DumpModelEx(fmap, with_stats);
 
     void DisposeManagedResources()
     {
-        if (m_booster != null)
-        {
-            m_booster.Dispose();
-        }
+        m_booster?.Dispose();
     }
 
     #region Dispose

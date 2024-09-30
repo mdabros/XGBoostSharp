@@ -3,7 +3,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace XGBoostSharpTest;
+namespace XGBoostSharp.Test;
 
 public static partial class TestUtils
 {
@@ -71,7 +71,7 @@ public static partial class TestUtils
                 var prediction = row[c];
                 sb.Append($"{prediction:F12}f, ");
             }
-            Trace.WriteLine($"[{sb.ToString()}],");
+            Trace.WriteLine($"[{sb}],");
         }
     }
 }
