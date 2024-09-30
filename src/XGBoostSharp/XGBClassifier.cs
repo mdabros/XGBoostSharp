@@ -8,9 +8,65 @@ namespace XGBoostSharp;
 
 public class XGBClassifier : XGBModelBase
 {
-    // TODO: Check defaults in:
-    // https://xgboost.readthedocs.io/en/stable/parameter.html
-    // https://xgboost.readthedocs.io/en/latest/python/python_api.html
+    /// <summary>
+    /// Initializes a new instance of the <see cref="XGBClassifier"/> class.
+    /// </summary>
+    /// <param name="nEstimators">Number of boosting rounds.</param>
+    /// <param name="maxDepth">Maximum depth of a tree.</param>
+    /// <param name="maxLeaves">Maximum number of leaves; 0 indicates no
+    /// limit.</param>
+    /// <param name="maxBin">Maximum number of bins for histogram
+    /// construction.</param>
+    /// <param name="growPolicy">Tree growing policy. Options: 'depthwise',
+    /// 'lossguide'.</param>
+    /// <param name="learningRate">Step size shrinkage used in update to prevent
+    /// overfitting.</param>
+    /// <param name="verbosity">Verbosity of printing messages. Options: 0
+    /// (silent), 1 (warning), 2 (info), 3 (debug).</param>
+    /// <param name="objective">Specify the learning task and the corresponding
+    /// learning objective. Options: 'binary:logistic', 'binary:logitraw',
+    /// 'binary:hinge', 'multi:softmax', 'multi:softprob'.</param>
+    /// <param name="booster">Specify which booster to use: gbtree, gblinear or
+    /// dart.</param>
+    /// <param name="treeMethod">Specify the tree construction algorithm used in
+    /// XGBoost. Options: 'auto', 'exact', 'approx', 'hist', 'gpu_hist'.</param>
+    /// <param name="nThread">Number of parallel threads used to run
+    /// XGBoost.</param>
+    /// <param name="gamma">Minimum loss reduction required to make a further
+    /// partition on a leaf node of the tree.</param>
+    /// <param name="minChildWeight">Minimum sum of instance weight (hessian)
+    /// needed in a child.</param>
+    /// <param name="maxDeltaStep">Maximum delta step we allow each tree's
+    /// weight estimation to be.</param>
+    /// <param name="subsample">Subsample ratio of the training
+    /// instances.</param>
+    /// <param name="samplingMethod">Sampling method. Options: 'uniform',
+    /// 'gradient_based'.</param>
+    /// <param name="colSampleByTree">Subsample ratio of columns when
+    /// constructing each tree.</param>
+    /// <param name="colSampleByLevel">Subsample ratio of columns for each
+    /// level.</param>
+    /// <param name="colSampleByNode">Subsample ratio of columns for each node
+    /// (split).</param>
+    /// <param name="regAlpha">L1 regularization term on weights.</param>
+    /// <param name="regLambda">L2 regularization term on weights.</param>
+    /// <param name="scalePosWeight">Balancing of positive and negative
+    /// weights.</param>
+    /// <param name="baseScore">The initial prediction score of all instances,
+    /// global bias.</param>
+    /// <param name="seed">Random number seed.</param>
+    /// <param name="missing">Value in the data which needs to be present as a
+    /// missing value.</param>
+    /// <param name="numParallelTree">Number of parallel trees constructed
+    /// during each iteration.</param>
+    /// <param name="importanceType">Feature importance type for the model.
+    /// Options: 'weight', 'gain', 'cover', 'total_gain', 'total_cover'.</param>
+    /// <param name="device">Device to use for training. Options: 'cpu',
+    /// 'gpu'.</param>
+    /// <param name="validateParameters">Validate the parameters before
+    /// training.</param>
+    /// <param name="numClass">Number of classes for multi-class
+    /// classification.</param>
     public XGBClassifier(
             int nEstimators = 100,
             int maxDepth = 6,
