@@ -7,11 +7,12 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
-  # workflow_dispatch:
-  #   inputs:
-  #     version:
-  #       description: 'Release version to tag and create'
-  #       required: false
+  workflow_dispatch:
+    inputs:
+      release:
+        description: 'Run release pipeline'
+        required: false
+        default: 'false'
 
 env:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
@@ -47,3 +48,47 @@ jobs:
       uses: codecov/codecov-action@v3
       with:
         flags: ${{ matrix.os }},${{ matrix.configuration }}
+
+  release:
+    if: github.event.inputs.release == 'true'
+    needs: build
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0 # Important for Nerdbank.GitVersioning to calculate versions
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        global-json-file: global.json
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build and Pack XGBoostSharp
+      run: |
+        dotnet build --configuration Release
+        dotnet pack src/XGBoostSharp/XGBoostSharp.csproj --configuration Release -o $(Build.ArtifactStagingDirectory)
+    - name: Publish XGBoostSharp to NuGet
+      run: dotnet nuget push $(Build.ArtifactStagingDirectory)/*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json
+
+  package_xgboostsharp_cpu:
+    if: github.event.inputs.release == 'true'
+    needs: release
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0 # Important for Nerdbank.GitVersioning to calculate versions
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        global-json-file: global.json
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build and Pack XGBoostSharp-cpu
+      run: |
+        dotnet build --configuration Release
+        dotnet pack pks/XGBoostSharp-cpu.nupkgproj --configuration Release -o $(Build.ArtifactStagingDirectory)
+    - name: Publish XGBoostSharp-cpu to NuGet
+      run: dotnet nuget push $(Build.ArtifactStagingDirectory)/*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json
