@@ -43,6 +43,7 @@ jobs:
       run: dotnet build -c ${{ matrix.configuration }} --no-restore 
     - name: Test
       run: dotnet test -c ${{ matrix.configuration }} --no-build --verbosity normal --collect:"XPlat Code Coverage"
+      if: matrix.os != 'macos-13' # Temporary disable for macos-13 until issue fixed. See https://github.com/codecov/codecov-action/issues/1549
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v3
       with:
