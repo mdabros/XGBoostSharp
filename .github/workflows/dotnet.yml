@@ -68,8 +68,29 @@ jobs:
       run: |
         dotnet build --configuration Release
         dotnet pack src/XGBoostSharp/XGBoostSharp.csproj --configuration Release -o $(Build.ArtifactStagingDirectory)
-    - name: Publish XGBoostSharp to NuGet
-      run: dotnet nuget push $(Build.ArtifactStagingDirectory)/*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json
+    #- name: Publish XGBoostSharp to NuGet
+      #run: dotnet nuget push $(Build.ArtifactStagingDirectory)/*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json
+    - name: Create GitHub Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.ACTION_GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        body: |
+          Release notes for ${{ github.ref }}
+        draft: false
+        prerelease: false
+    - name: Upload NuGet Package to Release
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.ACTION_GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: $(Build.ArtifactStagingDirectory)/*.nupkg
+        asset_name: XGBoostSharp.nupkg
+        asset_content_type: application/zip
 
   package_xgboostsharp_cpu:
     if: github.event.inputs.release == 'true'
@@ -90,5 +111,14 @@ jobs:
       run: |
         dotnet build --configuration Release
         dotnet pack pks/XGBoostSharp-cpu.nupkgproj --configuration Release -o $(Build.ArtifactStagingDirectory)
-    - name: Publish XGBoostSharp-cpu to NuGet
-      run: dotnet nuget push $(Build.ArtifactStagingDirectory)/*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json
+    #- name: Publish XGBoostSharp-cpu to NuGet
+      #run: dotnet nuget push $(Build.ArtifactStagingDirectory)/*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json
+    - name: Upload NuGet Package to Release
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.ACTION_GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: $(Build.ArtifactStagingDirectory)/*.nupkg
+        asset_name: XGBoostSharp-cpu.nupkg
+        asset_content_type: application/zip
