@@ -75,6 +75,8 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         global-json-file: global.json
+    - name: Build XGBoostSharp
+      run: dotnet build src/XGBoostSharp/XGBoostSharp.csproj -c Release --output ./build
     - name: Pack XGBoostSharp
       run: dotnet pack src/XGBoostSharp/XGBoostSharp.csproj -c Release --output ${{ env.NuGetDirectory }}
     - name: Get XGBoostSharp version
