@@ -81,7 +81,7 @@ jobs:
       id: get_version
       shell: pwsh
       run: |
-        $version = (Get-Item /build/XGBoostSharp_x64_Release_netstandard2.0/XGBoostSharp.dll).VersionInfo.ProductVersion
+        $version = (Get-Item ./artifacts/build/XGBoostSharp_x64_Release_netstandard2.0/XGBoostSharp.dll).VersionInfo.ProductVersion
         echo "XGBoostSharp version: $version"
         echo "XGBoostSharpVersion=$version" >> $GITHUB_ENV
     - name: Add local package source
