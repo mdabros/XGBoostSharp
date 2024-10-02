@@ -1,10 +1,11 @@
 <Project Sdk="Microsoft.Build.NoTargets/3.0.0">
   <Import Project="../src/Directory.Build.props" />
-  
+
   <PropertyGroup>
     <TargetFrameworks>$(LibraryTargetFramework)</TargetFrameworks>
     <PackageId>XGBoostSharp-cpu</PackageId>
-    <Version>$(Version)</Version>
+    <Version Condition=" '$(GitHubVersion)' == '' ">$(XGBoostSharpVersion)</Version>
+    <Version Condition=" '$(GitHubVersion)' != '' ">$(GitHubVersion)</Version>
     <Authors>$(Authors)</Authors>
     <Description>XGBoostSharp for cpu.</Description>
     <PackageType>Dependency</PackageType>

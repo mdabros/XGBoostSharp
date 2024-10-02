@@ -77,9 +77,15 @@ jobs:
         global-json-file: global.json
     - name: Pack XGBoostSharp
       run: dotnet pack src/XGBoostSharp/XGBoostSharp.csproj -c Release --output ${{ env.NuGetDirectory }}
-    - name: Add local package source # Use local package source for XGboostSharp to enable packin XBGBoostSharp-cpu
+    - name: Get XGBoostSharp version
+      id: get_version
+      run: echo "::set-output name=version::$(dotnet list package --include-transitive | grep XGBoostSharp | awk '{print $4}')"
+    - name: Add local package source
       run: dotnet nuget add source ${{ env.NuGetDirectory }} --name local
     - name: Pack XGBoostSharp-cpu
+      env:
+        GitHubVersion: ${{ github.event.inputs.version }}
+        XGBoostSharpVersion: ${{ steps.get_version.outputs.version }}
       run: dotnet pack pks/XGBoostSharp-cpu.nupkgproj -c Release --output ${{ env.NuGetDirectory }}
     - uses: actions/upload-artifact@v4
       with:
@@ -93,7 +99,7 @@ jobs:
     runs-on: windows-latest
     permissions:
       contents: write
-    if: ${{ github.event.inputs.version != '' }}
+    if: ${{ github.event.inputs.version != ''  && github.actor == 'mdabros'}}
     
     steps:
     - uses: actions/checkout@v3
