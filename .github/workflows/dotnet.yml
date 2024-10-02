@@ -40,9 +40,9 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet build -c ${{ matrix.configuration }} --no-restore 
+      run: dotnet build -c ${{ matrix.configuration }} -p:Platform=x64 --no-restore 
     - name: Test
-      run: dotnet test -c ${{ matrix.configuration }} --no-build --verbosity normal --collect:"XPlat Code Coverage"
+      run: dotnet test -c ${{ matrix.configuration }} -p:Platform=x64 --no-build --verbosity normal --collect:"XPlat Code Coverage"
     - name: Upload coverage reports to Codecov
       if: matrix.os != 'macos-13' # Temporary disable for macos-13 until issue fixed. See https://github.com/codecov/codecov-action/issues/1549
       uses: codecov/codecov-action@v3
@@ -76,14 +76,14 @@ jobs:
       with:
         global-json-file: global.json
     - name: Build XGBoostSharp
-      run: dotnet build src/XGBoostSharp/XGBoostSharp.csproj -c Release --output ./build
+      run: dotnet build src/XGBoostSharp/XGBoostSharp.csproj -c Release -p:Platform=x64 --output ./build
     - name: Pack XGBoostSharp
-      run: dotnet pack src/XGBoostSharp/XGBoostSharp.csproj -c Release --output ${{ env.NuGetDirectory }}
+      run: dotnet pack src/XGBoostSharp/XGBoostSharp.csproj -c Release -p:Platform=x64 --output ${{ env.NuGetDirectory }}
     - name: Get XGBoostSharp version
       id: get_version
       shell: pwsh
       run: |
-        $version = (Get-Item ./build/XGBoostSharp_AnyCPU_Release_netstandard2.0/XGBoostSharp.dll).VersionInfo.ProductVersion
+        $version = (Get-Item ./build/XGBoostSharp_x64_Release_netstandard2.0/XGBoostSharp.dll).VersionInfo.ProductVersion
         echo "XGBoostSharp version: $version"
         echo "XGBoostSharpVersion=$version" >> $GITHUB_ENV
     - name: Add local package source
@@ -92,7 +92,7 @@ jobs:
       env:
         GitHubVersion: ${{ github.event.inputs.version }}
         XGBoostSharpVersion: ${{ env.XGBoostSharpVersion }}
-      run: dotnet pack pks/XGBoostSharp-cpu.nupkgproj -c Release --output ${{ env.NuGetDirectory }}
+      run: dotnet pack pks/XGBoostSharp-cpu.nupkgproj -c Release -p:Platform=x64 --output ${{ env.NuGetDirectory }}
     - uses: actions/upload-artifact@v4
       with:
         name: nuget
