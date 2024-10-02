@@ -64,7 +64,7 @@ jobs:
         global-json-file: global.json
     - name: Format verify no changes
       run: dotnet format --verify-no-changes
-      
+
   pack:
     runs-on: windows-latest
     steps:
@@ -81,15 +81,15 @@ jobs:
       id: get_version
       shell: pwsh
       run: |
-        $version = (Get-Item ./src/XGBoostSharp/bin/Release/netstandard2.0/XGBoostSharp.dll).VersionInfo.ProductVersion
+        $version = (Get-Item ./artifacts/bin/XGBoostSharp/release_netstandard2.0/XGBoostSharp.dll).VersionInfo.ProductVersion
         echo "XGBoostSharp version: $version"
-        echo "::set-output name=version::$version"
+        echo "XGBoostSharpVersion=$version" >> $GITHUB_ENV
     - name: Add local package source
       run: dotnet nuget add source ${{ env.NuGetDirectory }} --name local
     - name: Pack XGBoostSharp-cpu
       env:
         GitHubVersion: ${{ github.event.inputs.version }}
-        XGBoostSharpVersion: ${{ steps.get_version.outputs.version }}
+        XGBoostSharpVersion: ${{ env.XGBoostSharpVersion }}
       run: dotnet pack pks/XGBoostSharp-cpu.nupkgproj -c Release --output ${{ env.NuGetDirectory }}
     - uses: actions/upload-artifact@v4
       with:
@@ -104,7 +104,7 @@ jobs:
     permissions:
       contents: write
     if: ${{ github.event.inputs.version != ''  && github.actor == 'mdabros'}}
-    
+  
     steps:
     - uses: actions/checkout@v3
     - name: Download nuget packages
