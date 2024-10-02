@@ -41,6 +41,10 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet build -c ${{ matrix.configuration }} --no-restore 
+    - name: Echo build output path
+      run: |
+        echo "Build output path:"
+        ls -R ./src/XGBoostSharp/bin/${{ matrix.configuration }}
     - name: Test
       run: dotnet test -c ${{ matrix.configuration }} --no-build --verbosity normal --collect:"XPlat Code Coverage"
     - name: Upload coverage reports to Codecov
