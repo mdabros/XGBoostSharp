@@ -82,10 +82,8 @@ jobs:
     - name: Get version of dll
       run: (Get-Item './build/XGBoostSharp_x64_Release_netstandard2.0/XGBoostSharp.dll').VersionInfo.ProductVersion
     - name: Pack XGBoostSharp-cpu
-      env:
-        GitHubVersion: "3.9.0"
       #if: ${{ github.event.inputs.version != ''  && github.actor == 'mdabros'}}
-      run: nuget pack pkg/XGBoostSharp-cpu.nuspec -Version ${{ env.GitHubVersion }} -OutputDirectory ${{ env.NuGetDirectory }}
+      run: nuget pack pkg/XGBoostSharp-cpu.nuspec -Version 0.3.9 -OutputDirectory ${{ env.NuGetDirectory }}
     - uses: actions/upload-artifact@v4
       with:
         name: nuget
