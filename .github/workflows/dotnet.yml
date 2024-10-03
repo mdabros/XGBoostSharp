@@ -81,9 +81,11 @@ jobs:
       id: get_version
       shell: pwsh
       run: |
-        $version = (Get-Item ./build/XGBoostSharp_x64_Release_netstandard2.0/XGBoostSharp.dll).VersionInfo.ProductVersion
-        echo "XGBoostSharp version: $version"
-        echo "XGBoostSharpVersion=$version" >> $GITHUB_ENV
+        $productVersion = (Get-Item ./build/XGBoostSharp_x64_Release_netstandard2.0/XGBoostSharp.dll).VersionInfo.ProductVersion
+        echo "XGBoostSharp version: $productVersion"
+        echo "XGBoostSharpVersion=$productVersion" >> $GITHUB_ENV
+    - name: Debug XGBoostSharpVersion
+      run: |
         echo "XGBoostSharpVersion: ${{ env.XGBoostSharpVersion }}"
     - name: Add local package source
       run: dotnet nuget add source ${{ env.NuGetDirectory }} --name local
