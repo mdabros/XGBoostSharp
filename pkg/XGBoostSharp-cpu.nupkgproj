@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.Build.NoTargets/3.0.0">
-  <Import Project="..\src\Directory.Build.props" />
   
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
