@@ -80,7 +80,6 @@ jobs:
     - name: Add local package source
       run: dotnet nuget add source ${{ env.NuGetDirectory }} --name local
     - name: Pack XGBoostSharp-cpu
-      
       env:
         GitHubVersion: ${{ github.event.inputs.version }}
       if: ${{ github.event.inputs.version != ''  && github.actor == 'mdabros'}}
