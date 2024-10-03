@@ -75,8 +75,6 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         global-json-file: global.json
-    - name: Install .NET Framework 4 Targeting Pack
-      run: choco install netfx-4.0.3-devpack
     - name: Pack XGBoostSharp
       run: dotnet pack src/XGBoostSharp/XGBoostSharp.csproj -c Release -p:Platform=x64 --output ${{ env.NuGetDirectory }}
     - name: Add local package source
@@ -86,6 +84,7 @@ jobs:
     - name: Pack XGBoostSharp-cpu
       env:
         GitHubVersion: "3.9.0"
+      #if: ${{ github.event.inputs.version != ''  && github.actor == 'mdabros'}}
       run: dotnet pack pks/XGBoostSharp-cpu.nupkgproj -c Release -p:Platform=x64 --output ${{ env.NuGetDirectory }}
     - uses: actions/upload-artifact@v4
       with:
