@@ -6,13 +6,10 @@
     <authors>mdabros</authors>
     <description>XGBoostSharp for cpu.</description>
     <dependencies>
-      <!--<dependency id="XGBoostSharp" version="$version$" />-->
+      <dependency id="XGBoostSharp" version="$version$" />
       <dependency id="libxgboost-2.0.3-linux-x64" version="1.0.1" />
       <dependency id="libxgboost-2.0.3-osx-x64" version="1.0.0" />
       <dependency id="libxgboost-2.0.3-win-x64" version="1.0.0" />
     </dependencies>
   </metadata>
-  <files>
-    <!-- Add files to be included in the package here -->
-  </files>
 </package>
