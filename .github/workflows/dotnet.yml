@@ -85,8 +85,6 @@ jobs:
         Write-Host "version is $version"
     - name: Verify XGBoostSharpVersion
       run: echo "XGBoostSharpVersion is ${{ env.XGBoostSharpVersion }}"
-    - name: Output GITHUB_ENV content for debugging
-      run: cat $GITHUB_ENV
     - name: Add local package source
       run: dotnet nuget add source ${{ env.NuGetDirectory }} --name local
     - name: Pack XGBoostSharp-cpu
