@@ -17,7 +17,7 @@
   </Target>
 
   <ItemGroup>
-    <PackageReference Include="XGBoostSharp" Version="[$(XGBoostSharpPackageVersion)-*, $(XGBoostSharpPackageVersion)]" />
+    <PackageReference Include="XGBoostSharp" Version="[${XGBoostSharpPackageVersion},${XGBoostSharpPackageVersion}.*]" />
     <PackageReference Include="libxgboost-2.0.3-linux-x64" Version="1.0.1" />
     <PackageReference Include="libxgboost-2.0.3-osx-x64" Version="1.0.0" />
     <PackageReference Include="libxgboost-2.0.3-win-x64" Version="1.0.0" />
