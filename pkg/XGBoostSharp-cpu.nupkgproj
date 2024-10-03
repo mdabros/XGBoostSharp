@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.Build.NoTargets/3.0.0">
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
@@ -11,8 +11,8 @@
 
   <ItemGroup>
     <!--<PackageReference Include="XGBoostSharp" Version="$(GitHubVersion)" />-->
-    <!--<PackageReference Include="libxgboost-2.0.3-linux-x64" Version="1.0.1" />
+    <PackageReference Include="libxgboost-2.0.3-linux-x64" Version="1.0.1" />
     <PackageReference Include="libxgboost-2.0.3-osx-x64" Version="1.0.0" />
-    <PackageReference Include="libxgboost-2.0.3-win-x64" Version="1.0.0" />-->
+    <PackageReference Include="libxgboost-2.0.3-win-x64" Version="1.0.0" />
   </ItemGroup>
 </Project>
