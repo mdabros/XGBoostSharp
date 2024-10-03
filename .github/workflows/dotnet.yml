@@ -79,11 +79,11 @@ jobs:
       run: dotnet pack src/XGBoostSharp/XGBoostSharp.csproj -c Release -p:Platform=x64 --output ${{ env.NuGetDirectory }}
     - name: Add local package source
       run: dotnet nuget add source ${{ env.NuGetDirectory }} --name local
+    - name: Get version of dll
+      run: (Get-Item './build/XGBoostSharp_x64_Release_netstandard2.0/XGBoostSharp.dll').VersionInfo.ProductVersion
     - name: Pack XGBoostSharp-cpu
-      env:
-        GitHubVersion: ${{ github.event.inputs.version }}
       if: ${{ github.event.inputs.version != ''  && github.actor == 'mdabros'}}
-      run: dotnet pack pks/XGBoostSharp-cpu.nupkgproj -c Release -p:Platform=x64 --output ${{ env.NuGetDirectory }}
+      run: nuget pack pkg/XGBoostSharp-cpu.nuspec -Version ${{ env.GitHubVersion }} -OutputDirectory ${{ env.NuGetDirectory }}
     - uses: actions/upload-artifact@v4
       with:
         name: nuget

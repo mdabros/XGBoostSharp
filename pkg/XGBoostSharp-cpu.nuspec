@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>XGBoostSharp-cpu</id>
+    <version>$version$</version>
+    <authors>mdabros</authors>
+    <description>XGBoostSharp for cpu.</description>
+    <dependencies>
+      <dependency id="XGBoostSharp" version="$version$" />
+      <dependency id="libxgboost-2.0.3-linux-x64" version="1.0.1" />
+      <dependency id="libxgboost-2.0.3-osx-x64" version="1.0.0" />
+      <dependency id="libxgboost-2.0.3-win-x64" version="1.0.0" />
+    </dependencies>
+  </metadata>
+</package>
