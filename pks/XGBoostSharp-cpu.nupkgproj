@@ -1,17 +1,16 @@
-<Project Sdk="Microsoft.Build.NoTargets/3.0.0">
-  <Import Project="../src/Directory.Build.props" />
-  
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <TargetFrameworks>$(LibraryTargetFramework)</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <PackageId>XGBoostSharp-cpu</PackageId>
-    <Version>$(Version)</Version>
-    <Authors>$(Authors)</Authors>
+    <Version>$(GitHubVersion)</Version>
+    <Authors>mdabros</Authors>
     <Description>XGBoostSharp for cpu.</Description>
     <PackageType>Dependency</PackageType>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="XGBoostSharp" Version="[$(Version)]" />
+    <PackageReference Include="XGBoostSharp" Version="$(GitHubVersion)" />
     <PackageReference Include="libxgboost-2.0.3-linux-x64" Version="1.0.1" />
     <PackageReference Include="libxgboost-2.0.3-osx-x64" Version="1.0.0" />
     <PackageReference Include="libxgboost-2.0.3-win-x64" Version="1.0.0" />
