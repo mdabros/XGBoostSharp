@@ -77,21 +77,21 @@ jobs:
         global-json-file: global.json
     - name: Pack XGBoostSharp
       run: dotnet pack src/XGBoostSharp/XGBoostSharp.csproj -c Release -p:Platform=x64 --output ${{ env.NuGetDirectory }}
-    - name: Get XGBoostSharp version
-      id: get_version
-      run: |
-        $productVersion = (Get-Item ./build/XGBoostSharp_x64_Release_netstandard2.0/XGBoostSharp.dll).VersionInfo.ProductVersion
-        echo "XGBoostSharp version: $productVersion"
-        echo "XGBoostSharpVersion=$productVersion" >> $GITHUB_ENV
-    - name: Debug XGBoostSharpVersion
-      run: |
-        echo "XGBoostSharpVersion: ${{ steps.get_version.outputs.XGBoostSharpVersion }}"
+    # - name: Get XGBoostSharp version
+    #   id: get_version
+    #   run: |
+    #     $productVersion = (Get-Item ./build/XGBoostSharp_x64_Release_netstandard2.0/XGBoostSharp.dll).VersionInfo.ProductVersion
+    #     echo "XGBoostSharp version: $productVersion"
+    #     echo "XGBoostSharpVersion=$productVersion" >> $GITHUB_ENV
+    # - name: Debug XGBoostSharpVersion
+    #   run: |
+    #     echo "XGBoostSharpVersion: ${{ steps.get_version.outputs.XGBoostSharpVersion }}"
     - name: Add local package source
       run: dotnet nuget add source ${{ env.NuGetDirectory }} --name local
     - name: Pack XGBoostSharp-cpu
       env:
         GitHubVersion: ${{ github.event.inputs.version }}
-        XGBoostSharpVersion: ${{ steps.get_version.outputs.XGBoostSharpVersion }}"
+        XGBoostSharpVersion: (Get-Item ./build/XGBoostSharp_x64_Release_netstandard2.0/XGBoostSharp.dll).VersionInfo.ProductVersion
       run: dotnet pack pks/XGBoostSharp-cpu.nupkgproj -c Release -p:Platform=x64 --output ${{ env.NuGetDirectory }}
     - uses: actions/upload-artifact@v4
       with:
