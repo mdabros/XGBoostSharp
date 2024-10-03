@@ -38,7 +38,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ci", "ci", "{855E48F2-0D87-
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "pkg", "pkg", "{6E23841C-2D67-4B0B-9D6D-E7DD0DF8B0F9}"
 	ProjectSection(SolutionItems) = preProject
-		pkg\XGBoostSharp-cpu.nupkgproj = pkg\XGBoostSharp-cpu.nupkgproj
+		pkg\XGBoostSharp-cpu.nuspec = pkg\XGBoostSharp-cpu.nuspec
 	EndProjectSection
 EndProject
 Global
