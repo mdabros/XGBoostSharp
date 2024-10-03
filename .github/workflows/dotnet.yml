@@ -140,7 +140,7 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         global-json-file: global.json
-    ## - name: Push XGBoostSharp package
-    ##   run: dotnet nuget push ${{ env.NuGetDirectory }}/XGBoostSharp.${{ github.event.inputs.version }}.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
-    ## - name: Push XGBoostSharp-cpu package
-    ##   run: dotnet nuget push ${{ env.NuGetDirectory }}/XGBoostSharp-cpu.${{ github.event.inputs.version }}.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+    - name: Push XGBoostSharp package
+      run: dotnet nuget push ${{ env.NuGetDirectory }}/XGBoostSharp.${{ github.event.inputs.version }}.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+    - name: Push XGBoostSharp-cpu package
+      run: dotnet nuget push ${{ env.NuGetDirectory }}/XGBoostSharp-cpu.${{ github.event.inputs.version }}.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
