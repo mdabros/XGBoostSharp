@@ -78,6 +78,7 @@ jobs:
     - name: Pack XGBoostSharp
       run: dotnet pack src/XGBoostSharp/XGBoostSharp.csproj -c Release -p:Platform=x64 --output ${{ env.NuGetDirectory }}
     - name: Get version of dll
+      shell: pwsh
       run: |
         $version = (Get-Item ./build/XGBoostSharp_x64_Release_netstandard2.0/XGBoostSharp.dll).VersionInfo.ProductVersion
         echo "XGBoostSharpVersion=$version" >> $GITHUB_ENV
