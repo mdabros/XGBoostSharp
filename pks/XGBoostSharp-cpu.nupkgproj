@@ -4,15 +4,15 @@
   <PropertyGroup>
     <TargetFrameworks>$(LibraryTargetFramework)</TargetFrameworks>
     <PackageId>XGBoostSharp-cpu</PackageId>
-    <Version Condition=" '$(GitHubVersion)' == '' ">$(XGBoostSharpVersion)</Version>
-    <Version Condition=" '$(GitHubVersion)' != '' ">$(GitHubVersion)</Version>
+    <XGBoostSharpPackageVersion Condition=" '$(GitHubVersion)' == '' ">$(XGBoostSharpVersion)</XGBoostSharpPackageVersion>
+    <XGBoostSharpPackageVersion Condition=" '$(GitHubVersion)' != '' ">$(GitHubVersion)</XGBoostSharpPackageVersion>
     <Authors>$(Authors)</Authors>
     <Description>XGBoostSharp for cpu.</Description>
     <PackageType>Dependency</PackageType>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="XGBoostSharp" Version="$(Version)" />
+    <PackageReference Include="XGBoostSharp" Version="$(XGBoostSharpPackageVersion)" />
     <PackageReference Include="libxgboost-2.0.3-linux-x64" Version="1.0.1" />
     <PackageReference Include="libxgboost-2.0.3-osx-x64" Version="1.0.0" />
     <PackageReference Include="libxgboost-2.0.3-win-x64" Version="1.0.0" />
