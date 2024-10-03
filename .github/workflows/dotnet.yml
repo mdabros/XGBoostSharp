@@ -84,12 +84,13 @@ jobs:
         $version = (Get-Item ./build/XGBoostSharp_x64_Release_netstandard2.0/XGBoostSharp.dll).VersionInfo.ProductVersion
         echo "XGBoostSharp version: $version"
         echo "XGBoostSharpVersion=$version" >> $GITHUB_ENV
+        echo "XGBoostSharpVersion: $XGBoostSharpVersion"
     - name: Add local package source
       run: dotnet nuget add source ${{ env.NuGetDirectory }} --name local
     - name: Pack XGBoostSharp-cpu
       env:
         GitHubVersion: ${{ github.event.inputs.version }}
-        XGBoostSharpVersion: ${{ env.XGBoostSharpVersion }}
+        XGBoostSharpVersion: $XGBoostSharpVersion
       run: dotnet pack pks/XGBoostSharp-cpu.nupkgproj -c Release -p:Platform=x64 --output ${{ env.NuGetDirectory }}
     - uses: actions/upload-artifact@v4
       with:
