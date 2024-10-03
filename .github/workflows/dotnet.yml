@@ -80,11 +80,13 @@ jobs:
     - name: Get version of dll
       shell: pwsh
       run: |
-        $version = (Get-Item ./build/XGBoostSharp_x64_Release_netstandard2.0/XGBoostSharp.dll).VersionInfo.ProductVersion
-        echo "XGBoostSharpVersion=$version" >> $GITHUB_ENV
-        echo "version is $version" 
+        $version = (Get-Item './build/XGBoostSharp_x64_Release_netstandard2.0/XGBoostSharp.dll').VersionInfo.ProductVersion
+        echo "XGBoostSharpVersion=$version" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+        Write-Host "version is $version"
     - name: Verify XGBoostSharpVersion
       run: echo "XGBoostSharpVersion is ${{ env.XGBoostSharpVersion }}"
+    - name: Output GITHUB_ENV content for debugging
+      run: cat $GITHUB_ENV
     - name: Add local package source
       run: dotnet nuget add source ${{ env.NuGetDirectory }} --name local
     - name: Pack XGBoostSharp-cpu
