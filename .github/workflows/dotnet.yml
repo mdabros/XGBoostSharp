@@ -91,7 +91,7 @@ jobs:
       env:
         GitHubVersion: ${{ github.event.inputs.version }}
         XGBoostSharpVersion: ${{ env.XGBoostSharpVersion }}
-      run: dotnet pack pks/XGBoostSharp-cpu.nupkgproj -c Release -p:Platform=x64 --output ${{ env.NuGetDirectory }} -p:XGBoostSharpPackageVersion=${{ env.XGBoostSharpVersion }}
+      run: dotnet pack pks/XGBoostSharp-cpu.nupkgproj -c Release -p:Platform=x64 --output ${{ env.NuGetDirectory }}
     - uses: actions/upload-artifact@v4
       with:
         name: nuget
