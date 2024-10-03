@@ -1,5 +1,7 @@
-<Project Sdk="Microsoft.Build.NoTargets/3.0.0">
-  
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="../src/Directory.Build.props" />
+
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <PackageId>XGBoostSharp-cpu</PackageId>
@@ -7,6 +9,10 @@
     <Authors>mdabros</Authors>
     <Description>XGBoostSharp for cpu.</Description>
     <PackageType>Dependency</PackageType>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <!-- Disable XML documentation file generation -->
+    <DebugType>none</DebugType>
+    <!-- Disable PDB file generation -->
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,4 +21,8 @@
     <PackageReference Include="libxgboost-2.0.3-osx-x64" Version="1.0.0" />
     <PackageReference Include="libxgboost-2.0.3-win-x64" Version="1.0.0" />
   </ItemGroup>
+
+  <!-- Import necessary targets to avoid MSB4057 error -->
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+
 </Project>
