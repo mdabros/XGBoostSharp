@@ -75,11 +75,13 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         global-json-file: global.json
+    - name: Pack XGBoostSharp
+      run: dotnet pack src/XGBoostSharp/XGBoostSharp.csproj -c Release -p:Platform=x64 --output ${{ env.NuGetDirectory }}
     - name: Get version of dll
-      shell: bash
       run: |
-         version=$(powershell -command "(Get-Item './build/XGBoostSharp_x64_Release_netstandard2.0/XGBoostSharp.dll').VersionInfo.ProductVersion")
-         echo "XGBoostSharpVersion=$version" >> $GITHUB_ENV
+        $version = (Get-Item ./build/XGBoostSharp_x64_Release_netstandard2.0/XGBoostSharp.dll).VersionInfo.ProductVersion
+        echo "XGBoostSharpVersion=$version" >> $GITHUB_ENV
+        echo "version is $version" 
     - name: Verify XGBoostSharpVersion
       run: echo "XGBoostSharpVersion is ${{ env.XGBoostSharpVersion }}"
     - name: Add local package source
