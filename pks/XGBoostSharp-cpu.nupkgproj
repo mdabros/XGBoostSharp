@@ -3,21 +3,14 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <PackageId>XGBoostSharp-cpu</PackageId>
-    <XGBoostSharpPackageVersion Condition=" '$(GitHubVersion)' == '' ">$(XGBoostSharpVersion)</XGBoostSharpPackageVersion>
-    <XGBoostSharpPackageVersion Condition=" '$(GitHubVersion)' != '' ">$(GitHubVersion)</XGBoostSharpPackageVersion>
+    <Version>$(GitHubVersion)</Version>
     <Authors>mdabros</Authors>
     <Description>XGBoostSharp for cpu.</Description>
     <PackageType>Dependency</PackageType>
   </PropertyGroup>
 
-  <Target Name="LogVersions" BeforeTargets="Pack">
-    <Message Importance="high" Text="XGBoostSharpPackageVersion: $(XGBoostSharpPackageVersion)" />
-    <Message Importance="high" Text="XGBoostSharpVersion: $(XGBoostSharpVersion)" />
-    <Message Importance="high" Text="GitHubVersion: $(GitHubVersion)" />
-  </Target>
-
   <ItemGroup>
-    <PackageReference Include="XGBoostSharp" Version="$(XGBoostSharpPackageVersion)" />
+    <PackageReference Include="XGBoostSharp" Version="$(GitHubVersion)" />
     <PackageReference Include="libxgboost-2.0.3-linux-x64" Version="1.0.1" />
     <PackageReference Include="libxgboost-2.0.3-osx-x64" Version="1.0.0" />
     <PackageReference Include="libxgboost-2.0.3-win-x64" Version="1.0.0" />
