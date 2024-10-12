@@ -74,7 +74,7 @@ public class Booster : IDisposable
 
         foreach (var kvp in parameters)
         {
-            string valueAsString = kvp.Value switch
+            var valueAsString = kvp.Value switch
             {
                 int intValue => intValue.ToString(),
                 float floatValue => floatValue.ToString(nfi),
@@ -97,7 +97,7 @@ public class Booster : IDisposable
     {
         foreach (var kvp in parameters)
         {
-            string valueAsString = kvp.Value switch
+            var valueAsString = kvp.Value switch
             {
                 int intValue => intValue.ToString(),
                 float floatValue => floatValue.ToString(CultureInfo.InvariantCulture),
