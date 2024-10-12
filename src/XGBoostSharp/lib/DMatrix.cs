@@ -43,7 +43,8 @@ public class DMatrix : IDisposable
     {
         ulong lengthULong;
         IntPtr result;
-        var output = NativeMethods.XGDMatrixGetFloatInfo(m_handle.DangerousGetHandle(), field, out lengthULong, out result);
+        var output = NativeMethods.XGDMatrixGetFloatInfo(Handle,
+            field, out lengthULong, out result);
 
         ThrowIfError(output);
 
@@ -63,7 +64,7 @@ public class DMatrix : IDisposable
     void SetFloatInfo(string field, float[] floatInfo)
     {
         var length = (ulong)floatInfo.Length;
-        var output = NativeMethods.XGDMatrixSetFloatInfo(m_handle.DangerousGetHandle(), field, floatInfo, length);
+        var output = NativeMethods.XGDMatrixSetFloatInfo(Handle, field, floatInfo, length);
         ThrowIfError(output);
     }
 

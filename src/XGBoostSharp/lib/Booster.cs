@@ -12,6 +12,8 @@ public class Booster : IDisposable
     const int NormalPrediction = 0;  // optionMask value for XGBoosterPredict
     int m_numClass = 1;
 
+    public IntPtr Handle => m_handle.DangerousGetHandle();
+
     public Booster(IDictionary<string, object> parameters, DMatrix train)
     {
         var dmats = new[] { train.Handle };
@@ -39,14 +41,14 @@ public class Booster : IDisposable
 
     public void Update(DMatrix train, int iteration) =>
         ThrowIfError(NativeMethods.XGBoosterUpdateOneIter(
-            m_handle.DangerousGetHandle(), iteration, train.Handle));
+            Handle, iteration, train.Handle));
 
     public float[] Predict(DMatrix test)
     {
         ulong predsLen;
         IntPtr predsPtr;
         ThrowIfError(NativeMethods.XGBoosterPredict(
-            m_handle.DangerousGetHandle(), test.Handle, NormalPrediction,
+            Handle, test.Handle, NormalPrediction,
                 ntreeLimit: 0, training: 0, out predsLen, out predsPtr));
         return GetPredictionsArray(predsPtr, predsLen);
     }
@@ -111,17 +113,17 @@ public class Booster : IDisposable
     }
 
     public void SetParameter(string name, string val) =>
-        ThrowIfError(NativeMethods.XGBoosterSetParam(m_handle.DangerousGetHandle(), name, val));
+        ThrowIfError(NativeMethods.XGBoosterSetParam(Handle, name, val));
 
     public void Save(string fileName) =>
-        ThrowIfError(NativeMethods.XGBoosterSaveModel(m_handle.DangerousGetHandle(), fileName));
+        ThrowIfError(NativeMethods.XGBoosterSaveModel(Handle, fileName));
 
     public string[] DumpModelEx(string fmap, int with_stats)
     {
         int length;
         IntPtr treePtr;
         var intptrSize = IntPtr.Size;
-        ThrowIfError(NativeMethods.XGBoosterDumpModel(m_handle.DangerousGetHandle(),
+        ThrowIfError(NativeMethods.XGBoosterDumpModel(Handle,
             fmap, with_stats, out length, out treePtr));
         var trees = new string[length];
         var handle2 = GCHandle.Alloc(treePtr, GCHandleType.Pinned);
