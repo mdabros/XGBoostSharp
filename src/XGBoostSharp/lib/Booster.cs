@@ -8,17 +8,18 @@ namespace XGBoostSharp.lib;
 
 public class Booster : IDisposable
 {
-    readonly IntPtr m_handle;
+    readonly SafeBoosterHandle m_handle;
     const int NormalPrediction = 0;  // optionMask value for XGBoosterPredict
     int m_numClass = 1;
 
-    public IntPtr Handle => m_handle;
+    public IntPtr Handle => m_handle.DangerousGetHandle();
 
     public Booster(IDictionary<string, object> parameters, DMatrix train)
     {
         var dmats = new[] { train.Handle };
         var length = unchecked((ulong)dmats.Length);
-        ThrowIfError(NativeMethods.XGBoosterCreate(dmats, length, out m_handle));
+        ThrowIfError(NativeMethods.XGBoosterCreate(dmats, length, out var handle));
+        m_handle = new SafeBoosterHandle(handle);
 
         SetParameters(parameters);
     }
@@ -27,16 +28,15 @@ public class Booster : IDisposable
     {
         var dmats = new[] { train.Handle };
         var length = unchecked((ulong)dmats.Length);
-        var output = NativeMethods.XGBoosterCreate(dmats, length, out m_handle);
-        ThrowIfError(output);
+        ThrowIfError(NativeMethods.XGBoosterCreate(dmats, length, out var handle));
+        m_handle = new SafeBoosterHandle(handle);
     }
 
     public Booster(string fileName)
     {
-        IntPtr tempPtr;
-        ThrowIfError(NativeMethods.XGBoosterCreate(null, 0, out tempPtr));
-        ThrowIfError(NativeMethods.XGBoosterLoadModel(tempPtr, fileName));
-        m_handle = tempPtr;
+        ThrowIfError(NativeMethods.XGBoosterCreate(null, 0, out var handle));
+        ThrowIfError(NativeMethods.XGBoosterLoadModel(handle, fileName));
+        m_handle = new SafeBoosterHandle(handle);
     }
 
     public void Update(DMatrix train, int iteration) =>
@@ -47,7 +47,7 @@ public class Booster : IDisposable
         ulong predsLen;
         IntPtr predsPtr;
         ThrowIfError(NativeMethods.XGBoosterPredict(
-            m_handle, test.Handle, NormalPrediction, ntreeLimit: 0, training: 0, out predsLen, out predsPtr));
+            m_handle.DangerousGetHandle(), test.Handle, NormalPrediction, ntreeLimit: 0, training: 0, out predsLen, out predsPtr));
         return GetPredictionsArray(predsPtr, predsLen);
     }
 
@@ -111,17 +111,17 @@ public class Booster : IDisposable
     }
 
     public void SetParameter(string name, string val) =>
-        ThrowIfError(NativeMethods.XGBoosterSetParam(m_handle, name, val));
+        ThrowIfError(NativeMethods.XGBoosterSetParam(m_handle.DangerousGetHandle(), name, val));
 
     public void Save(string fileName) =>
-        NativeMethods.XGBoosterSaveModel(m_handle, fileName);
+        NativeMethods.XGBoosterSaveModel(m_handle.DangerousGetHandle(), fileName);
 
     public string[] DumpModelEx(string fmap, int with_stats)
     {
         int length;
         IntPtr treePtr;
         var intptrSize = IntPtr.Size;
-        NativeMethods.XGBoosterDumpModel(m_handle, fmap, with_stats, out length, out treePtr);
+        NativeMethods.XGBoosterDumpModel(m_handle.DangerousGetHandle(), fmap, with_stats, out length, out treePtr);
         var trees = new string[length];
         var handle2 = GCHandle.Alloc(treePtr, GCHandleType.Pinned);
 
@@ -135,15 +135,17 @@ public class Booster : IDisposable
         return trees;
     }
 
-    void DisposeManagedResources() =>
-        NativeMethods.XGBoosterFree(m_handle);
-
     static void ThrowIfError(int output)
     {
         if (output == -1)
         {
             throw new DllFailException(NativeMethods.XGBGetLastError());
         }
+    }
+
+    void DisposeManagedResources()
+    {
+        m_handle?.Dispose();
     }
 
     #region Dispose
@@ -181,3 +183,4 @@ public class Booster : IDisposable
     volatile bool m_disposed = false;
     #endregion
 }
+
