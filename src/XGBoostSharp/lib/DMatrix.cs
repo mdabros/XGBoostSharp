@@ -6,10 +6,10 @@ namespace XGBoostSharp.lib;
 
 public class DMatrix : IDisposable
 {
-    readonly IntPtr m_handle;
+    readonly SafeDMatrixHandle m_safeDMatrixHandle;
     readonly float m_missing = -1.0F; // arbitrary value used to represent a missing value
 
-    public IntPtr Handle => m_handle;
+    public IntPtr Handle => m_safeDMatrixHandle.DangerousGetHandle();
 
     public float[] Label
     {
@@ -25,9 +25,10 @@ public class DMatrix : IDisposable
     public DMatrix(float[] data1D, ulong nrows, ulong ncols, float[] labels = null)
     {
         var output = NativeMethods.XGDMatrixCreateFromMat(
-            data1D, nrows, ncols, m_missing, out m_handle);
+            data1D, nrows, ncols, m_missing, out var handle);
 
         ThrowIfError(output);
+        m_safeDMatrixHandle = new SafeDMatrixHandle(handle);
 
         if (labels != null)
         {
@@ -42,7 +43,8 @@ public class DMatrix : IDisposable
     {
         ulong lengthULong;
         IntPtr result;
-        var output = NativeMethods.XGDMatrixGetFloatInfo(m_handle, field, out lengthULong, out result);
+        var output = NativeMethods.XGDMatrixGetFloatInfo(Handle,
+            field, out lengthULong, out result);
 
         ThrowIfError(output);
 
@@ -62,7 +64,7 @@ public class DMatrix : IDisposable
     void SetFloatInfo(string field, float[] floatInfo)
     {
         var length = (ulong)floatInfo.Length;
-        var output = NativeMethods.XGDMatrixSetFloatInfo(m_handle, field, floatInfo, length);
+        var output = NativeMethods.XGDMatrixSetFloatInfo(Handle, field, floatInfo, length);
         ThrowIfError(output);
     }
 
@@ -76,8 +78,7 @@ public class DMatrix : IDisposable
 
     void DisposeManagedResources()
     {
-        var output = NativeMethods.XGDMatrixFree(m_handle);
-        ThrowIfError(output);
+        m_safeDMatrixHandle?.Dispose();
     }
 
     #region Dispose
