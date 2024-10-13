@@ -88,4 +88,14 @@ public static class NativeMethods
         IntPtr handle, string fmap,
         int with_stats, out int out_len,
         out IntPtr dumpStr);
+
+    [DllImport(XGBoostNtvDllName)]
+    public static extern int XGBoosterFeatureScore(
+        IntPtr handle,
+        string config,
+        out ulong out_n_features,
+        out IntPtr out_features,
+        out ulong out_dim,
+        out IntPtr out_shape,
+        out IntPtr out_scores);
 }
