@@ -3,6 +3,8 @@ using System.Runtime.InteropServices;
 
 namespace XGBoostSharp.lib;
 
+// See: https://learn.microsoft.com/en-us/dotnet/standard/native-interop/best-practices
+// See: https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/unmanaged
 public class SafeBoosterHandle : SafeHandle
 {
     public SafeBoosterHandle() : base(IntPtr.Zero, true) { }
