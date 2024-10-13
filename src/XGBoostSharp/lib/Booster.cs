@@ -138,6 +138,101 @@ public class Booster : IDisposable
         return trees;
     }
 
+    public Dictionary<string, object> GetScore(string fmap = "", string importanceType = "weight")
+    {
+        fmap = System.IO.Path.GetFullPath(fmap);
+
+        var result = NativeMethods.XGBoosterFeatureScore(
+            Handle,
+            MakeJcargs(importanceType, fmap),
+            out var nOutFeatures,
+            out var featuresHandle,
+            out var outDim,
+            out var shapeHandle,
+            out var scoresHandle
+        );
+
+        using var features = new SafeNativeMemoryHandle(featuresHandle);
+        using var shape = new SafeNativeMemoryHandle(shapeHandle);
+        using var scores = new SafeNativeMemoryHandle(scoresHandle);
+
+        ThrowIfError(result);
+
+        var featuresArray = FromCStrToPyStr(features, nOutFeatures);
+        var scoresArray = PredictionOutput(shape, outDim, scores, false);
+
+        var results = new Dictionary<string, object>();
+        if (scoresArray.GetLength(1) > 1)
+        {
+            for (var i = 0; i < featuresArray.Length; i++)
+            {
+                var scoreList = new List<float>();
+                for (var j = 0; j < scoresArray.GetLength(1); j++)
+                {
+                    scoreList.Add(scoresArray[i, j]);
+                }
+                results[featuresArray[i]] = scoreList;
+            }
+        }
+        else
+        {
+            for (var i = 0; i < featuresArray.Length; i++)
+            {
+                results[featuresArray[i]] = scoresArray[i, 0];
+            }
+        }
+
+        return results;
+    }
+
+    // TODO: Implement or delete
+    static string MakeJcargs(string importanceType, string fmap)
+    {
+        // Implement the logic to create the JSON config string
+        // This is a placeholder implementation
+        return $"{{\"importance_type\":\"{importanceType}\",\"feature_map\":\"{fmap}\"}}";
+    }
+
+    // TODO: Implement or delete
+    static string[] FromCStrToPyStr(SafeHandle features, ulong nOutFeatures)
+    {
+        // Implement the logic to convert C strings to a string array
+        // This is a placeholder implementation
+        var result = new string[nOutFeatures];
+        for (ulong i = 0; i < nOutFeatures; i++)
+        {
+            IntPtr ptr = Marshal.ReadIntPtr(features.DangerousGetHandle(), (int)(i * (ulong)IntPtr.Size));
+            result[i] = Marshal.PtrToStringAnsi(ptr);
+        }
+        return result;
+    }
+
+    // TODO: Implement or delete
+    static float[,] PredictionOutput(SafeHandle shape, ulong outDim, SafeHandle scores, bool isMultiClass)
+    {
+        // Implement the logic to convert the scores to a 2D float array
+        // This is a placeholder implementation
+        var shapeArr = new ulong[outDim];
+        for (var i = 0; i < (int)outDim; i++)
+        {
+            shapeArr[i] = (ulong)Marshal.ReadInt64(shape.DangerousGetHandle(), i * sizeof(long));
+        }
+
+        var result = new float[shapeArr[0], shapeArr[1]];
+        var scoresArr = new float[shapeArr[0] * shapeArr[1]];
+        Marshal.Copy(scores.DangerousGetHandle(), scoresArr, 0, scoresArr.Length);
+
+        for (ulong i = 0; i < shapeArr[0]; i++)
+        {
+            for (ulong j = 0; j < shapeArr[1]; j++)
+            {
+                result[i, j] = scoresArr[i * shapeArr[1] + j];
+            }
+        }
+
+        return result;
+    }
+
     static void ThrowIfError(int output)
     {
         if (output == -1)
