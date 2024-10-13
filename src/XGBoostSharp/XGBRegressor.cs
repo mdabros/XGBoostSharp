@@ -169,7 +169,7 @@ public class XGBRegressor : XGBModelBase
     /// </returns>
     public float[] Predict(float[][] data)
     {
-        using var test = new DMatrix(data);
-        return m_booster.Predict(test);
+        using var dmatrix = new DMatrix(data);
+        return m_booster.Predict(dmatrix);
     }
 }
