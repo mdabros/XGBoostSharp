@@ -16,6 +16,7 @@ public class SafeNativeMemoryHandle : SafeHandle
     {
         if (!IsInvalid)
         {
+            // Ensure this actually frees what is allocated by XGBoosterFeatureScore.
             Marshal.FreeHGlobal(handle);
         }
         return true;
