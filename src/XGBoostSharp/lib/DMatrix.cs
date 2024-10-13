@@ -6,10 +6,10 @@ namespace XGBoostSharp.lib;
 
 public class DMatrix : IDisposable
 {
-    readonly SafeDMatrixHandle m_handle;
+    readonly SafeDMatrixHandle m_safeDMatrixHandle;
     readonly float m_missing = -1.0F; // arbitrary value used to represent a missing value
 
-    public IntPtr Handle => m_handle.DangerousGetHandle();
+    public IntPtr Handle => m_safeDMatrixHandle.DangerousGetHandle();
 
     public float[] Label
     {
@@ -28,7 +28,7 @@ public class DMatrix : IDisposable
             data1D, nrows, ncols, m_missing, out var handle);
 
         ThrowIfError(output);
-        m_handle = new SafeDMatrixHandle(handle);
+        m_safeDMatrixHandle = new SafeDMatrixHandle(handle);
 
         if (labels != null)
         {
@@ -78,7 +78,7 @@ public class DMatrix : IDisposable
 
     void DisposeManagedResources()
     {
-        m_handle?.Dispose();
+        m_safeDMatrixHandle?.Dispose();
     }
 
     #region Dispose

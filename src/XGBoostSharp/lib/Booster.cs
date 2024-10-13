@@ -8,18 +8,18 @@ namespace XGBoostSharp.lib;
 
 public class Booster : IDisposable
 {
-    readonly SafeBoosterHandle m_handle;
+    readonly SafeBoosterHandle m_safeBoosterHandle;
     const int NormalPrediction = 0;  // optionMask value for XGBoosterPredict
     int m_numClass = 1;
 
-    public IntPtr Handle => m_handle.DangerousGetHandle();
+    public IntPtr Handle => m_safeBoosterHandle.DangerousGetHandle();
 
     public Booster(IDictionary<string, object> parameters, DMatrix train)
     {
         var dmats = new[] { train.Handle };
         var length = unchecked((ulong)dmats.Length);
         ThrowIfError(NativeMethods.XGBoosterCreate(dmats, length, out var handle));
-        m_handle = new SafeBoosterHandle(handle);
+        m_safeBoosterHandle = new SafeBoosterHandle(handle);
 
         SetParameters(parameters);
     }
@@ -29,14 +29,14 @@ public class Booster : IDisposable
         var dmats = new[] { train.Handle };
         var length = unchecked((ulong)dmats.Length);
         ThrowIfError(NativeMethods.XGBoosterCreate(dmats, length, out var handle));
-        m_handle = new SafeBoosterHandle(handle);
+        m_safeBoosterHandle = new SafeBoosterHandle(handle);
     }
 
     public Booster(string fileName)
     {
         ThrowIfError(NativeMethods.XGBoosterCreate(null, 0, out var handle));
         ThrowIfError(NativeMethods.XGBoosterLoadModel(handle, fileName));
-        m_handle = new SafeBoosterHandle(handle);
+        m_safeBoosterHandle = new SafeBoosterHandle(handle);
     }
 
     public void Update(DMatrix train, int iteration) =>
@@ -148,7 +148,7 @@ public class Booster : IDisposable
 
     void DisposeManagedResources()
     {
-        m_handle?.Dispose();
+        m_safeBoosterHandle?.Dispose();
     }
 
     #region Dispose
