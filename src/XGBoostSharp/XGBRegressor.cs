@@ -137,6 +137,9 @@ public class XGBRegressor : XGBModelBase
     public static XGBRegressor LoadFromFile(string fileName) =>
         new() { m_booster = new Booster(fileName) };
 
+    public static XGBRegressor LoadFromByteArray(byte[] bytes) =>
+        new() { m_booster = new Booster(bytes) };
+
     public XGBRegressor(IDictionary<string, object> p_parameters) =>
         m_parameters = p_parameters;
 

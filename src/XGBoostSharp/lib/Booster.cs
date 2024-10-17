@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Runtime.InteropServices;
+using System.Text.Json;
 using static XGBoostSharp.lib.ParameterNames;
 
 namespace XGBoostSharp.lib;
@@ -37,6 +38,30 @@ public class Booster : IDisposable
         ThrowIfError(NativeMethods.XGBoosterCreate(null, 0, out var handle));
         ThrowIfError(NativeMethods.XGBoosterLoadModel(handle, fileName));
         m_safeBoosterHandle = new SafeBoosterHandle(handle);
+    }
+
+    public Booster(byte[] bytes)
+    {
+        var handle = Marshal.AllocHGlobal(bytes.Length);
+        Marshal.Copy(bytes, 0, handle, bytes.Length);
+        ThrowIfError(NativeMethods.XGBoosterCreate(null, 0, out var boosterHandle));
+        ThrowIfError(NativeMethods.XGBoosterLoadModelFromBuffer(boosterHandle, handle, bytes.Length));
+        m_safeBoosterHandle = new SafeBoosterHandle(boosterHandle);
+        Marshal.FreeHGlobal(handle);
+    }
+
+    public byte[] SaveRaw(ModelFormat rawFormat = ModelFormat.Ubj)
+    {
+        ulong outLen;
+        IntPtr outDptr;
+        var config = JsonSerializer.SerializeToUtf8Bytes(new { format = rawFormat.ToLowerString() });
+        ThrowIfError(NativeMethods.XGBoosterSaveModelToBuffer(Handle, config, out outLen, out outDptr));
+
+        var length = unchecked((int)outLen);
+        var buffer = new byte[length];
+        Marshal.Copy(outDptr, buffer, 0, length);
+
+        return buffer;
     }
 
     public void Update(DMatrix train, int iteration) =>

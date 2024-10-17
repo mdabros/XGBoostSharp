@@ -143,6 +143,9 @@ public class XGBClassifier : XGBModelBase
     public static XGBClassifier LoadFromFile(string fileName) =>
         new() { m_booster = new Booster(fileName) };
 
+    public static XGBClassifier LoadFromByteArray(byte[] bytes) =>
+        new() { m_booster = new Booster(bytes) };
+
     public XGBClassifier(IDictionary<string, object> p_parameters) =>
         m_parameters = p_parameters;
 
