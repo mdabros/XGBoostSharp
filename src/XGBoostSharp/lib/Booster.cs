@@ -42,12 +42,22 @@ public class Booster : IDisposable
 
     public Booster(byte[] bytes)
     {
-        var handle = Marshal.AllocHGlobal(bytes.Length);
-        Marshal.Copy(bytes, 0, handle, bytes.Length);
-        ThrowIfError(NativeMethods.XGBoosterCreate(null, 0, out var boosterHandle));
-        ThrowIfError(NativeMethods.XGBoosterLoadModelFromBuffer(boosterHandle, handle, bytes.Length));
-        m_safeBoosterHandle = new SafeBoosterHandle(boosterHandle);
-        Marshal.FreeHGlobal(handle);
+        IntPtr handle = IntPtr.Zero;
+        try
+        {
+            handle = Marshal.AllocHGlobal(bytes.Length);
+            Marshal.Copy(bytes, 0, handle, bytes.Length);
+            ThrowIfError(NativeMethods.XGBoosterCreate(null, 0, out var boosterHandle));
+            ThrowIfError(NativeMethods.XGBoosterLoadModelFromBuffer(boosterHandle, handle, bytes.Length));
+            m_safeBoosterHandle = new SafeBoosterHandle(boosterHandle);
+        }
+        finally
+        {
+            if (handle != IntPtr.Zero)
+            {
+                Marshal.FreeHGlobal(handle);
+            }
+        }
     }
 
     public byte[] SaveRaw(ModelFormat rawFormat = ModelFormat.Ubj)
