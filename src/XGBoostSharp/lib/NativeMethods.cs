@@ -78,6 +78,14 @@ public static class NativeMethods
         IntPtr bHandle, string fileName);
 
     [DllImport(XGBoostNtvDllName)]
+    public static extern int XGBoosterLoadModelFromBuffer(
+        IntPtr bHandle, IntPtr buffer, int length);
+
+    [DllImport(XGBoostNtvDllName)]
+    public static extern int XGBoosterSaveModelToBuffer(
+        IntPtr bHandle, byte[] jsonConfig, out ulong outLen, out IntPtr outDptr);
+
+    [DllImport(XGBoostNtvDllName)]
     public static extern int XGDMatrixCreateFromFile(
         string fname, int silent, out IntPtr DMtrxHandle);
 

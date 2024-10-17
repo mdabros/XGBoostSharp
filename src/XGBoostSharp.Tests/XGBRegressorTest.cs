@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using XGBoostSharp.lib;
 using static XGBoostSharp.Parameters;
 
 namespace XGBoostSharp.Test;
@@ -47,6 +48,25 @@ public class XGBRegressorTest
         sut.SaveModelToFile(TEST_FILE);
 
         var sutLoaded = XGBRegressor.LoadFromFile(TEST_FILE);
+        var actual = sutLoaded.Predict(dataTest);
+
+        TestUtils.AssertAreEqual(expected, actual);
+    }
+
+    [TestMethod]
+    public void XGBClassifierTest_SaveAndLoadRaw()
+    {
+        var dataTrain = TestUtils.DataTrain;
+        var labelsTrain = TestUtils.LabelsTrain;
+        var dataTest = TestUtils.DataTest;
+
+        using var sut = CreateSut();
+        sut.Fit(dataTrain, labelsTrain);
+
+        var expected = sut.Predict(dataTest);
+        var savedData = sut.SaveModelToByteArray(ModelFormat.Ubj);
+
+        var sutLoaded = XGBClassifier.LoadFromByteArray(savedData);
         var actual = sutLoaded.Predict(dataTest);
 
         TestUtils.AssertAreEqual(expected, actual);
