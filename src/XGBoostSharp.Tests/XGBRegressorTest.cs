@@ -54,7 +54,9 @@ public class XGBRegressorTest
     }
 
     [TestMethod]
-    public void XGBClassifierTest_SaveAndLoadRaw()
+    [DataRow(ModelFormat.Json)]
+    [DataRow(ModelFormat.Ubj)]
+    public void XGBRegressorTest_SaveAndLoadRaw(ModelFormat format)
     {
         var dataTrain = TestUtils.DataTrain;
         var labelsTrain = TestUtils.LabelsTrain;
@@ -64,9 +66,9 @@ public class XGBRegressorTest
         sut.Fit(dataTrain, labelsTrain);
 
         var expected = sut.Predict(dataTest);
-        var savedData = sut.SaveModelToByteArray(ModelFormat.Ubj);
+        var savedData = sut.SaveModelToByteArray(format);
 
-        var sutLoaded = XGBClassifier.LoadFromByteArray(savedData);
+        var sutLoaded = XGBRegressor.LoadFromByteArray(savedData);
         var actual = sutLoaded.Predict(dataTest);
 
         TestUtils.AssertAreEqual(expected, actual);

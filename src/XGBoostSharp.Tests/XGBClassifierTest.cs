@@ -71,7 +71,9 @@ public class XGBClassifierTest
     }
 
     [TestMethod]
-    public void XGBClassifierTest_SaveAndLoadRaw()
+    [DataRow(ModelFormat.Json)]
+    [DataRow(ModelFormat.Ubj)]
+    public void XGBClassifierTest_SaveAndLoadRaw(ModelFormat format)
     {
         var dataTrain = TestUtils.DataTrain;
         var labelsTrain = TestUtils.LabelsTrain;
@@ -81,7 +83,7 @@ public class XGBClassifierTest
         sut.Fit(dataTrain, labelsTrain);
 
         var expected = sut.PredictProbability(dataTest);
-        var savedData = sut.SaveModelToByteArray(ModelFormat.Json);
+        var savedData = sut.SaveModelToByteArray(format);
 
         var sutLoaded = XGBClassifier.LoadFromByteArray(savedData);
         var actual = sutLoaded.PredictProbability(dataTest);
