@@ -1,4 +1,4 @@
-namespace XGBoostSharp.lib;
+﻿namespace XGBoostSharp.lib;
 
 public enum ModelFormat
 {
