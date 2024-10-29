@@ -56,7 +56,7 @@ public class XGBRegressorTest
     [TestMethod]
     [DataRow(ModelFormat.Json)]
     [DataRow(ModelFormat.Ubj)]
-    public void XGBRegressorTest_SaveAndLoadRaw(ModelFormat format)
+    public void XGBRegressorTest_SaveAndLoadRaw(string format)
     {
         var dataTrain = TestUtils.DataTrain;
         var labelsTrain = TestUtils.LabelsTrain;

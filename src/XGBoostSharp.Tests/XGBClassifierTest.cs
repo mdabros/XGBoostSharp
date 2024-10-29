@@ -73,7 +73,7 @@ public class XGBClassifierTest
     [TestMethod]
     [DataRow(ModelFormat.Json)]
     [DataRow(ModelFormat.Ubj)]
-    public void XGBClassifierTest_SaveAndLoadRaw(ModelFormat format)
+    public void XGBClassifierTest_SaveAndLoadRaw(string format)
     {
         var dataTrain = TestUtils.DataTrain;
         var labelsTrain = TestUtils.LabelsTrain;

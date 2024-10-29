@@ -42,29 +42,19 @@ public class Booster : IDisposable
 
     public Booster(byte[] bytes)
     {
-        IntPtr handle = IntPtr.Zero;
-        try
-        {
-            handle = Marshal.AllocHGlobal(bytes.Length);
-            Marshal.Copy(bytes, 0, handle, bytes.Length);
-            ThrowIfError(NativeMethods.XGBoosterCreate(null, 0, out var boosterHandle));
-            ThrowIfError(NativeMethods.XGBoosterLoadModelFromBuffer(boosterHandle, handle, bytes.Length));
-            m_safeBoosterHandle = new SafeBoosterHandle(boosterHandle);
-        }
-        finally
-        {
-            if (handle != IntPtr.Zero)
-            {
-                Marshal.FreeHGlobal(handle);
-            }
-        }
+        using var handle = new SafeBufferHandle(bytes.Length);
+        Marshal.Copy(bytes, 0, handle.DangerousGetHandle(), bytes.Length);
+        ThrowIfError(NativeMethods.XGBoosterCreate(null, 0, out var boosterHandle));
+        ThrowIfError(NativeMethods.XGBoosterLoadModelFromBuffer(boosterHandle,
+            handle.DangerousGetHandle(), bytes.Length));
+        m_safeBoosterHandle = new SafeBoosterHandle(boosterHandle);
     }
 
-    public byte[] SaveRaw(ModelFormat rawFormat = ModelFormat.Ubj)
+    public byte[] SaveRaw(string rawFormat = ModelFormat.Ubj)
     {
         ulong outLen;
         IntPtr outDptr;
-        var config = JsonSerializer.SerializeToUtf8Bytes(new { format = rawFormat.ToLowerString() });
+        var config = JsonSerializer.SerializeToUtf8Bytes(new { format = rawFormat });
         ThrowIfError(NativeMethods.XGBoosterSaveModelToBuffer(Handle, config, out outLen, out outDptr));
 
         var length = unchecked((int)outLen);

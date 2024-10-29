@@ -1,15 +1,7 @@
 ﻿namespace XGBoostSharp.lib;
 
-public enum ModelFormat
+public static class ModelFormat
 {
-    Json,
-    Ubj
-}
-
-public static class ModelFormatExtensions
-{
-    public static string ToLowerString(this ModelFormat format)
-    {
-        return format.ToString().ToLower();
-    }
+    public const string Json = "json";
+    public const string Ubj = "ubj";
 }
