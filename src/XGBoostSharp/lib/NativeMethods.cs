@@ -99,5 +99,5 @@ public static class NativeMethods
     public static extern int XGBoosterDumpModel(
         SafeBoosterHandle handle, string fmap,
         int with_stats, out int out_len,
-        out IntPtr dumpStr);
+        out SafeBufferHandle dumpStr);
 }
