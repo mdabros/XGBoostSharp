@@ -5,6 +5,7 @@
     <PackageId>XGBoostSharp</PackageId>
     <Description>.Net wrapper for the XGBoost.</Description>
     <PackageTags>xgboost machine-learning classification regression machine learning</PackageTags>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>

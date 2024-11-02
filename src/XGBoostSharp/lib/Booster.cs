@@ -74,19 +74,19 @@ public class Booster : IDisposable
         return GetPredictionsArray(predsHandle, predsLen);
     }
 
-    public static float[] GetPredictionsArray(SafeBufferHandle predsHandle, ulong predsLen)
+    public unsafe static float[] GetPredictionsArray(
+        SafeBufferHandle predsHandle, ulong predsLen)
     {
         var length = unchecked((int)predsLen);
         var preds = new float[length];
+        var ptr = (byte*)predsHandle.DangerousGetHandle();
+
         for (var i = 0; i < length; i++)
         {
-            var floatBytes = new byte[4];
-            for (var b = 0; b < 4; b++)
-            {
-                floatBytes[b] = Marshal.ReadByte(predsHandle.DangerousGetHandle(), 4 * i + b);
-            }
-            preds[i] = BitConverter.ToSingle(floatBytes, 0);
+            var span = new ReadOnlySpan<byte>(ptr + 4 * i, 4);
+            preds[i] = MemoryMarshal.Read<float>(span);
         }
+
         return preds;
     }
 
