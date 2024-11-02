@@ -48,8 +48,9 @@ public static class NativeMethods
 
     [DllImport(XGBoostNtvDllName)]
     public static extern int XGBoosterCreate(
-        IntPtr[] dmats,
-        ulong len, out SafeBoosterHandle handle);
+        // array of safehandles is not supported, stick with IntPtr.
+        IntPtr[] dmats, ulong len,
+        out SafeBoosterHandle handle);
 
     [DllImport(XGBoostNtvDllName)]
     public static extern int XGBoosterFree(IntPtr handle);
