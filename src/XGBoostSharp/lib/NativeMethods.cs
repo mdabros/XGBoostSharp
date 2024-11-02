@@ -48,7 +48,7 @@ public static class NativeMethods
 
     [DllImport(XGBoostNtvDllName)]
     public static extern int XGBoosterCreate(
-        SafeDMatrixHandle[] dmats,
+        IntPtr[] dmats,
         ulong len, out SafeBoosterHandle handle);
 
     [DllImport(XGBoostNtvDllName)]
@@ -81,7 +81,8 @@ public static class NativeMethods
 
     [DllImport(XGBoostNtvDllName)]
     public static extern int XGBoosterLoadModelFromBuffer(
-        IntPtr bHandle, IntPtr buffer, int length);
+        SafeBoosterHandle bHandle, SafeBufferHandle buffer,
+        int length);
 
     [DllImport(XGBoostNtvDllName)]
     public static extern int XGBoosterSaveModelToBuffer(

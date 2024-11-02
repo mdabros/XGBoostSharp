@@ -17,7 +17,7 @@ public class Booster : IDisposable
 
     public Booster(IDictionary<string, object> parameters, DMatrix train)
     {
-        var dmats = new[] { train.Handle };
+        var dmats = new[] { train.DangerousHandle };
         var length = unchecked((ulong)dmats.Length);
         ThrowIfError(NativeMethods.XGBoosterCreate(dmats, length, out var handle));
         m_safeBoosterHandle = handle;
@@ -27,7 +27,7 @@ public class Booster : IDisposable
 
     public Booster(DMatrix train)
     {
-        var dmats = new[] { train.Handle };
+        var dmats = new[] { train.DangerousHandle };
         var length = unchecked((ulong)dmats.Length);
         ThrowIfError(NativeMethods.XGBoosterCreate(dmats, length, out var handle));
         m_safeBoosterHandle = handle;
@@ -45,8 +45,8 @@ public class Booster : IDisposable
         using var handle = new SafeBufferHandle(bytes.Length);
         Marshal.Copy(bytes, 0, handle.DangerousGetHandle(), bytes.Length);
         ThrowIfError(NativeMethods.XGBoosterCreate(null, 0, out var boosterHandle));
-        ThrowIfError(NativeMethods.XGBoosterLoadModelFromBuffer(boosterHandle.DangerousGetHandle(),
-            handle.DangerousGetHandle(), bytes.Length));
+        ThrowIfError(NativeMethods.XGBoosterLoadModelFromBuffer(boosterHandle,
+            handle, bytes.Length));
         m_safeBoosterHandle = boosterHandle;
     }
 
