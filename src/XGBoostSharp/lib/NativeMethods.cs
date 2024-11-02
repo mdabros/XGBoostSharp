@@ -31,7 +31,7 @@ public static class NativeMethods
     [DllImport(XGBoostNtvDllName)]
     public static extern int XGDMatrixCreateFromMat(
         float[] data, ulong nrow, ulong ncol,
-        float missing, out IntPtr handle);
+        float missing, out SafeDMatrixHandle handle);
 
     [DllImport(XGBoostNtvDllName)]
     public static extern int XGDMatrixFree(IntPtr handle);

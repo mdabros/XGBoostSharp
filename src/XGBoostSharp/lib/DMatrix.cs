@@ -25,10 +25,9 @@ public class DMatrix : IDisposable
     public DMatrix(float[] data1D, ulong nrows, ulong ncols, float[] labels = null)
     {
         var output = NativeMethods.XGDMatrixCreateFromMat(
-            data1D, nrows, ncols, m_missing, out var handle);
+            data1D, nrows, ncols, m_missing, out m_safeDMatrixHandle);
 
         ThrowIfError(output);
-        m_safeDMatrixHandle = new SafeDMatrixHandle(handle);
 
         if (labels != null)
         {
