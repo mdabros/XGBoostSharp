@@ -9,7 +9,7 @@ public class DMatrix : IDisposable
     readonly SafeDMatrixHandle m_safeDMatrixHandle;
     readonly float m_missing = -1.0F; // arbitrary value used to represent a missing value
 
-    public IntPtr Handle => m_safeDMatrixHandle.DangerousGetHandle();
+    public SafeDMatrixHandle Handle => m_safeDMatrixHandle;
 
     public float[] Label
     {

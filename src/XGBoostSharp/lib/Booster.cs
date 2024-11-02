@@ -13,14 +13,14 @@ public class Booster : IDisposable
     const int NormalPrediction = 0;  // optionMask value for XGBoosterPredict
     int m_numClass = 1;
 
-    public IntPtr Handle => m_safeBoosterHandle.DangerousGetHandle();
+    public SafeBoosterHandle Handle => m_safeBoosterHandle;
 
     public Booster(IDictionary<string, object> parameters, DMatrix train)
     {
         var dmats = new[] { train.Handle };
         var length = unchecked((ulong)dmats.Length);
         ThrowIfError(NativeMethods.XGBoosterCreate(dmats, length, out var handle));
-        m_safeBoosterHandle = new SafeBoosterHandle(handle);
+        m_safeBoosterHandle = handle;
 
         SetParameters(parameters);
     }
@@ -30,14 +30,14 @@ public class Booster : IDisposable
         var dmats = new[] { train.Handle };
         var length = unchecked((ulong)dmats.Length);
         ThrowIfError(NativeMethods.XGBoosterCreate(dmats, length, out var handle));
-        m_safeBoosterHandle = new SafeBoosterHandle(handle);
+        m_safeBoosterHandle = handle;
     }
 
     public Booster(string fileName)
     {
         ThrowIfError(NativeMethods.XGBoosterCreate(null, 0, out var handle));
         ThrowIfError(NativeMethods.XGBoosterLoadModel(handle, fileName));
-        m_safeBoosterHandle = new SafeBoosterHandle(handle);
+        m_safeBoosterHandle = handle;
     }
 
     public Booster(byte[] bytes)
@@ -45,9 +45,9 @@ public class Booster : IDisposable
         using var handle = new SafeBufferHandle(bytes.Length);
         Marshal.Copy(bytes, 0, handle.DangerousGetHandle(), bytes.Length);
         ThrowIfError(NativeMethods.XGBoosterCreate(null, 0, out var boosterHandle));
-        ThrowIfError(NativeMethods.XGBoosterLoadModelFromBuffer(boosterHandle,
+        ThrowIfError(NativeMethods.XGBoosterLoadModelFromBuffer(boosterHandle.DangerousGetHandle(),
             handle.DangerousGetHandle(), bytes.Length));
-        m_safeBoosterHandle = new SafeBoosterHandle(boosterHandle);
+        m_safeBoosterHandle = boosterHandle;
     }
 
     public byte[] SaveRaw(string rawFormat = ModelFormat.Ubj)
