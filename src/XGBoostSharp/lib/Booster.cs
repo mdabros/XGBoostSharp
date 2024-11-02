@@ -141,11 +141,9 @@ public class Booster : IDisposable
 
     public string[] DumpModelEx(string fmap, int with_stats)
     {
-        int length;
-        IntPtr treePtr;
         var intptrSize = IntPtr.Size;
         ThrowIfError(NativeMethods.XGBoosterDumpModel(Handle,
-            fmap, with_stats, out length, out treePtr));
+            fmap, with_stats, out var length, out var treePtr));
         var trees = new string[length];
         var handle2 = GCHandle.Alloc(treePtr, GCHandleType.Pinned);
 
