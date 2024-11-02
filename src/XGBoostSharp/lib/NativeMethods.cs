@@ -69,7 +69,8 @@ public static class NativeMethods
         SafeDMatrixHandle dHandle,
         int optionMask, int ntreeLimit,
         int training, // Only relevant for DART training. See https://github.com/dmlc/xgboost/issues/5601.
-        out ulong predsLen, out IntPtr predsPtr);
+        out ulong predsLen,
+        out SafeBufferHandle predsPtr);
 
     [DllImport(XGBoostNtvDllName)]
     public static extern int XGBoosterSaveModel(

@@ -68,15 +68,13 @@ public class Booster : IDisposable
 
     public float[] Predict(DMatrix test)
     {
-        ulong predsLen;
-        IntPtr predsPtr;
         ThrowIfError(NativeMethods.XGBoosterPredict(
             Handle, test.Handle, NormalPrediction,
-                ntreeLimit: 0, training: 0, out predsLen, out predsPtr));
-        return GetPredictionsArray(predsPtr, predsLen);
+            ntreeLimit: 0, training: 0, out var predsLen, out var predsHandle));
+        return GetPredictionsArray(predsHandle, predsLen);
     }
 
-    public static float[] GetPredictionsArray(IntPtr predsPtr, ulong predsLen)
+    public static float[] GetPredictionsArray(SafeBufferHandle predsHandle, ulong predsLen)
     {
         var length = unchecked((int)predsLen);
         var preds = new float[length];
@@ -85,7 +83,7 @@ public class Booster : IDisposable
             var floatBytes = new byte[4];
             for (var b = 0; b < 4; b++)
             {
-                floatBytes[b] = Marshal.ReadByte(predsPtr, 4 * i + b);
+                floatBytes[b] = Marshal.ReadByte(predsHandle.DangerousGetHandle(), 4 * i + b);
             }
             preds[i] = BitConverter.ToSingle(floatBytes, 0);
         }
