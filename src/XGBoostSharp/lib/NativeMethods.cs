@@ -43,7 +43,7 @@ public static class NativeMethods
 
     [DllImport(XGBoostNtvDllName)]
     public static extern int XGDMatrixSetFloatInfo(
-        IntPtr handle, string field,
+        SafeDMatrixHandle handle, string field,
         float[] array, ulong len);
 
     [DllImport(XGBoostNtvDllName)]

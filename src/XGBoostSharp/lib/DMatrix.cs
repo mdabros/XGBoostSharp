@@ -63,7 +63,8 @@ public class DMatrix : IDisposable
     void SetFloatInfo(string field, float[] floatInfo)
     {
         var length = (ulong)floatInfo.Length;
-        var output = NativeMethods.XGDMatrixSetFloatInfo(Handle, field, floatInfo, length);
+        var output = NativeMethods.XGDMatrixSetFloatInfo(
+            m_safeDMatrixHandle, field, floatInfo, length);
         ThrowIfError(output);
     }
 
