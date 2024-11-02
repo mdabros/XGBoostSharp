@@ -40,22 +40,22 @@ public class DMatrix : IDisposable
 
     float[] GetFloatInfo(string field)
     {
-        ulong lengthULong;
-        IntPtr result;
-        var output = NativeMethods.XGDMatrixGetFloatInfo(Handle,
-            field, out lengthULong, out result);
+        var output = NativeMethods.XGDMatrixGetFloatInfo(m_safeDMatrixHandle, field,
+            out var lengthULong, out var result);
 
         ThrowIfError(output);
 
         var length = unchecked((int)lengthULong);
         var floatInfo = new float[length];
         var floatBytes = new byte[length * 4];
-        Marshal.Copy(result, floatBytes, 0, floatBytes.Length);
+        Marshal.Copy(result.DangerousGetHandle(), floatBytes, 0, floatBytes.Length);
 
         for (var i = 0; i < length; i++)
         {
             floatInfo[i] = BitConverter.ToSingle(floatBytes, i * 4);
         }
+
+        result.Dispose(); // Ensure the SafeBufferHandle is disposed properly
 
         return floatInfo;
     }
