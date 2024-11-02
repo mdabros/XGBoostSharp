@@ -52,14 +52,12 @@ public class Booster : IDisposable
 
     public byte[] SaveRaw(string rawFormat = ModelFormat.Ubj)
     {
-        ulong outLen;
-        IntPtr outDptr;
         var config = JsonSerializer.SerializeToUtf8Bytes(new { format = rawFormat });
-        ThrowIfError(NativeMethods.XGBoosterSaveModelToBuffer(Handle, config, out outLen, out outDptr));
+        ThrowIfError(NativeMethods.XGBoosterSaveModelToBuffer(Handle, config,
+            out ulong outLen, out var outDptr));
 
-        var length = unchecked((int)outLen);
-        var buffer = new byte[length];
-        Marshal.Copy(outDptr, buffer, 0, length);
+        var buffer = new byte[outLen];
+        Marshal.Copy(outDptr.DangerousGetHandle(), buffer, 0, (int)outLen);
 
         return buffer;
     }
