@@ -68,6 +68,51 @@ public class DMatrix : IDisposable
         ThrowIfError(output);
     }
 
+    public void SetFeatureNames(string[] featureNames)
+    {
+        SetFeatureInfo(featureNames, "feature_name");
+    }
+
+    public string[] GetFeatureNames()
+    {
+        return GetFeatureInfo("feature_name");
+    }
+
+    public void SetFeatureTypes(string[] featureTypes)
+    {
+        SetFeatureInfo(featureTypes, "feature_type");
+    }
+
+    public string[] GetFeatureTypes()
+    {
+        return GetFeatureInfo("feature_type");
+    }
+
+    void SetFeatureInfo(string[] featureInfo, string field)
+    {
+        var length = (ulong)featureInfo.Length;
+        var output = NativeMethods.XGDMatrixSetStrFeatureInfo(Handle, field, featureInfo, length);
+        ThrowIfError(output);
+    }
+
+    string[] GetFeatureInfo(string field)
+    {
+        ulong lengthULong;
+        IntPtr result;
+        var output = NativeMethods.XGDMatrixGetStrFeatureInfo(Handle, field, out lengthULong, out result);
+        ThrowIfError(output);
+
+        var length = unchecked((int)lengthULong);
+        var featureInfo = new string[length];
+        for (var i = 0; i < length; i++)
+        {
+            IntPtr strPtr = Marshal.ReadIntPtr(result, i * IntPtr.Size);
+            featureInfo[i] = Marshal.PtrToStringAnsi(strPtr);
+        }
+
+        return featureInfo;
+    }
+
     static void ThrowIfError(int output)
     {
         if (output == -1)
