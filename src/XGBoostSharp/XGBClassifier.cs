@@ -164,6 +164,17 @@ public class XGBClassifier : XGBModelBase
         m_booster = Train(m_parameters, train);
     }
 
+    /// <summary>
+    ///   Fit the gradient boosting model
+    /// </summary>
+    /// <param name="matrix">
+    ///   DMatrix
+    /// </param>
+    public void Fit(DMatrix matrix)
+    {
+        m_booster = Train(m_parameters, matrix);
+    }
+
     public void SetParameter(string parameterName, object parameterValue) =>
         m_parameters[parameterName] = parameterValue;
 
@@ -171,7 +182,7 @@ public class XGBClassifier : XGBModelBase
     ///   Predict using the gradient boosted model
     /// </summary>
     /// <param name="data">
-    ///   Feature matrix to do predicitons on
+    ///   Feature matrix to do predictions on
     /// </param>
     /// <returns>
     ///   Predictions
@@ -183,17 +194,38 @@ public class XGBClassifier : XGBModelBase
         return predictions;
     }
 
+    /// <summary>
+    ///   Predict using the gradient boosted model
+    /// </summary>
+    /// <param name="dMatrix">
+    ///   DMatrix to do predictions on
+    /// </param>
+    /// <returns>
+    ///   Predictions
+    /// </returns>
+    public float[] Predict(DMatrix dMatrix)
+    {
+        var predictions = m_booster.Predict(dMatrix).Select(v => v > 0.5f ? 1f : 0f).ToArray();
+        return predictions;
+    }
+
     public float[] PredictRaw(float[][] data)
     {
         using var dMatrix = new DMatrix(data);
         var predictions = m_booster.Predict(dMatrix);
         return predictions;
     }
+
+    public float[] PredictRaw(DMatrix dMatrix)
+    {
+        return m_booster.Predict(dMatrix);
+    }
+
     /// <summary>
     ///   Predict using the gradient boosted model
     /// </summary>
     /// <param name="data">
-    ///   Feature matrix to do predicitons on
+    ///   Feature matrix to do predictions on
     /// </param>
     /// <returns>
     ///   The probabilities for each classification being the actual
@@ -202,6 +234,21 @@ public class XGBClassifier : XGBModelBase
     public float[][] PredictProbability(float[][] data)
     {
         using var dMatrix = new DMatrix(data);
+        return PredictProbability(dMatrix);
+    }
+
+    /// <summary>
+    ///   Predict using the gradient boosted model
+    /// </summary>
+    /// <param name="dMatrix">
+    ///   DMatrix to do predictions on
+    /// </param>
+    /// <returns>
+    ///   The probabilities for each classification being the actual
+    ///   classification for each row
+    /// </returns>
+    public float[][] PredictProbability(DMatrix dMatrix)
+    {
         var predictions = m_booster.Predict(dMatrix);
         var classCount = (int)m_parameters[ParameterNames.num_class];
         var observationCount = predictions.Length / classCount;
