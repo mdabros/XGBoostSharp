@@ -68,38 +68,26 @@ public class DMatrix : IDisposable
         ThrowIfError(output);
     }
 
-    public void SetFeatureNames(string[] featureNames)
-    {
-        SetFeatureInfo(featureNames, "feature_name");
-    }
+    public void SetFeatureNames(string[] featureNames) => SetFeatureInfo(featureNames, Fields.feature_name);
 
-    public string[] GetFeatureNames()
-    {
-        return GetFeatureInfo("feature_name");
-    }
+    public string[] GetFeatureNames() => GetFeatureInfo(Fields.feature_name);
 
-    public void SetFeatureTypes(string[] featureTypes)
-    {
-        SetFeatureInfo(featureTypes, "feature_type");
-    }
+    public void SetFeatureTypes(string[] featureTypes) => SetFeatureInfo(featureTypes, Fields.feature_type);
 
-    public string[] GetFeatureTypes()
-    {
-        return GetFeatureInfo("feature_type");
-    }
+    public string[] GetFeatureTypes() => GetFeatureInfo(Fields.feature_type);
 
     void SetFeatureInfo(string[] featureInfo, string field)
     {
         var length = (ulong)featureInfo.Length;
-        var output = NativeMethods.XGDMatrixSetStrFeatureInfo(Handle, field, featureInfo, length);
+        var output = NativeMethods.XGDMatrixSetStrFeatureInfo(
+            Handle, field, featureInfo, length);
         ThrowIfError(output);
     }
 
     string[] GetFeatureInfo(string field)
     {
-        ulong lengthULong;
-        IntPtr result;
-        var output = NativeMethods.XGDMatrixGetStrFeatureInfo(Handle, field, out lengthULong, out result);
+        var output = NativeMethods.XGDMatrixGetStrFeatureInfo(
+            Handle, field, out var lengthULong, out var result);
         ThrowIfError(output);
 
         var length = unchecked((int)lengthULong);

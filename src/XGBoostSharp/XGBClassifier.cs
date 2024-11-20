@@ -161,7 +161,7 @@ public class XGBClassifier : XGBModelBase
     public void Fit(float[][] data, float[] labels)
     {
         using var train = new DMatrix(data, labels);
-        m_booster = Train(m_parameters, train);
+        Fit(train);
     }
 
     /// <summary>
@@ -190,8 +190,7 @@ public class XGBClassifier : XGBModelBase
     public float[] Predict(float[][] data)
     {
         using var dMatrix = new DMatrix(data);
-        var predictions = m_booster.Predict(dMatrix).Select(v => v > 0.5f ? 1f : 0f).ToArray();
-        return predictions;
+        return Predict(dMatrix);
     }
 
     /// <summary>
@@ -212,8 +211,7 @@ public class XGBClassifier : XGBModelBase
     public float[] PredictRaw(float[][] data)
     {
         using var dMatrix = new DMatrix(data);
-        var predictions = m_booster.Predict(dMatrix);
-        return predictions;
+        return PredictRaw(dMatrix);
     }
 
     public float[] PredictRaw(DMatrix dMatrix)

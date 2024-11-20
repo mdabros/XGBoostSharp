@@ -100,10 +100,10 @@ public class XGBRegressorTest
         var dataTest = TestUtils.DataTest;
 
         using var sut = CreateSut();
-        var dMatrixTrain = new DMatrix(dataTrain, labelsTrain);
+        using var dMatrixTrain = new DMatrix(dataTrain, labelsTrain);
         sut.Fit(dMatrixTrain);
 
-        var dMatrixTest = new DMatrix(dataTest);
+        using var dMatrixTest = new DMatrix(dataTest);
         var actual = sut.Predict(dMatrixTest);
         var expected = TestUtils.ExpectedRegressionPredictions;
 

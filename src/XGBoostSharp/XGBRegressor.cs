@@ -155,7 +155,7 @@ public class XGBRegressor : XGBModelBase
     public void Fit(float[][] data, float[] labels)
     {
         using var train = new DMatrix(data, labels);
-        m_booster = Train(m_parameters, train);
+        Fit(train);
     }
 
     /// <summary>
@@ -184,7 +184,7 @@ public class XGBRegressor : XGBModelBase
     public float[] Predict(float[][] data)
     {
         using var test = new DMatrix(data);
-        return m_booster.Predict(test);
+        return Predict(test);
     }
 
     /// <summary>
