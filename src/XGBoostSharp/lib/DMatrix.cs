@@ -13,8 +13,8 @@ public class DMatrix : IDisposable
 
     public float[] Label
     {
-        get { return GetFloatInfo("label"); }
-        set { SetFloatInfo("label", value); }
+        get { return GetFloatInfo(Fields.label); }
+        set { SetFloatInfo(Fields.label, value); }
     }
 
     public DMatrix(float[][] data, float[] labels = null)
