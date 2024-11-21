@@ -31,19 +31,19 @@ public static class NativeMethods
     [DllImport(XGBoostNtvDllName)]
     public static extern int XGDMatrixCreateFromMat(
         float[] data, ulong nrow, ulong ncol,
-        float missing, out IntPtr handle);
+        float missing, out SafeDMatrixHandle handle);
 
     [DllImport(XGBoostNtvDllName)]
     public static extern int XGDMatrixFree(IntPtr handle);
 
     [DllImport(XGBoostNtvDllName)]
     public static extern int XGDMatrixGetFloatInfo(
-        IntPtr handle, string field,
-        out ulong len, out IntPtr result);
+        SafeDMatrixHandle handle, string field,
+        out ulong len, out SafeBufferHandle result);
 
     [DllImport(XGBoostNtvDllName)]
     public static extern int XGDMatrixSetFloatInfo(
-        IntPtr handle, string field,
+        SafeDMatrixHandle handle, string field,
         float[] array, ulong len);
 
     [DllImport(XGBoostNtvDllName)]
@@ -58,50 +58,57 @@ public static class NativeMethods
 
     [DllImport(XGBoostNtvDllName)]
     public static extern int XGBoosterCreate(
-        IntPtr[] dmats,
-        ulong len, out IntPtr handle);
+        // array of safehandles is not supported, stick with IntPtr.
+        IntPtr[] dmats, ulong len,
+        out SafeBoosterHandle handle);
 
     [DllImport(XGBoostNtvDllName)]
     public static extern int XGBoosterFree(IntPtr handle);
 
     [DllImport(XGBoostNtvDllName)]
     public static extern int XGBoosterSetParam(
-        IntPtr handle, string name, string val);
+        SafeBoosterHandle handle, string name, string val);
 
     [DllImport(XGBoostNtvDllName)]
     public static extern int XGBoosterUpdateOneIter(
-        IntPtr bHandle, int iter, IntPtr dHandle);
+        SafeBoosterHandle bHandle, int iter,
+        SafeDMatrixHandle dHandle);
 
     [DllImport(XGBoostNtvDllName)]
     public static extern int XGBoosterPredict(
-        IntPtr bHandle, IntPtr dHandle,
+        SafeBoosterHandle bHandle,
+        SafeDMatrixHandle dHandle,
         int optionMask, int ntreeLimit,
         int training, // Only relevant for DART training. See https://github.com/dmlc/xgboost/issues/5601.
-        out ulong predsLen, out IntPtr predsPtr);
+        out ulong predsLen,
+        out SafeBufferHandle predsPtr);
 
     [DllImport(XGBoostNtvDllName)]
     public static extern int XGBoosterSaveModel(
-        IntPtr bHandle, string fileName);
+        SafeBoosterHandle bHandle, string fileName);
 
     [DllImport(XGBoostNtvDllName)]
     public static extern int XGBoosterLoadModel(
-        IntPtr bHandle, string fileName);
+        SafeBoosterHandle bHandle, string fileName);
 
     [DllImport(XGBoostNtvDllName)]
     public static extern int XGBoosterLoadModelFromBuffer(
-        IntPtr bHandle, IntPtr buffer, int length);
+        SafeBoosterHandle bHandle, SafeBufferHandle buffer,
+        int length);
 
     [DllImport(XGBoostNtvDllName)]
     public static extern int XGBoosterSaveModelToBuffer(
-        IntPtr bHandle, byte[] jsonConfig, out ulong outLen, out IntPtr outDptr);
+        SafeBoosterHandle bHandle, byte[] jsonConfig, out ulong outLen,
+        out SafeBufferHandle outDptr);
 
     [DllImport(XGBoostNtvDllName)]
     public static extern int XGDMatrixCreateFromFile(
-        string fname, int silent, out IntPtr DMtrxHandle);
+        string fname, int silent,
+        out SafeDMatrixHandle DMtrxHandle);
 
     [DllImport(XGBoostNtvDllName)]
     public static extern int XGBoosterDumpModel(
-        IntPtr handle, string fmap,
+        SafeBoosterHandle handle, string fmap,
         int with_stats, out int out_len,
-        out IntPtr dumpStr);
+        out SafeBufferHandle dumpStr);
 }
