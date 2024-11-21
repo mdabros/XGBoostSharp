@@ -111,6 +111,24 @@ public class XGBClassifierTest
     }
 
     [TestMethod]
+    public void XGBClassifierTest_UsingDMatrixDirectly()
+    {
+        var dataTrain = TestUtils.DataTrain;
+        var labelsTrain = TestUtils.LabelsTrain;
+        var dataTest = TestUtils.DataTest;
+
+        using var sut = CreateSut();
+        using var dMatrixTrain = new DMatrix(dataTrain, labelsTrain);
+        sut.Fit(dMatrixTrain);
+
+        using var dMatrixTest = new DMatrix(dataTest);
+        var actual = sut.PredictProbability(dMatrixTest);
+        var expected = TestUtils.ExpectedClassifierProbabilityPredictions;
+
+        TestUtils.AssertAreEqual(expected, actual);
+    }
+
+    [TestMethod]
     public void XGBClassifierTest_DumpModelEx()
     {
         var dataTrain = TestUtils.DataTrain;

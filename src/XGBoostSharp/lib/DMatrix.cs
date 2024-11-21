@@ -13,8 +13,8 @@ public class DMatrix : IDisposable
 
     public float[] Label
     {
-        get { return GetFloatInfo("label"); }
-        set { SetFloatInfo("label", value); }
+        get { return GetFloatInfo(Fields.label); }
+        set { SetFloatInfo(Fields.label, value); }
     }
 
     public DMatrix(float[][] data, float[] labels = null)
@@ -66,6 +66,39 @@ public class DMatrix : IDisposable
         var length = (ulong)floatInfo.Length;
         var output = NativeMethods.XGDMatrixSetFloatInfo(Handle, field, floatInfo, length);
         ThrowIfError(output);
+    }
+
+    public void SetFeatureNames(string[] featureNames) => SetFeatureInfo(featureNames, Fields.feature_name);
+
+    public string[] GetFeatureNames() => GetFeatureInfo(Fields.feature_name);
+
+    public void SetFeatureTypes(string[] featureTypes) => SetFeatureInfo(featureTypes, Fields.feature_type);
+
+    public string[] GetFeatureTypes() => GetFeatureInfo(Fields.feature_type);
+
+    void SetFeatureInfo(string[] featureInfo, string field)
+    {
+        var length = (ulong)featureInfo.Length;
+        var output = NativeMethods.XGDMatrixSetStrFeatureInfo(
+            Handle, field, featureInfo, length);
+        ThrowIfError(output);
+    }
+
+    string[] GetFeatureInfo(string field)
+    {
+        var output = NativeMethods.XGDMatrixGetStrFeatureInfo(
+            Handle, field, out var lengthULong, out var result);
+        ThrowIfError(output);
+
+        var length = unchecked((int)lengthULong);
+        var featureInfo = new string[length];
+        for (var i = 0; i < length; i++)
+        {
+            IntPtr strPtr = Marshal.ReadIntPtr(result, i * IntPtr.Size);
+            featureInfo[i] = Marshal.PtrToStringAnsi(strPtr);
+        }
+
+        return featureInfo;
     }
 
     static void ThrowIfError(int output)

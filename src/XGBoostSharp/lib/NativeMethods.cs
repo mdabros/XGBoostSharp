@@ -47,6 +47,16 @@ public static class NativeMethods
         float[] array, ulong len);
 
     [DllImport(XGBoostNtvDllName)]
+    public static extern int XGDMatrixSetStrFeatureInfo(
+        IntPtr handle, string field,
+        string[] values, ulong len);
+
+    [DllImport(XGBoostNtvDllName)]
+    public static extern int XGDMatrixGetStrFeatureInfo(
+        IntPtr handle, string field,
+        out ulong len, out IntPtr result);
+
+    [DllImport(XGBoostNtvDllName)]
     public static extern int XGBoosterCreate(
         IntPtr[] dmats,
         ulong len, out IntPtr handle);
