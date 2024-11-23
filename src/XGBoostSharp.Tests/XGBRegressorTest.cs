@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using XGBoostSharp.lib;
 using static XGBoostSharp.Parameters;
 
 namespace XGBoostSharp.Test;
@@ -53,6 +54,27 @@ public class XGBRegressorTest
     }
 
     [TestMethod]
+    [DataRow(ModelFormat.Json)]
+    [DataRow(ModelFormat.Ubj)]
+    public void XGBRegressorTest_SaveAndLoadRaw(string format)
+    {
+        var dataTrain = TestUtils.DataTrain;
+        var labelsTrain = TestUtils.LabelsTrain;
+        var dataTest = TestUtils.DataTest;
+
+        using var sut = CreateSut();
+        sut.Fit(dataTrain, labelsTrain);
+
+        var expected = sut.Predict(dataTest);
+        var savedData = sut.SaveModelToByteArray(format);
+
+        var sutLoaded = XGBRegressor.LoadFromByteArray(savedData);
+        var actual = sutLoaded.Predict(dataTest);
+
+        TestUtils.AssertAreEqual(expected, actual);
+    }
+
+    [TestMethod]
     public void XGBRegressorTest_SaveAndLoadWithParameters()
     {
         var dataTrain = TestUtils.DataTrain;
@@ -66,6 +88,24 @@ public class XGBRegressorTest
 
         using var sutLoaded = XGBRegressor.LoadFromFile(TEST_FILE);
         var expected = sutLoaded.Predict(dataTest);
+
+        TestUtils.AssertAreEqual(expected, actual);
+    }
+
+    [TestMethod]
+    public void XGBRegressorTest_UsingDMatrixDirectly()
+    {
+        var dataTrain = TestUtils.DataTrain;
+        var labelsTrain = TestUtils.LabelsTrain;
+        var dataTest = TestUtils.DataTest;
+
+        using var sut = CreateSut();
+        using var dMatrixTrain = new DMatrix(dataTrain, labelsTrain);
+        sut.Fit(dMatrixTrain);
+
+        using var dMatrixTest = new DMatrix(dataTest);
+        var actual = sut.Predict(dMatrixTest);
+        var expected = TestUtils.ExpectedRegressionPredictions;
 
         TestUtils.AssertAreEqual(expected, actual);
     }

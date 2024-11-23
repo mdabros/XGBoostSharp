@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using XGBoostSharp.lib;
 using static XGBoostSharp.Parameters;
 
 namespace XGBoostSharp.Test;
@@ -70,6 +71,27 @@ public class XGBClassifierTest
     }
 
     [TestMethod]
+    [DataRow(ModelFormat.Json)]
+    [DataRow(ModelFormat.Ubj)]
+    public void XGBClassifierTest_SaveAndLoadRaw(string format)
+    {
+        var dataTrain = TestUtils.DataTrain;
+        var labelsTrain = TestUtils.LabelsTrain;
+        var dataTest = TestUtils.DataTest;
+
+        using var sut = CreateSut();
+        sut.Fit(dataTrain, labelsTrain);
+
+        var expected = sut.PredictProbability(dataTest);
+        var savedData = sut.SaveModelToByteArray(format);
+
+        var sutLoaded = XGBClassifier.LoadFromByteArray(savedData);
+        var actual = sutLoaded.PredictProbability(dataTest);
+
+        TestUtils.AssertAreEqual(expected, actual);
+    }
+
+    [TestMethod]
     public void XGBClassifierTest_SaveAndLoadWithParameters()
     {
         var dataTrain = TestUtils.DataTrain;
@@ -84,6 +106,24 @@ public class XGBClassifierTest
 
         using var sutLoaded = XGBClassifier.LoadFromFile(TEST_FILE);
         var actual = sutLoaded.PredictProbability(dataTest);
+
+        TestUtils.AssertAreEqual(expected, actual);
+    }
+
+    [TestMethod]
+    public void XGBClassifierTest_UsingDMatrixDirectly()
+    {
+        var dataTrain = TestUtils.DataTrain;
+        var labelsTrain = TestUtils.LabelsTrain;
+        var dataTest = TestUtils.DataTest;
+
+        using var sut = CreateSut();
+        using var dMatrixTrain = new DMatrix(dataTrain, labelsTrain);
+        sut.Fit(dMatrixTrain);
+
+        using var dMatrixTest = new DMatrix(dataTest);
+        var actual = sut.PredictProbability(dMatrixTest);
+        var expected = TestUtils.ExpectedClassifierProbabilityPredictions;
 
         TestUtils.AssertAreEqual(expected, actual);
     }

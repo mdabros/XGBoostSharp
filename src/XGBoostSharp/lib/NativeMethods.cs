@@ -49,6 +49,16 @@ public static class NativeMethods
         float[] array, ulong len);
 
     [DllImport(XGBoostNtvDllName)]
+    public static extern int XGDMatrixSetStrFeatureInfo(
+        IntPtr handle, string field,
+        string[] values, ulong len);
+
+    [DllImport(XGBoostNtvDllName)]
+    public static extern int XGDMatrixGetStrFeatureInfo(
+        IntPtr handle, string field,
+        out ulong len, out IntPtr result);
+
+    [DllImport(XGBoostNtvDllName)]
     public static extern int XGBoosterCreate(
         IntPtr[] dmats,
         ulong len, out IntPtr handle);
@@ -78,6 +88,14 @@ public static class NativeMethods
     [DllImport(XGBoostNtvDllName)]
     public static extern int XGBoosterLoadModel(
         IntPtr bHandle, string fileName);
+
+    [DllImport(XGBoostNtvDllName)]
+    public static extern int XGBoosterLoadModelFromBuffer(
+        IntPtr bHandle, IntPtr buffer, int length);
+
+    [DllImport(XGBoostNtvDllName)]
+    public static extern int XGBoosterSaveModelToBuffer(
+        IntPtr bHandle, byte[] jsonConfig, out ulong outLen, out IntPtr outDptr);
 
     [DllImport(XGBoostNtvDllName)]
     public static extern int XGDMatrixCreateFromFile(

@@ -26,6 +26,9 @@ public abstract class XGBModelBase : IDisposable
     public void SaveModelToFile(string fileName) =>
         m_booster.Save(fileName);
 
+    public byte[] SaveModelToByteArray(string format) =>
+        m_booster.SaveRaw(format);
+
     public string[] DumpModelEx(string fmap = "", int with_stats = 0) =>
         m_booster.DumpModelEx(fmap, with_stats);
 
