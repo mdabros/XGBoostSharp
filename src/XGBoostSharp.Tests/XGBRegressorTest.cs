@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using XGBoostSharp.lib;
 using static XGBoostSharp.Parameters;
@@ -108,6 +110,42 @@ public class XGBRegressorTest
         var expected = TestUtils.ExpectedRegressionPredictions;
 
         TestUtils.AssertAreEqual(expected, actual);
+    }
+
+    [TestMethod]
+    public void XGBRegressorTest_PredictionContributions()
+    {
+        var dataTrain = TestUtils.DataTrain;
+        var labelsTrain = TestUtils.LabelsTrain;
+        var dataTest = TestUtils.DataTest;
+
+        using var sut = CreateSut();
+        using var dMatrixTrain = new DMatrix(dataTrain, labelsTrain);
+        sut.Fit(dMatrixTrain);
+
+        using var dMatrixTest = new DMatrix(dataTest);
+        var actualContribs = sut.Predict(dMatrixTest, predContribs: true);
+        var actualPredictions = sut.Predict(dMatrixTest);
+
+        // Dimensions of an Array are named Rank in C#.
+        if (actualContribs.Rank == 2)
+        {
+            // We want to check that the sum of the contributions(contributions + last column, which is bias) is equal to the prediction.
+            for (var i = 0; i < actualContribs.GetLength(0); i++)
+            {
+                var contribs = new float[actualContribs.GetLength(1)];
+                for (var j = 0; j < actualContribs.GetLength(1); j++)
+                {
+                    contribs[j] = (float)actualContribs.GetValue(i, j);
+                }
+                // Math.Round because of floating point precision.
+                Assert.AreEqual(Math.Round(actualPredictions[i], 3), Math.Round(contribs.Sum(), 3));
+            }
+        }
+        else
+        {
+            throw new NotSupportedException("Only 2D arrays are supported in this test.");
+        }
     }
 
     [TestMethod]
