@@ -118,8 +118,7 @@ public class Booster : IDisposable
         if (predInteractions) AssignType(approxContribs ? 5 : 4);
         if (predLeaf) AssignType(6);
 
-        var config = JsonSerializer.Serialize(args);
-        var configBytes = System.Text.Encoding.UTF8.GetBytes(config);
+        var configBytes = JsonSerializer.SerializeToUtf8Bytes(args);
 
         ThrowIfError(NativeMethods.XGBoosterPredictFromDMatrix(
             Handle, data.Handle, configBytes, out var shapePtr, out var dims, out var predsPtr));
@@ -155,51 +154,24 @@ public class Booster : IDisposable
         };
     }
 
-    static T[,] Reshape<T>(T[] array, int dim1, int dim2)
+    static float[,] Reshape(float[] array, int dim1, int dim2)
     {
-        var result = new T[dim1, dim2];
-        for (int i = 0; i < dim1; i++)
-        {
-            for (int j = 0; j < dim2; j++)
-            {
-                result[i, j] = array[i * dim2 + j];
-            }
-        }
+        var result = new float[dim1, dim2];
+        Buffer.BlockCopy(array, 0, result, 0, array.Length * sizeof(float));
         return result;
     }
 
-    static T[,,] Reshape<T>(T[] array, int dim1, int dim2, int dim3)
+    static float[,,] Reshape(float[] array, int dim1, int dim2, int dim3)
     {
-        var result = new T[dim1, dim2, dim3];
-        for (int i = 0; i < dim1; i++)
-        {
-            for (int j = 0; j < dim2; j++)
-            {
-                for (int k = 0; k < dim3; k++)
-                {
-                    result[i, j, k] = array[(i * dim2 + j) * dim3 + k];
-                }
-            }
-        }
+        var result = new float[dim1, dim2, dim3];
+        Buffer.BlockCopy(array, 0, result, 0, array.Length * sizeof(float));
         return result;
     }
 
-    static T[,,,] Reshape<T>(T[] array, int dim1, int dim2, int dim3, int dim4)
+    static float[,,,] Reshape(float[] array, int dim1, int dim2, int dim3, int dim4)
     {
-        var result = new T[dim1, dim2, dim3, dim4];
-        for (int i = 0; i < dim1; i++)
-        {
-            for (int j = 0; j < dim2; j++)
-            {
-                for (int k = 0; k < dim3; k++)
-                {
-                    for (int l = 0; l < dim4; l++)
-                    {
-                        result[i, j, k, l] = array[((i * dim2 + j) * dim3 + k) * dim4 + l];
-                    }
-                }
-            }
-        }
+        var result = new float[dim1, dim2, dim3, dim4];
+        Buffer.BlockCopy(array, 0, result, 0, array.Length * sizeof(float));
         return result;
     }
 

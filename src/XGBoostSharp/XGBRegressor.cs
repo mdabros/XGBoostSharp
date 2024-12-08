@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using XGBoostSharp.lib;
 using static XGBoostSharp.Parameters;
 
@@ -198,27 +197,4 @@ public class XGBRegressor : XGBModelBase
     ///   Predictions
     /// </returns>
     public float[] Predict(DMatrix dMatrix) => m_booster.Predict(dMatrix);
-
-    public Array Predict(
-        DMatrix data,
-        bool outputMargin = false,
-        bool predLeaf = false,
-        bool predContribs = false,
-        bool approxContribs = false,
-        bool predInteractions = false,
-        bool training = false,
-        (int, int) iterationRange = default,
-        bool strictShape = false)
-    {
-        return m_booster.Predict(
-            data,
-            outputMargin,
-            predLeaf,
-            predContribs,
-            approxContribs,
-            predInteractions,
-            training,
-            iterationRange,
-            strictShape);
-    }
 }
