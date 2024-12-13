@@ -80,7 +80,13 @@ jobs:
     - name: Add local package source
       run: dotnet nuget add source ${{ env.NuGetDirectory }} --name local
     - name: Get version of dll
-      run: (Get-Item './build/XGBoostSharp_AnyCPU_Release_netstandard2.0/XGBoostSharp.dll').VersionInfo.ProductVersion
+      run: |
+        $dllPath = Get-ChildItem -Path ./build -Filter XGBoostSharp.dll -Recurse | Select-Object -First 1
+        if ($dllPath) {
+          (Get-Item $dllPath.FullName).VersionInfo.ProductVersion
+        } else {
+          Write-Error "DLL file not found"
+        }
     - name: Pack XGBoostSharp-cpu
       if: ${{ github.event.inputs.version != ''  && github.actor == 'mdabros'}}
       run: nuget pack pkg/XGBoostSharp-cpu.nuspec -Version ${{ github.event.inputs.version }} -OutputDirectory ${{ env.NuGetDirectory }}
