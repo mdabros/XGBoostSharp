@@ -47,7 +47,9 @@ var loadedRegressor = XGBRegressor.LoadFromFile(modelFileName);
      packages for cpu for win-x64, linux-x64, and osx-x64.
 2. If using the XGBoostSharp package the native packages can be installed
    separately from nuget.org.
-   - https://www.nuget.org/packages/libxgboost-2.0.3-win-x64/
-   - https://www.nuget.org/packages/libxgboost-2.0.3-linux-x64/
-   - https://www.nuget.org/packages/libxgboost-2.0.3-osx-x64/
-   - https://www.nuget.org/packages/libxgboost-2.0.3-osx-arm64/
+   - x64 packages:
+     - https://www.nuget.org/packages/libxgboost-2.0.3-win-x64/
+     - https://www.nuget.org/packages/libxgboost-2.0.3-linux-x64/
+     - https://www.nuget.org/packages/libxgboost-2.0.3-osx-x64/
+   - ARM64 packages:
+     - https://www.nuget.org/packages/libxgboost-2.0.3-osx-arm64/
