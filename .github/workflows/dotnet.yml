@@ -24,10 +24,21 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [windows-latest, ubuntu-latest, macos-13, macos-latest] # macos-13 is x64, macos-latest is arm64. See https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners/about-github-hosted-runners
+        os: [windows-latest, ubuntu-latest, macos-13, macos-latest]
         configuration: [Debug, Release]
+        include:
+          - os: windows-latest
+            runtime: win-x64
+          - os: ubuntu-latest
+            runtime: linux-x64
+          - os: macos-13
+            runtime: osx-x64
+          - os: macos-latest
+            runtime: osx-arm64
 
     runs-on: ${{ matrix.os }}
+    env:
+      RUNTIME_IDENTIFIER: ${{ matrix.runtime }}
 
     steps:
     - uses: actions/checkout@v3
@@ -38,11 +49,11 @@ jobs:
       with:
         global-json-file: global.json
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore --runtime ${{ env.RUNTIME_IDENTIFIER }}
     - name: Build
-      run: dotnet build -c ${{ matrix.configuration }} -p:Platform="Any CPU" --no-restore 
+      run: dotnet build -c ${{ matrix.configuration }} -r ${{ env.RUNTIME_IDENTIFIER }} -p:Platform="Any CPU" --no-restore 
     - name: Test
-      run: dotnet test -c ${{ matrix.configuration }} -p:Platform="Any CPU" --no-build --verbosity normal --collect:"XPlat Code Coverage"
+      run: dotnet test -c ${{ matrix.configuration }} -r ${{ env.RUNTIME_IDENTIFIER }} -p:Platform="Any CPU" --no-build --verbosity normal --collect:"XPlat Code Coverage"
     - name: Upload coverage reports to Codecov
       if: matrix.os != 'macos-13' # Temporary disable for macos-13 until issue fixed. See https://github.com/codecov/codecov-action/issues/1549
       uses: codecov/codecov-action@v3
