@@ -32,6 +32,29 @@ public abstract class XGBModelBase : IDisposable
     public string[] DumpModelEx(string fmap = "", int with_stats = 0) =>
         m_booster.DumpModelEx(fmap, with_stats);
 
+    public Array Predict(
+        DMatrix data,
+        bool outputMargin = false,
+        bool predLeaf = false,
+        bool predContribs = false,
+        bool approxContribs = false,
+        bool predInteractions = false,
+        bool training = false,
+        (int, int) iterationRange = default,
+        bool strictShape = false)
+    {
+        return m_booster.Predict(
+            data,
+            outputMargin,
+            predLeaf,
+            predContribs,
+            approxContribs,
+            predInteractions,
+            training,
+            iterationRange,
+            strictShape);
+    }
+
     void DisposeManagedResources()
     {
         m_booster?.Dispose();
