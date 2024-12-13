@@ -19,7 +19,7 @@
     <LangVersion>12.0</LangVersion>
     <Deterministic>true</Deterministic>
     <DebugType>portable</DebugType>
-    <Platforms>x64;ARM64</Platforms>
+    <Platforms>x64;ARM64;AnyCPU</Platforms>
 
     <PublishRelease>true</PublishRelease>
     <PackRelease>true</PackRelease>
