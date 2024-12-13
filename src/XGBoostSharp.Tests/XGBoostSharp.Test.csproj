@@ -4,11 +4,17 @@
     <TargetFramework>$(TestTargetFramework)</TargetFramework>
   </PropertyGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(Platform)' == 'x64'">
     <PackageReference Include="libxgboost-2.0.3-linux-x64" Version="1.0.1" />
     <PackageReference Include="libxgboost-2.0.3-osx-x64" Version="1.0.0" />
-    <PackageReference Include="libxgboost-2.0.3-osx-arm64" Version="1.0.0" />
     <PackageReference Include="libxgboost-2.0.3-win-x64" Version="1.0.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(Platform)' == 'arm64'">
+    <PackageReference Include="libxgboost-2.0.3-osx-arm64" Version="1.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MSTest" Version="3.3.1" />
   </ItemGroup>
 
