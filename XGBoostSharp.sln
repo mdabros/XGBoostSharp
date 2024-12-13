@@ -28,7 +28,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "root", "root", "{42B0E836-F
 		README.md = README.md
 		rename.ps1 = rename.ps1
 		version.json = version.json
-		pks\XGBoostSharp-cpu.nupkgproj = pks\XGBoostSharp-cpu.nupkgproj
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ci", "ci", "{855E48F2-0D87-4AC7-8FAE-DFCDE4EEAA37}"
