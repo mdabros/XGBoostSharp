@@ -51,5 +51,6 @@ var loadedRegressor = XGBRegressor.LoadFromFile(modelFileName);
      - https://www.nuget.org/packages/libxgboost-2.0.3-win-x64/
      - https://www.nuget.org/packages/libxgboost-2.0.3-linux-x64/
      - https://www.nuget.org/packages/libxgboost-2.0.3-osx-x64/
-   - ARM64 packages:
+   - ARM64 packages (note that these are not part of the XGBoostSharp-cpu
+     package):
      - https://www.nuget.org/packages/libxgboost-2.0.3-osx-arm64/
