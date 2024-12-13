@@ -13,7 +13,7 @@
     <Copyright>Copyright © mdabros 2024</Copyright>
     <NeutralLanguage>en</NeutralLanguage>
 
-    <LibraryTargetFramework>netstandard2.0</LibraryTargetFramework>
+    <LibraryTargetFramework>net8</LibraryTargetFramework>
     <TestTargetFramework>net8</TestTargetFramework>
 
     <LangVersion>12.0</LangVersion>
