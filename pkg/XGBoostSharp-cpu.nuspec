@@ -9,7 +9,6 @@
       <dependency id="XGBoostSharp" version="$version$" />
       <dependency id="libxgboost-2.0.3-linux-x64" version="1.0.1" />
       <dependency id="libxgboost-2.0.3-osx-x64" version="1.0.0" />
-      <dependency id="libxgboost-2.0.3-osx-arm64" version="1.0.0" />
       <dependency id="libxgboost-2.0.3-win-x64" version="1.0.0" />
     </dependencies>
   </metadata>
