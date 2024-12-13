@@ -49,11 +49,13 @@ jobs:
       with:
         global-json-file: global.json
     - name: Restore dependencies
-      run: dotnet restore --runtime ${{ env.RUNTIME_IDENTIFIER }}
-    - name: Build
-      run: dotnet build -c ${{ matrix.configuration }} -r ${{ env.RUNTIME_IDENTIFIER }} -p:Platform="Any CPU" --no-restore 
+      run: dotnet restore
+    - name: Build XGBoostSharp
+      run: dotnet build src/XGBoostSharp/XGBoostSharp.csproj -c ${{ matrix.configuration }} -r ${{ env.RUNTIME_IDENTIFIER }} -p:Platform="Any CPU" --no-restore 
+    - name: Build XGBoostSharp.Test
+      run: dotnet build test/XGBoostSharp.Test/XGBoostSharp.Test.csproj -c ${{ matrix.configuration }} -r ${{ env.RUNTIME_IDENTIFIER }} -p:Platform="Any CPU" --no-restore 
     - name: Test
-      run: dotnet test -c ${{ matrix.configuration }} -r ${{ env.RUNTIME_IDENTIFIER }} -p:Platform="Any CPU" --no-build --verbosity normal --collect:"XPlat Code Coverage"
+      run: dotnet test test/XGBoostSharp.Test/XGBoostSharp.Test.csproj -c ${{ matrix.configuration }} -r ${{ env.RUNTIME_IDENTIFIER }} -p:Platform="Any CPU" --no-build --verbosity normal --collect:"XPlat Code Coverage"
     - name: Upload coverage reports to Codecov
       if: matrix.os != 'macos-13' # Temporary disable for macos-13 until issue fixed. See https://github.com/codecov/codecov-action/issues/1549
       uses: codecov/codecov-action@v3
