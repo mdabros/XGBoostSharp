@@ -1,4 +1,6 @@
-﻿[![Build Status](https://github.com/mdabros/XGBoostSharp/actions/workflows/dotnet.yml/badge.svg?branch=master)](https://github.com/mdabros/XGBoostSharp/actions/workflows/dotnet.yml)
+﻿[![Build Status](https://github.com/mdabros/XGBoostSharp/actions/workflows/dotnet.yml/badge.svg?branch=main)](https://github.com/mdabros/XGBoostSharp/actions/workflows/dotnet.yml)
+[![Nuget](https://img.shields.io/nuget/v/XGBoostSharp?color=orange)](https://www.nuget.org/packages/XGBoostSharp/)
+[![downloads](https://img.shields.io/nuget/dt/XGBoostSharp)](https://www.nuget.org/packages/XGBoostSharp)
 [![License](https://img.shields.io/github/license/mdabros/XGBoostSharp)](https://github.com/mdabros/XGBoostSharp/blob/master/LICENSE)
 
 # XGBoostSharp
