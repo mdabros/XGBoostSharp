@@ -81,7 +81,8 @@ public static class NativeMethods
 
     [DllImport(XGBoostNtvDllName)]
     public static extern int XGBoosterPredictFromDMatrix(
-        IntPtr handle, IntPtr dmat, byte[] jsonConfig, out IntPtr outShape, out ulong outDim, out IntPtr outResult);
+        IntPtr handle, IntPtr dmat, byte[] jsonConfig,
+        out IntPtr outShape, out ulong outDim, out IntPtr outResult);
 
     [DllImport(XGBoostNtvDllName)]
     public static extern int XGBoosterSaveModel(

@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -72,6 +73,33 @@ public static partial class TestUtils
                 sb.Append($"{prediction:F12}f, ");
             }
             Trace.WriteLine($"[{sb}],");
+        }
+    }
+
+    public static float[] AggregateContributions(Array actualContributions,
+        Func<float[], float> aggregate)
+    {
+        // Dimensions of an Array are named Rank in C#.
+        if (actualContributions.Rank == 2)
+        {
+            var aggregatedContributions = new float[actualContributions.GetLength(0)];
+            // We want to check that the sum of the contributions(contributions
+            // + last column, which is bias) is equal to the prediction.
+            for (var i = 0; i < actualContributions.GetLength(0); i++)
+            {
+                var currentContribution = new float[actualContributions.GetLength(1)];
+                for (var j = 0; j < actualContributions.GetLength(1); j++)
+                {
+                    currentContribution[j] = (float)actualContributions.GetValue(i, j);
+                }
+                var aggregatedContribution = aggregate(currentContribution);
+                aggregatedContributions[i] = aggregatedContribution;
+            }
+            return aggregatedContributions;
+        }
+        else
+        {
+            throw new NotSupportedException("Only 2D arrays are supported.");
         }
     }
 }

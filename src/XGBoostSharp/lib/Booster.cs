@@ -97,26 +97,30 @@ public class Booster : IDisposable
 
         var args = new Dictionary<string, object>
         {
-            { "type", 0 },
-            { "training", training },
-            { "iteration_begin", iterationRange.Item1 },
-            { "iteration_end", iterationRange.Item2 },
-            { "strict_shape", strictShape }
+            { PredictionType.type, PredictionType.TypeNormal },
+            { PredictionType.training, training },
+            { PredictionType.iteration_begin, iterationRange.Item1 },
+            { PredictionType.iteration_end, iterationRange.Item2 },
+            { PredictionType.strict_shape, strictShape }
         };
 
         void AssignType(int t)
         {
-            if ((int)args["type"] != 0)
+            if ((int)args[PredictionType.type] != PredictionType.TypeNormal)
             {
                 throw new InvalidOperationException("One type of prediction at a time.");
             }
-            args["type"] = t;
+            args[PredictionType.type] = t;
         }
 
-        if (outputMargin) AssignType(1);
-        if (predContribs) AssignType(approxContribs ? 3 : 2);
-        if (predInteractions) AssignType(approxContribs ? 5 : 4);
-        if (predLeaf) AssignType(6);
+        if (outputMargin) AssignType(PredictionType.TypeOutputMargin);
+        if (predContribs) AssignType(approxContribs
+            ? PredictionType.TypePredContribsApprox
+            : PredictionType.TypePredContribs);
+        if (predInteractions) AssignType(approxContribs
+            ? PredictionType.TypePredInteractionsApprox
+            : PredictionType.TypePredInteractions);
+        if (predLeaf) AssignType(PredictionType.TypePredLeaf);
 
         var configBytes = JsonSerializer.SerializeToUtf8Bytes(args);
 
@@ -129,12 +133,16 @@ public class Booster : IDisposable
     static Array ProcessPredictions(IntPtr predsPtr, IntPtr shapePtr, ulong dims)
     {
         var shape = new long[dims];
-        for (int i = 0; i < (int)dims; i++)
-        {
-            shape[i] = Marshal.ReadInt64(shapePtr, i * sizeof(long));
-        }
+        Marshal.Copy(shapePtr, shape, 0, (int)dims);
 
         var length = shape.Aggregate(1L, (acc, val) => acc * val);
+
+        if (length > int.MaxValue)
+        {
+            throw new InvalidOperationException(
+                "The length of the predictions array exceeds the maximum allowed size.");
+        }
+
         var predictions = new float[length];
         Marshal.Copy(predsPtr, predictions, 0, (int)length);
 

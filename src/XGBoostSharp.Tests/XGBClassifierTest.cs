@@ -142,31 +142,23 @@ public class XGBClassifierTest
         sut.Fit(dMatrixTrain);
 
         using var dMatrixTest = new DMatrix(dataTest);
-        var actualContribs = sut.Predict(dMatrixTest, predContribs: true);
-        var actualPredictionProb = sut.PredictProbability(dMatrixTest);
+        var actualContributions = sut.Predict(dMatrixTest, predContribs: true);
+        var predictedProbabilities = sut.PredictProbability(dMatrixTest);
 
-        // Dimensions of an Array are named Rank in C#.
-        if (actualContribs.Rank == 2)
+        static float AggregateProbability(float[] values)
         {
-            // We want to check that the sum of the contributions(contributions + last column, which is bias) is equal to the prediction.
-            for (var i = 0; i < actualContribs.GetLength(0); i++)
-            {
-                var contribs = new float[actualContribs.GetLength(1)];
-                for (var j = 0; j < actualContribs.GetLength(1); j++)
-                {
-                    contribs[j] = (float)actualContribs.GetValue(i, j);
-                }
-                // Math.Round because of floating point precision.
-                var sumOfContribs = contribs.Sum();
-                // In a binary classification problem, the raw margin is transformed into a probability using the logistic function.
-                double calculatedProbability = 1 / (1 + Math.Exp(-sumOfContribs));
-                Assert.AreEqual(Math.Round(actualPredictionProb[i][1], 5), Math.Round(calculatedProbability, 5));
-            }
+            // In a binary classification problem, the raw margin is transformed
+            // into a probability using the logistic function.
+            return 1f / (1f + (float)Math.Exp(-values.Sum()));
         }
-        else
-        {
-            throw new NotSupportedException("Only 2D arrays are supported in this test.");
-        }
+
+        // We want to check that the sum of the contributions(contributions +
+        // last column, which is bias) is equal to the prediction.
+        var actualProbabilities = TestUtils.AggregateContributions(actualContributions,
+            AggregateProbability);
+        var expectedProbabilities = predictedProbabilities.Select(x => x[1]).ToArray();
+
+        TestUtils.AssertAreEqual(expectedProbabilities, actualProbabilities);
     }
 
     [TestMethod]
