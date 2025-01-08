@@ -128,10 +128,122 @@ public class XGBRegressorTest
 
         // We want to check that the sum of the contributions(contributions +
         // last column, which is bias) is equal to the prediction.
-        var actualProbabilities = TestUtils.AggregateContributions(actualContributions,
+        var actualProbabilities = TestUtils.AggregateColumns(actualContributions,
             floats => floats.Sum());
 
         TestUtils.AssertAreEqual(actualPredictions, actualProbabilities);
+    }
+
+    [TestMethod]
+    public void XGBRegressorTest_PredictionContributionsApprox()
+    {
+        var dataTrain = TestUtils.DataTrain;
+        var labelsTrain = TestUtils.LabelsTrain;
+        var dataTest = TestUtils.DataTest;
+
+        using var sut = CreateSut();
+        sut.Fit(dataTrain, labelsTrain);
+
+        using var dMatrixTest = new DMatrix(dataTest);
+        var actualContributions = sut.Predict(dMatrixTest, predContribs: true, approxContribs: true);
+        var actualPredictions = sut.Predict(dMatrixTest);
+
+        Assert.AreEqual(2, actualContributions.Rank);
+
+        // We want to check that the sum of the contributions(contributions +
+        // last column, which is bias) is equal to the prediction.
+        var actualProbabilities = TestUtils.AggregateColumns(actualContributions,
+            floats => floats.Sum());
+
+        TestUtils.AssertAreEqual(actualPredictions, actualProbabilities);
+    }
+
+    [TestMethod]
+    public void XGBRegressorTest_PredictionInteractions()
+    {
+        var dataTrain = TestUtils.DataTrain;
+        var labelsTrain = TestUtils.LabelsTrain;
+        var dataTest = TestUtils.DataTest;
+
+        using var sut = CreateSut();
+        sut.Fit(dataTrain, labelsTrain);
+
+        using var dMatrixTest = new DMatrix(dataTest);
+        var actualInteractions = sut.Predict(dMatrixTest, predInteractions: true);
+        var actualPredictions = sut.Predict(dMatrixTest);
+
+        Assert.AreEqual(3, actualInteractions.Rank);
+
+        var actualProbabilities = TestUtils.AggregateColumns(actualInteractions,
+            floats => floats.Sum());
+
+        TestUtils.AssertAreEqual(actualPredictions, actualProbabilities);
+    }
+
+    [TestMethod]
+    public void XGBRegressorTest_PredictionLeaf()
+    {
+        var dataTrain = TestUtils.DataTrain;
+        var labelsTrain = TestUtils.LabelsTrain;
+        var dataTest = TestUtils.DataTest;
+
+        using var sut = CreateSut();
+        sut.Fit(dataTrain, labelsTrain);
+
+        using var dMatrixTest = new DMatrix(dataTest);
+        var actualInteractions = sut.Predict(dMatrixTest, predLeaf: true);
+        var actualLeafs = sut.Predict(dMatrixTest, predLeaf: true);
+
+        Assert.AreEqual(2, actualLeafs.Rank);
+
+        var actualAggregatedLeafs = TestUtils.AggregateColumns(actualLeafs,
+            floats => floats.Sum());
+
+        var expected = TestUtils.ExpectedRegressorPredictionLeafs;
+
+        TestUtils.AssertAreEqual(expected, actualAggregatedLeafs);
+    }
+
+    [TestMethod]
+    public void XGBRegressorTest_PredictWithStrictShape()
+    {
+        var dataTrain = TestUtils.DataTrain;
+        var labelsTrain = TestUtils.LabelsTrain;
+        var dataTest = TestUtils.DataTest;
+
+        using var sut = CreateSut();
+        sut.Fit(dataTrain, labelsTrain);
+
+        using var dMatrixTest = new DMatrix(dataTest);
+        var actual = sut.Predict(dMatrixTest, strictShape: true);
+
+        var expected = TestUtils.ExpectedRegressionPredictions;
+
+        Assert.AreEqual(2, actual.Rank);
+
+        var flattenedActual = TestUtils.FlattenArray(actual);
+        TestUtils.AssertAreEqual(expected, flattenedActual);
+    }
+
+    [TestMethod]
+    public void XGBRegressorTest_PredictWithOutputMargin()
+    {
+        var dataTrain = TestUtils.DataTrain;
+        var labelsTrain = TestUtils.LabelsTrain;
+        var dataTest = TestUtils.DataTest;
+
+        using var sut = CreateSut();
+        sut.Fit(dataTrain, labelsTrain);
+
+        using var dMatrixTest = new DMatrix(dataTest);
+        var actual = sut.Predict(dMatrixTest, strictShape: true, outputMargin: true);
+
+        var expected = TestUtils.ExpectedRegressionPredictions;
+
+        Assert.AreEqual(2, actual.Rank);
+
+        var flattenedActual = TestUtils.FlattenArray(actual);
+        TestUtils.AssertAreEqual(expected, flattenedActual);
     }
 
     [TestMethod]

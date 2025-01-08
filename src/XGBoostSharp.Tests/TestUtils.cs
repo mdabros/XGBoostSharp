@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -76,7 +77,7 @@ public static partial class TestUtils
         }
     }
 
-    public static float[] AggregateContributions(Array actualContributions,
+    public static float[] AggregateColumns(Array actualContributions,
         Func<float[], float> aggregate)
     {
         // Dimensions of an Array are named Rank in C#.
@@ -97,9 +98,52 @@ public static partial class TestUtils
             }
             return aggregatedContributions;
         }
-        else
+
+        if (actualContributions.Rank == 3)
         {
-            throw new NotSupportedException("Only 2D arrays are supported.");
+            var aggregatedContributions = new float[actualContributions.GetLength(0)];
+            for (var i = 0; i < actualContributions.GetLength(0); i++)
+            {
+                var currentContribution = new float[actualContributions.GetLength(1) * actualContributions.GetLength(2)];
+                for (var j = 0; j < actualContributions.GetLength(1); j++)
+                {
+                    for (var k = 0; k < actualContributions.GetLength(2); k++)
+                    {
+                        currentContribution[j * actualContributions.GetLength(2) + k] = (float)actualContributions.GetValue(i, j, k);
+                    }
+                }
+                var aggregatedContribution = aggregate(currentContribution);
+                aggregatedContributions[i] = aggregatedContribution;
+            }
+            return aggregatedContributions;
+        }
+        throw new NotSupportedException("Only 2D and 3D arrays are supported.");
+    }
+
+    public static float[] FlattenArray(Array array)
+    {
+        if (array == null)
+        {
+            throw new ArgumentNullException(nameof(array));
+        }
+
+        var result = new List<float>();
+        FlattenArrayRecursive(array, result);
+        return result.ToArray();
+    }
+
+    static void FlattenArrayRecursive(Array array, List<float> result)
+    {
+        foreach (var item in array)
+        {
+            if (item is Array subArray)
+            {
+                FlattenArrayRecursive(subArray, result);
+            }
+            else
+            {
+                result.Add(Convert.ToSingle(item));
+            }
         }
     }
 }
