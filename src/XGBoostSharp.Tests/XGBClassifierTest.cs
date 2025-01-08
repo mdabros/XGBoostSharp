@@ -142,7 +142,7 @@ public class XGBClassifierTest
         sut.Fit(dMatrixTrain);
 
         using var dMatrixTest = new DMatrix(dataTest);
-        var actualContributions = sut.Predict(dMatrixTest, predContribs: true);
+        var predictionContributions = sut.Predict(dMatrixTest, predContribs: true);
         var predictedProbabilities = sut.PredictProbability(dMatrixTest);
 
         static float AggregateProbability(float[] values)
@@ -154,11 +154,11 @@ public class XGBClassifierTest
 
         // We want to check that the sum of the contributions(contributions +
         // last column, which is bias) is equal to the prediction.
-        var actualProbabilities = TestUtils.AggregateColumns(actualContributions,
+        var actual = TestUtils.AggregateColumns(predictionContributions,
             AggregateProbability);
-        var expectedProbabilities = predictedProbabilities.Select(x => x[1]).ToArray();
+        var expected = predictedProbabilities.Select(x => x[1]).ToArray();
 
-        TestUtils.AssertAreEqual(expectedProbabilities, actualProbabilities);
+        TestUtils.AssertAreEqual(expected, actual);
     }
 
     [TestMethod]
@@ -172,10 +172,10 @@ public class XGBClassifierTest
         sut.Fit(dataTrain, labelsTrain);
 
         using var dMatrixTest = new DMatrix(dataTest);
-        var actualContributions = sut.Predict(dMatrixTest, predContribs: true, approxContribs: true);
+        var predictionContributions = sut.Predict(dMatrixTest, predContribs: true, approxContribs: true);
         var predictedProbabilities = sut.PredictProbability(dMatrixTest);
 
-        Assert.AreEqual(2, actualContributions.Rank);
+        Assert.AreEqual(2, predictionContributions.Rank);
 
         static float AggregateProbability(float[] values)
         {
@@ -186,11 +186,11 @@ public class XGBClassifierTest
 
         // We want to check that the sum of the contributions(contributions +
         // last column, which is bias) is equal to the prediction.
-        var actualProbabilities = TestUtils.AggregateColumns(actualContributions,
+        var actual = TestUtils.AggregateColumns(predictionContributions,
             AggregateProbability);
-        var expectedProbabilities = predictedProbabilities.Select(x => x[1]).ToArray();
+        var expected = predictedProbabilities.Select(x => x[1]).ToArray();
 
-        TestUtils.AssertAreEqual(expectedProbabilities, actualProbabilities);
+        TestUtils.AssertAreEqual(expected, actual);
     }
 
     [TestMethod]
@@ -204,10 +204,10 @@ public class XGBClassifierTest
         sut.Fit(dataTrain, labelsTrain);
 
         using var dMatrixTest = new DMatrix(dataTest);
-        var actualInteractions = sut.Predict(dMatrixTest, predInteractions: true);
+        var predictionInteractions = sut.Predict(dMatrixTest, predInteractions: true);
         var predictedProbabilities = sut.PredictProbability(dMatrixTest);
 
-        Assert.AreEqual(3, actualInteractions.Rank);
+        Assert.AreEqual(3, predictionInteractions.Rank);
 
         static float AggregateProbability(float[] values)
         {
@@ -216,11 +216,11 @@ public class XGBClassifierTest
             return 1f / (1f + (float)Math.Exp(-values.Sum()));
         }
 
-        var actualProbabilities = TestUtils.AggregateColumns(actualInteractions,
+        var actual = TestUtils.AggregateColumns(predictionInteractions,
             AggregateProbability);
-        var expectedProbabilities = predictedProbabilities.Select(x => x[1]).ToArray();
+        var expected = predictedProbabilities.Select(x => x[1]).ToArray();
 
-        TestUtils.AssertAreEqual(expectedProbabilities, actualProbabilities);
+        TestUtils.AssertAreEqual(expected, actual);
     }
 
     [TestMethod]
@@ -238,12 +238,12 @@ public class XGBClassifierTest
 
         Assert.AreEqual(2, actualLeafs.Rank);
 
-        var actualAggregatedLeafs = TestUtils.AggregateColumns(actualLeafs,
-            floats => floats.Sum());
-
         var expected = TestUtils.ExpectedClassifierPredictionLeafs;
 
-        TestUtils.AssertAreEqual(expected, actualAggregatedLeafs);
+        var actual = TestUtils.AggregateColumns(actualLeafs,
+            floats => floats.Sum());
+
+        TestUtils.AssertAreEqual(expected, actual);
     }
 
     [TestMethod]
@@ -257,15 +257,15 @@ public class XGBClassifierTest
         sut.Fit(dataTrain, labelsTrain);
 
         using var dMatrixTest = new DMatrix(dataTest);
-        var actual = sut.Predict(dMatrixTest, strictShape: true);
+        var predictionResult = sut.Predict(dMatrixTest, strictShape: true);
 
         var expected = TestUtils.ExpectedClassifierPredictions;
 
-        Assert.AreEqual(2, actual.Rank);
+        Assert.AreEqual(2, predictionResult.Rank);
 
-        var flattenedActual = TestUtils.FlattenArray(actual);
-        var classifiedActual = flattenedActual.Select(v => v > 0.5f ? 1f : 0f).ToArray();
-        TestUtils.AssertAreEqual(expected, classifiedActual);
+        var flattenedActual = TestUtils.FlattenArray(predictionResult);
+        var actual = flattenedActual.Select(v => v > 0.5f ? 1f : 0f).ToArray();
+        TestUtils.AssertAreEqual(expected, actual);
     }
 
     [TestMethod]
@@ -279,14 +279,14 @@ public class XGBClassifierTest
         sut.Fit(dataTrain, labelsTrain);
 
         using var dMatrixTest = new DMatrix(dataTest);
-        var actual = sut.Predict(dMatrixTest, strictShape: true, outputMargin: true);
+        var predictionResult = sut.Predict(dMatrixTest, strictShape: true, outputMargin: true);
 
         var expected = TestUtils.ExpectedClassifierPredictionsWithOutputMargin;
 
-        Assert.AreEqual(2, actual.Rank);
+        Assert.AreEqual(2, predictionResult.Rank);
 
-        var flattenedActual = TestUtils.FlattenArray(actual);
-        TestUtils.AssertAreEqual(expected, flattenedActual);
+        var actual = TestUtils.FlattenArray(predictionResult);
+        TestUtils.AssertAreEqual(expected, actual);
     }
 
     [TestMethod]
