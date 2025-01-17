@@ -77,47 +77,34 @@ public static partial class TestUtils
         }
     }
 
-    public static float[] AggregateColumns(Array actualContributions,
-        Func<float[], float> aggregate)
+    public static float[] AggregateColumns(Array actualContributions, Func<float[], float> aggregate)
     {
-        // Dimensions of an Array are named Rank in C#.
-        if (actualContributions.Rank == 2)
+        if (actualContributions.Rank != 2 && actualContributions.Rank != 3)
         {
-            var aggregatedContributions = new float[actualContributions.GetLength(0)];
-            // We want to check that the sum of the contributions(contributions
-            // + last column, which is bias) is equal to the prediction.
-            for (var i = 0; i < actualContributions.GetLength(0); i++)
-            {
-                var currentContribution = new float[actualContributions.GetLength(1)];
-                for (var j = 0; j < actualContributions.GetLength(1); j++)
-                {
-                    currentContribution[j] = (float)actualContributions.GetValue(i, j);
-                }
-                var aggregatedContribution = aggregate(currentContribution);
-                aggregatedContributions[i] = aggregatedContribution;
-            }
-            return aggregatedContributions;
+            throw new NotSupportedException("Only 2D and 3D arrays are supported.");
         }
 
-        if (actualContributions.Rank == 3)
+        var aggregatedContributions = new float[actualContributions.GetLength(0)];
+        for (var i = 0; i < actualContributions.GetLength(0); i++)
         {
-            var aggregatedContributions = new float[actualContributions.GetLength(0)];
-            for (var i = 0; i < actualContributions.GetLength(0); i++)
+            var currentContribution = new List<float>();
+            for (var j = 0; j < actualContributions.GetLength(1); j++)
             {
-                var currentContribution = new float[actualContributions.GetLength(1) * actualContributions.GetLength(2)];
-                for (var j = 0; j < actualContributions.GetLength(1); j++)
+                if (actualContributions.Rank == 2)
+                {
+                    currentContribution.Add((float)actualContributions.GetValue(i, j));
+                }
+                else
                 {
                     for (var k = 0; k < actualContributions.GetLength(2); k++)
                     {
-                        currentContribution[j * actualContributions.GetLength(2) + k] = (float)actualContributions.GetValue(i, j, k);
+                        currentContribution.Add((float)actualContributions.GetValue(i, j, k));
                     }
                 }
-                var aggregatedContribution = aggregate(currentContribution);
-                aggregatedContributions[i] = aggregatedContribution;
             }
-            return aggregatedContributions;
+            aggregatedContributions[i] = aggregate([.. currentContribution]);
         }
-        throw new NotSupportedException("Only 2D and 3D arrays are supported.");
+        return aggregatedContributions;
     }
 
     public static float[] FlattenArray(Array array)
