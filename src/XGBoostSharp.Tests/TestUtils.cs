@@ -1,4 +1,6 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -72,6 +74,63 @@ public static partial class TestUtils
                 sb.Append($"{prediction:F12}f, ");
             }
             Trace.WriteLine($"[{sb}],");
+        }
+    }
+
+    public static float[] AggregateColumns(Array actualContributions, Func<float[], float> aggregate)
+    {
+        if (actualContributions.Rank != 2 && actualContributions.Rank != 3)
+        {
+            throw new NotSupportedException("Only 2D and 3D arrays are supported.");
+        }
+
+        var aggregatedContributions = new float[actualContributions.GetLength(0)];
+        for (var i = 0; i < actualContributions.GetLength(0); i++)
+        {
+            var currentContribution = new List<float>();
+            for (var j = 0; j < actualContributions.GetLength(1); j++)
+            {
+                if (actualContributions.Rank == 2)
+                {
+                    currentContribution.Add((float)actualContributions.GetValue(i, j));
+                }
+                else
+                {
+                    for (var k = 0; k < actualContributions.GetLength(2); k++)
+                    {
+                        currentContribution.Add((float)actualContributions.GetValue(i, j, k));
+                    }
+                }
+            }
+            aggregatedContributions[i] = aggregate([.. currentContribution]);
+        }
+        return aggregatedContributions;
+    }
+
+    public static float[] FlattenArray(Array array)
+    {
+        if (array == null)
+        {
+            throw new ArgumentNullException(nameof(array));
+        }
+
+        var result = new List<float>();
+        FlattenArrayRecursive(array, result);
+        return result.ToArray();
+    }
+
+    static void FlattenArrayRecursive(Array array, List<float> result)
+    {
+        foreach (var item in array)
+        {
+            if (item is Array subArray)
+            {
+                FlattenArrayRecursive(subArray, result);
+            }
+            else
+            {
+                result.Add(Convert.ToSingle(item));
+            }
         }
     }
 }
