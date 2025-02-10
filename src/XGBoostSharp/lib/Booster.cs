@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.Json;
 using static XGBoostSharp.lib.ParameterNames;
@@ -76,6 +77,110 @@ public class Booster : IDisposable
             Handle, test.Handle, NormalPrediction,
                 ntreeLimit: 0, training: 0, out predsLen, out predsPtr));
         return GetPredictionsArray(predsPtr, predsLen);
+    }
+
+    public Array Predict(
+        DMatrix data,
+        bool outputMargin = false,
+        bool predLeaf = false,
+        bool predContribs = false,
+        bool approxContribs = false,
+        bool predInteractions = false,
+        bool training = false,
+        (int, int) iterationRange = default,
+        bool strictShape = false)
+    {
+        if (data == null)
+        {
+            throw new ArgumentNullException(nameof(data));
+        }
+
+        var args = new Dictionary<string, object>
+        {
+            { PredictionType.type, PredictionType.TypeNormal },
+            { PredictionType.training, training },
+            { PredictionType.iteration_begin, iterationRange.Item1 },
+            { PredictionType.iteration_end, iterationRange.Item2 },
+            { PredictionType.strict_shape, strictShape }
+        };
+
+        void AssignType(int t)
+        {
+            if ((int)args[PredictionType.type] != PredictionType.TypeNormal)
+            {
+                throw new InvalidOperationException("One type of prediction at a time.");
+            }
+            args[PredictionType.type] = t;
+        }
+
+        if (outputMargin) AssignType(PredictionType.TypeOutputMargin);
+        if (predContribs) AssignType(approxContribs
+            ? PredictionType.TypePredContribsApprox
+            : PredictionType.TypePredContribs);
+        if (predInteractions) AssignType(approxContribs
+            ? PredictionType.TypePredInteractionsApprox
+            : PredictionType.TypePredInteractions);
+        if (predLeaf) AssignType(PredictionType.TypePredLeaf);
+
+        var configBytes = JsonSerializer.SerializeToUtf8Bytes(args);
+
+        ThrowIfError(NativeMethods.XGBoosterPredictFromDMatrix(
+            Handle, data.Handle, configBytes, out var shapePtr, out var dims, out var predsPtr));
+
+        return ProcessPredictions(predsPtr, shapePtr, dims);
+    }
+
+    static Array ProcessPredictions(IntPtr predsPtr, IntPtr shapePtr, ulong dims)
+    {
+        var shape = new long[dims];
+        Marshal.Copy(shapePtr, shape, 0, (int)dims);
+
+        var length = shape.Aggregate(1L, (acc, val) => acc * val);
+
+        if (length > int.MaxValue)
+        {
+            throw new InvalidOperationException(
+                "The length of the predictions array exceeds the maximum allowed size.");
+        }
+
+        var predictions = new float[length];
+        Marshal.Copy(predsPtr, predictions, 0, (int)length);
+
+        /*
+         * The prediction response can be anything from a 1D float array to a 4D array.
+         * It all depends on the options you pass.
+         * https://xgboost.readthedocs.io/en/stable/prediction.html#prediction-options
+         * This means that the return type is determined at runtime. We can't use generics.
+         */
+        return dims switch
+        {
+            1 => predictions,
+            2 => Reshape(predictions, (int)shape[0], (int)shape[1]),
+            3 => Reshape(predictions, (int)shape[0], (int)shape[1], (int)shape[2]),
+            4 => Reshape(predictions, (int)shape[0], (int)shape[1], (int)shape[2], (int)shape[3]),
+            _ => throw new InvalidOperationException("Unsupported number of dimensions.")
+        };
+    }
+
+    static float[,] Reshape(float[] array, int dim1, int dim2)
+    {
+        var result = new float[dim1, dim2];
+        Buffer.BlockCopy(array, 0, result, 0, array.Length * sizeof(float));
+        return result;
+    }
+
+    static float[,,] Reshape(float[] array, int dim1, int dim2, int dim3)
+    {
+        var result = new float[dim1, dim2, dim3];
+        Buffer.BlockCopy(array, 0, result, 0, array.Length * sizeof(float));
+        return result;
+    }
+
+    static float[,,,] Reshape(float[] array, int dim1, int dim2, int dim3, int dim4)
+    {
+        var result = new float[dim1, dim2, dim3, dim4];
+        Buffer.BlockCopy(array, 0, result, 0, array.Length * sizeof(float));
+        return result;
     }
 
     public static float[] GetPredictionsArray(IntPtr predsPtr, ulong predsLen)
