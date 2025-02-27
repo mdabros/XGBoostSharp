@@ -280,8 +280,7 @@ public class Booster : IDisposable
             out var featuresHandle,
             out var outDim,
             out var shapeHandle,
-            out var scoresHandle
-        );
+            out var scoresHandle);
 
         ThrowIfError(result);
 
