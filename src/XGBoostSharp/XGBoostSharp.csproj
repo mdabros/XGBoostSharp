@@ -15,8 +15,4 @@
     <PackageReference Include="System.Text.Json" Version="9.0.2" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Update="Microsoft.SourceLink.GitHub" Version="8.0.0" />
-  </ItemGroup>
-
 </Project>
