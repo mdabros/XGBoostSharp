@@ -283,26 +283,22 @@ public class Booster : IDisposable
             out var scoresHandle
         );
 
-        using var features = new SafeNativeMemoryHandle(featuresHandle);
-        using var shapeHandleWrapper = new SafeNativeMemoryHandle(shapeHandle);
-        using var scoresHandleWrapper = new SafeNativeMemoryHandle(scoresHandle);
-
         ThrowIfError(result);
 
         // Extract the feature names and scores from the native memory.
         var featureNames = new string[nOutFeatures];
         for (ulong i = 0; i < nOutFeatures; i++)
         {
-            var featurePtr = Marshal.ReadIntPtr(features.DangerousGetHandle(), (int)(i * (ulong)IntPtr.Size));
+            var featurePtr = Marshal.ReadIntPtr(featuresHandle, (int)(i * (ulong)IntPtr.Size));
             featureNames[i] = Marshal.PtrToStringAnsi(featurePtr);
         }
 
         var shape = new int[(int)outDim];
-        Marshal.Copy(shapeHandleWrapper.DangerousGetHandle(), shape, 0, (int)outDim);
+        Marshal.Copy(shapeHandle, shape, 0, (int)outDim);
 
         var totalScores = shape.Aggregate(1, (acc, val) => acc * val);
         var scoreArray = new float[totalScores];
-        Marshal.Copy(scoresHandleWrapper.DangerousGetHandle(), scoreArray, 0, totalScores);
+        Marshal.Copy(scoresHandle, scoreArray, 0, totalScores);
 
         var results = new Dictionary<string, float>();
         for (ulong i = 0; i < nOutFeatures; i++)
