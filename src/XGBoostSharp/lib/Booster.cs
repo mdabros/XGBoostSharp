@@ -270,10 +270,12 @@ public class Booster : IDisposable
 
     public Dictionary<string, float> GetFeatureScore(string importanceType)
     {
+        var jsonImportanceType = JsonSerializer.Serialize(new { importance_type = importanceType });
+
         // See: https://xgboost.readthedocs.io/en/stable/dev/group__Booster.html#ga13c99414c4631fff42b81be28ecd52bd
         var result = NativeMethods.XGBoosterFeatureScore(
             Handle,
-            importanceType,
+            jsonImportanceType,
             out var nOutFeatures,
             out var featuresHandle,
             out var outDim,

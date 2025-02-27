@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using XGBoostSharp.lib;
@@ -257,6 +258,22 @@ public class XGBRegressorTest
 
         var actual = sut.DumpModelEx();
         var expected = TestUtils.ExpectedRegressorModelDump;
+
+        TestUtils.AssertAreEqual(expected, actual);
+    }
+
+    [TestMethod]
+    public void XGBRegressor_GetFeatureScore()
+    {
+        var dataTrain = TestUtils.DataTrain;
+        var labelsTrain = TestUtils.LabelsTrain;
+
+        using var sut = CreateSut();
+        sut.Fit(dataTrain, labelsTrain);
+
+        var actual = sut.GetFeatureScore(ImportanceType.Weight);
+        var expected = new Dictionary<string, float>
+            { { "f0", 49 }, { "f1", 499 }, { "f2", 86 } };
 
         TestUtils.AssertAreEqual(expected, actual);
     }

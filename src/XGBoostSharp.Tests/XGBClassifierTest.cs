@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -300,6 +301,22 @@ public class XGBClassifierTest
 
         var actual = sut.DumpModelEx();
         var expected = TestUtils.ExpectedClassifierModelDump;
+
+        TestUtils.AssertAreEqual(expected, actual);
+    }
+
+    [TestMethod]
+    public void XGBClassifierTest_GetFeatureScore()
+    {
+        var dataTrain = TestUtils.DataTrain;
+        var labelsTrain = TestUtils.LabelsTrain;
+
+        using var sut = CreateSut();
+        sut.Fit(dataTrain, labelsTrain);
+
+        var actual = sut.GetFeatureScore(ImportanceType.Weight);
+        var expected = new Dictionary<string, float>
+            { { "f0", 44 }, { "f1", 445 }, { "f2", 74 } };
 
         TestUtils.AssertAreEqual(expected, actual);
     }
