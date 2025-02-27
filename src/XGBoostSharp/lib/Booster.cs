@@ -268,7 +268,7 @@ public class Booster : IDisposable
         return trees;
     }
 
-    public Dictionary<string, float> GetFeatureScore(string importanceType = ImportanceType.weight)
+    public Dictionary<string, float> GetFeatureScore(string importanceType)
     {
         // See: https://xgboost.readthedocs.io/en/stable/dev/group__Booster.html#ga13c99414c4631fff42b81be28ecd52bd
         var result = NativeMethods.XGBoosterFeatureScore(
