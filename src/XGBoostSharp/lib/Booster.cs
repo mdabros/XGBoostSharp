@@ -268,7 +268,7 @@ public class Booster : IDisposable
         return trees;
     }
 
-    public Dictionary<string, float> GetFeatureScore(string importanceType)
+    public Dictionary<string, float> FeatureScore(string importanceType)
     {
         var jsonImportanceType = JsonSerializer.Serialize(new { importance_type = importanceType });
 

@@ -55,9 +55,9 @@ public abstract class XGBModelBase : IDisposable
             strictShape);
     }
 
-    public Dictionary<string, float> GetFeatureScore(
+    public Dictionary<string, float> GetFeatureImportance(
         string importanceType = Parameters.ImportanceType.Weight) =>
-            m_booster.GetFeatureScore(importanceType);
+            m_booster.FeatureScore(importanceType);
 
     void DisposeManagedResources()
     {

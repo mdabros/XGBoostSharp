@@ -311,7 +311,7 @@ public class XGBClassifierTest
     [DataRow(ImportanceType.Cover, new[] { 97.0292f, 93.3664856f, 102.020782f })]
     [DataRow(ImportanceType.TotalGain, new[] { 472.127472f, 921.42926f, 178.6509f })]
     [DataRow(ImportanceType.TotalCover, new[] { 4269.28467f, 41548.0859f, 7549.538f })]
-    public void XGBClassifierTest_GetFeatureScore(string importanceType, float[] featureScores)
+    public void XGBClassifierTest_GetFeatureImportance(string importanceType, float[] featureScores)
     {
         var dataTrain = TestUtils.DataTrain;
         var labelsTrain = TestUtils.LabelsTrain;
@@ -319,7 +319,7 @@ public class XGBClassifierTest
         using var sut = CreateSut();
         sut.Fit(dataTrain, labelsTrain);
 
-        var actual = sut.GetFeatureScore(importanceType);
+        var actual = sut.GetFeatureImportance(importanceType);
 
         var featureNames = new[] { "f0", "f1", "f2" };
         var expected = featureNames.Zip(featureScores, (name, score) => new { name, score })
