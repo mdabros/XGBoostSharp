@@ -19,6 +19,9 @@ classifier.Fit(dataTrain, labelsTrain);
 var predictions = classifier.Predict(dataTest);
 var probabilities = classifier.PredictProbability(dataTest);
 
+// Get feature importance.
+var featureImportance = classifier.GetFeatureImportance(ImportanceType.Weight);
+
 // Save and load the classifier.
 var modelFileName = "classifier.json";
 classifier.SaveModelToFile(modelFileName)
@@ -33,6 +36,9 @@ regressor.Fit(dataTrain, labelsTrain);
 
 // make predictions.
 var predictions = regressor.Predict(dataTest);
+
+// Get feature importance.
+var featureImportance = regressor.GetFeatureImportance(ImportanceType.Weight);
 
 // Save and load the regressor.
 var modelFileName = "regressor.json";
