@@ -268,7 +268,7 @@ public class Booster : IDisposable
         return trees;
     }
 
-    public Dictionary<string, float> GetScore(string fmap = "", string importanceType = "weight")
+    public Dictionary<string, float> GetFeatureScore(string fmap = "", string importanceType = "weight")
     {
         // Extract the feature names and scores from the native memory.
         // Use this documentation as guideline:
@@ -294,7 +294,7 @@ public class Booster : IDisposable
         // See: https://xgboost.readthedocs.io/en/stable/dev/group__Booster.html#ga13c99414c4631fff42b81be28ecd52bd
         var result = NativeMethods.XGBoosterFeatureScore(
             Handle,
-            MakeJcargs(importanceType, fmap),
+            importanceType,
             out var nOutFeatures,
             out var featuresHandle,
             out var outDim,
@@ -330,14 +330,6 @@ public class Booster : IDisposable
         }
 
         return results;
-    }
-
-    // TODO: Implement or delete
-    static string MakeJcargs(string importanceType, string fmap)
-    {
-        // Implement the logic to create the JSON config string
-        // This is a placeholder implementation
-        return $"{{\"importance_type\":\"{importanceType}\",\"feature_map\":\"{fmap}\"}}";
     }
 
     static void ThrowIfError(int output)
