@@ -268,7 +268,7 @@ public class XGBRegressorTest
     [DataRow(ImportanceType.Cover, new[] { 409.326538f, 439.118225f, 323.4535f })]
     [DataRow(ImportanceType.TotalGain, new[] { 113.428368f, 226.770172f, 43.00494f })]
     [DataRow(ImportanceType.TotalCover, new[] { 20057f, 219120f, 27817f })]
-    public void XGBRegressorTest_GetFeatureImportance(string importanceType, float[] featureScores)
+    public void XGBRegressorTest_GetFeatureImportance(string importanceType, float[] featureImportances)
     {
         var dataTrain = TestUtils.DataTrain;
         var labelsTrain = TestUtils.LabelsTrain;
@@ -279,7 +279,7 @@ public class XGBRegressorTest
         var actual = sut.GetFeatureImportance(importanceType);
 
         var featureNames = new[] { "f0", "f1", "f2" };
-        var expected = featureNames.Zip(featureScores, (name, score) => new { name, score })
+        var expected = featureNames.Zip(featureImportances, (name, score) => new { name, score })
                                    .ToDictionary(x => x.name, x => x.score);
 
         TestUtils.AssertAreEqual(expected, actual);
