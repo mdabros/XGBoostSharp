@@ -305,8 +305,13 @@ public class XGBClassifierTest
         TestUtils.AssertAreEqual(expected, actual);
     }
 
-    [TestMethod]
-    public void XGBClassifierTest_GetFeatureScore()
+    [DataTestMethod]
+    [DataRow(ImportanceType.Weight, new[] { 44f, 445f, 74f })]
+    [DataRow(ImportanceType.Gain, new[] { 10.73017f, 2.07062745f, 2.41420126f })]
+    [DataRow(ImportanceType.Cover, new[] { 97.0292f, 93.3664856f, 102.020782f })]
+    [DataRow(ImportanceType.TotalGain, new[] { 472.127472f, 921.42926f, 178.6509f })]
+    [DataRow(ImportanceType.TotalCover, new[] { 4269.28467f, 41548.0859f, 7549.538f })]
+    public void XGBClassifierTest_GetFeatureScore(string importanceType, float[] featureScores)
     {
         var dataTrain = TestUtils.DataTrain;
         var labelsTrain = TestUtils.LabelsTrain;
@@ -314,9 +319,11 @@ public class XGBClassifierTest
         using var sut = CreateSut();
         sut.Fit(dataTrain, labelsTrain);
 
-        var actual = sut.GetFeatureScore(ImportanceType.Weight);
-        var expected = new Dictionary<string, float>
-            { { "f0", 44 }, { "f1", 445 }, { "f2", 74 } };
+        var actual = sut.GetFeatureScore(importanceType);
+
+        var featureNames = new[] { "f0", "f1", "f2" };
+        var expected = featureNames.Zip(featureScores, (name, score) => new { name, score })
+                                   .ToDictionary(x => x.name, x => x.score);
 
         TestUtils.AssertAreEqual(expected, actual);
     }

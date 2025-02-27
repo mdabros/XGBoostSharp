@@ -268,7 +268,7 @@ public class XGBRegressorTest
     [DataRow(ImportanceType.Cover, new[] { 409.326538f, 439.118225f, 323.4535f })]
     [DataRow(ImportanceType.TotalGain, new[] { 113.428368f, 226.770172f, 43.00494f })]
     [DataRow(ImportanceType.TotalCover, new[] { 20057f, 219120f, 27817f })]
-    public void XGBRegressor_GetFeatureScore(string importanceType, float[] featureScores)
+    public void XGBRegressorTest_GetFeatureScore(string importanceType, float[] featureScores)
     {
         var dataTrain = TestUtils.DataTrain;
         var labelsTrain = TestUtils.LabelsTrain;
