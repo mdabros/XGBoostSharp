@@ -268,10 +268,30 @@ public class Booster : IDisposable
         return trees;
     }
 
-    public Dictionary<string, object> GetScore(string fmap = "", string importanceType = "weight")
+    public Dictionary<string, float> GetScore(string fmap = "", string importanceType = "weight")
     {
+        // Extract the feature names and scores from the native memory.
+        // Use this documentation as guideline:
+
+        //handle An instance of Booster
+        //config  Parameters for computing scores encoded as JSON.Accepted JSON keys are:
+        //importance_type: A JSON string with following possible values:
+        //'weight': the number of times a feature is used to split the data across all trees.
+        //        'gain': the average gain across all splits the feature is used in.
+        //'cover': the average coverage across all splits the feature is used in.
+        //'total_gain': the total gain across all splits the feature is used in.
+        //'total_cover': the total coverage across all splits the feature is used in.
+        //feature_map: An optional JSON string with URI or path to the feature map file.
+        //        feature_names: An optional JSON array with string names for each feature.
+        //out_n_features  Length of output feature names.
+        //out_features    An array of string as feature names, ordered the same as output scores.
+        //out_dim Dimension of output feature scores.
+        //out_shape   Shape of output feature scores with length of out_dim.
+        //out_scores  An array of floating point as feature scores with shape of out_shape.
+
         fmap = System.IO.Path.GetFullPath(fmap);
 
+        // See: https://xgboost.readthedocs.io/en/stable/dev/group__Booster.html#ga13c99414c4631fff42b81be28ecd52bd
         var result = NativeMethods.XGBoosterFeatureScore(
             Handle,
             MakeJcargs(importanceType, fmap),
@@ -283,33 +303,30 @@ public class Booster : IDisposable
         );
 
         using var features = new SafeNativeMemoryHandle(featuresHandle);
-        using var shape = new SafeNativeMemoryHandle(shapeHandle);
-        using var scores = new SafeNativeMemoryHandle(scoresHandle);
+        using var shapeHandleWrapper = new SafeNativeMemoryHandle(shapeHandle);
+        using var scoresHandleWrapper = new SafeNativeMemoryHandle(scoresHandle);
 
         ThrowIfError(result);
 
-        var featuresArray = FromCStrToPyStr(features, nOutFeatures);
-        var scoresArray = PredictionOutput(shape, outDim, scores, false);
-
-        var results = new Dictionary<string, object>();
-        if (scoresArray.GetLength(1) > 1)
+        // Extract the feature names and scores from the native memory.
+        var featureNames = new string[nOutFeatures];
+        for (ulong i = 0; i < nOutFeatures; i++)
         {
-            for (var i = 0; i < featuresArray.Length; i++)
-            {
-                var scoreList = new List<float>();
-                for (var j = 0; j < scoresArray.GetLength(1); j++)
-                {
-                    scoreList.Add(scoresArray[i, j]);
-                }
-                results[featuresArray[i]] = scoreList;
-            }
+            var featurePtr = Marshal.ReadIntPtr(features.DangerousGetHandle(), (int)(i * IntPtr.Size));
+            featureNames[i] = Marshal.PtrToStringAnsi(featurePtr);
         }
-        else
+
+        var shape = new int[outDim];
+        Marshal.Copy(shapeHandleWrapper.DangerousGetHandle(), shape, 0, (int)outDim);
+
+        var totalScores = shape.Aggregate(1, (acc, val) => acc * val);
+        var scoreArray = new float[totalScores];
+        Marshal.Copy(scoresHandleWrapper.DangerousGetHandle(), scoreArray, 0, totalScores);
+
+        var results = new Dictionary<string, float>();
+        for (ulong i = 0; i < nOutFeatures; i++)
         {
-            for (var i = 0; i < featuresArray.Length; i++)
-            {
-                results[featuresArray[i]] = scoresArray[i, 0];
-            }
+            results[featureNames[i]] = scoreArray[i];
         }
 
         return results;
@@ -321,46 +338,6 @@ public class Booster : IDisposable
         // Implement the logic to create the JSON config string
         // This is a placeholder implementation
         return $"{{\"importance_type\":\"{importanceType}\",\"feature_map\":\"{fmap}\"}}";
-    }
-
-    // TODO: Implement or delete
-    static string[] FromCStrToPyStr(SafeHandle features, ulong nOutFeatures)
-    {
-        // Implement the logic to convert C strings to a string array
-        // This is a placeholder implementation
-        var result = new string[nOutFeatures];
-        for (ulong i = 0; i < nOutFeatures; i++)
-        {
-            IntPtr ptr = Marshal.ReadIntPtr(features.DangerousGetHandle(), (int)(i * (ulong)IntPtr.Size));
-            result[i] = Marshal.PtrToStringAnsi(ptr);
-        }
-        return result;
-    }
-
-    // TODO: Implement or delete
-    static float[,] PredictionOutput(SafeHandle shape, ulong outDim, SafeHandle scores, bool isMultiClass)
-    {
-        // Implement the logic to convert the scores to a 2D float array
-        // This is a placeholder implementation
-        var shapeArr = new ulong[outDim];
-        for (var i = 0; i < (int)outDim; i++)
-        {
-            shapeArr[i] = (ulong)Marshal.ReadInt64(shape.DangerousGetHandle(), i * sizeof(long));
-        }
-
-        var result = new float[shapeArr[0], shapeArr[1]];
-        var scoresArr = new float[shapeArr[0] * shapeArr[1]];
-        Marshal.Copy(scores.DangerousGetHandle(), scoresArr, 0, scoresArr.Length);
-
-        for (ulong i = 0; i < shapeArr[0]; i++)
-        {
-            for (ulong j = 0; j < shapeArr[1]; j++)
-            {
-                result[i, j] = scoresArr[i * shapeArr[1] + j];
-            }
-        }
-
-        return result;
     }
 
     static void ThrowIfError(int output)
