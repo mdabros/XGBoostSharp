@@ -312,11 +312,11 @@ public class Booster : IDisposable
         var featureNames = new string[nOutFeatures];
         for (ulong i = 0; i < nOutFeatures; i++)
         {
-            var featurePtr = Marshal.ReadIntPtr(features.DangerousGetHandle(), (int)(i * IntPtr.Size));
+            var featurePtr = Marshal.ReadIntPtr(features.DangerousGetHandle(), (int)(i * (ulong)IntPtr.Size));
             featureNames[i] = Marshal.PtrToStringAnsi(featurePtr);
         }
 
-        var shape = new int[outDim];
+        var shape = new int[(int)outDim];
         Marshal.Copy(shapeHandleWrapper.DangerousGetHandle(), shape, 0, (int)outDim);
 
         var totalScores = shape.Aggregate(1, (acc, val) => acc * val);
