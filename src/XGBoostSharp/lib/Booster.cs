@@ -268,29 +268,8 @@ public class Booster : IDisposable
         return trees;
     }
 
-    public Dictionary<string, float> GetFeatureScore(string fmap = "", string importanceType = "weight")
+    public Dictionary<string, float> GetFeatureScore(string importanceType = ImportanceType.weight)
     {
-        // Extract the feature names and scores from the native memory.
-        // Use this documentation as guideline:
-
-        //handle An instance of Booster
-        //config  Parameters for computing scores encoded as JSON.Accepted JSON keys are:
-        //importance_type: A JSON string with following possible values:
-        //'weight': the number of times a feature is used to split the data across all trees.
-        //        'gain': the average gain across all splits the feature is used in.
-        //'cover': the average coverage across all splits the feature is used in.
-        //'total_gain': the total gain across all splits the feature is used in.
-        //'total_cover': the total coverage across all splits the feature is used in.
-        //feature_map: An optional JSON string with URI or path to the feature map file.
-        //        feature_names: An optional JSON array with string names for each feature.
-        //out_n_features  Length of output feature names.
-        //out_features    An array of string as feature names, ordered the same as output scores.
-        //out_dim Dimension of output feature scores.
-        //out_shape   Shape of output feature scores with length of out_dim.
-        //out_scores  An array of floating point as feature scores with shape of out_shape.
-
-        fmap = System.IO.Path.GetFullPath(fmap);
-
         // See: https://xgboost.readthedocs.io/en/stable/dev/group__Booster.html#ga13c99414c4631fff42b81be28ecd52bd
         var result = NativeMethods.XGBoosterFeatureScore(
             Handle,
