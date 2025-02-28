@@ -52,12 +52,7 @@ public class DMatrix : IDisposable
     )
     {
         var output = NativeMethods.XGDMatrixCreateFromMat(
-            data1D,
-            nrows,
-            ncols,
-            m_missing,
-            out var handle
-        );
+            data1D, nrows, ncols, m_missing, out var handle);
 
         ThrowIfError(output);
         m_safeDMatrixHandle = new SafeDMatrixHandle(handle);
