@@ -25,14 +25,9 @@ public class DMatrix : IDisposable
     /// <param name="m_missing">Value to be treated as missing in the dataset. Default is float.NaN.</param>
     /// <exception cref="DllFailException">Thrown when the native XGBoost library encounters an error during matrix creation.</exception>
     public DMatrix(float[][] data, float[] labels = null, float m_missing = DefaultMissing)
-        : this(
-            Flatten2DArray(data),
-            unchecked((ulong)data.Length),
-            unchecked((ulong)data[0].Length),
-            labels,
-            m_missing
-        )
-    { }
+        : this(Flatten2DArray(data), unchecked((ulong)data.Length), unchecked((ulong)data[0].Length), labels, m_missing)
+    {
+    }
 
     /// <summary>
     /// Creates a DMatrix from a 1D array of float values with specified dimensions and optional labels.
@@ -43,13 +38,7 @@ public class DMatrix : IDisposable
     /// <param name="labels">Optional array of labels corresponding to the data rows. Default is null.</param>
     /// <param name="m_missing">Value to be treated as missing in the dataset. Default is float.NaN.</param>
     /// <exception cref="DllFailException">Thrown when the native XGBoost library encounters an error during matrix creation.</exception>
-    public DMatrix(
-        float[] data1D,
-        ulong nrows,
-        ulong ncols,
-        float[] labels = null,
-        float m_missing = DefaultMissing
-    )
+    public DMatrix(float[] data1D, ulong nrows, ulong ncols, float[] labels = null, float m_missing = DefaultMissing)
     {
         var output = NativeMethods.XGDMatrixCreateFromMat(
             data1D, nrows, ncols, m_missing, out var handle);
