@@ -18,16 +18,6 @@ public class DMatrix : IDisposable
     }
 
     /// <summary>
-    /// Null-Permissive constructor to create a DMatrix from a 2D array of float values with optional labels.
-    /// </summary>
-    /// <param name="data">The 2D array containing the feature data.</param>
-    /// <param name="labels">Optional array of labels corresponding to the data rows. Default is null.</param>
-    /// <exception cref="DllFailException">Thrown when the native XGBoost library encounters an error during matrix creation.</exception>
-    public DMatrix(float?[][] data, float?[] labels = null)
-        : this(ReplaceNullValues(data, DefaultMissing), ReplaceNullValues(labels, DefaultMissing))
-    { }
-
-    /// <summary>
     /// Creates a DMatrix from a 2D array of float values with optional labels.
     /// </summary>
     /// <param name="data">The 2D array containing the feature data.</param>
