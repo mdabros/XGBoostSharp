@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace XGBoostSharp.lib;
+namespace XGBoostSharp.Lib;
 
 // See: https://learn.microsoft.com/en-us/dotnet/standard/native-interop/best-practices
 // See: https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/unmanaged

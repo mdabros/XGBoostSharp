@@ -4,9 +4,9 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.Json;
-using static XGBoostSharp.lib.ParameterNames;
+using static XGBoostSharp.Lib.ParameterNames;
 
-namespace XGBoostSharp.lib;
+namespace XGBoostSharp.Lib;
 
 public class Booster : IDisposable
 {

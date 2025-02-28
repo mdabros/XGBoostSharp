@@ -1,5 +1,5 @@
 ﻿using System;
 
-namespace XGBoostSharp.lib;
+namespace XGBoostSharp.Lib;
 
 class DllFailException(string message) : Exception(message);
