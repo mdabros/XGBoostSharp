@@ -68,12 +68,6 @@ public class DMatrix : IDisposable
         }
     }
 
-    static float[][] ReplaceNullValues(float?[][] data, float m_missing) =>
-        data.Select(r => ReplaceNullValues(r, m_missing)).ToArray();
-
-    static float[] ReplaceNullValues(float?[] labels, float m_missing) =>
-        labels?.Select(val => val ?? m_missing).ToArray();
-
     static float[] Flatten2DArray(float[][] data2D) =>
         data2D.SelectMany(row => row).ToArray();
 
