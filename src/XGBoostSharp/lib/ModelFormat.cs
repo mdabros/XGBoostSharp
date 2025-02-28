@@ -1,4 +1,4 @@
-﻿namespace XGBoostSharp.lib;
+﻿namespace XGBoostSharp.Lib;
 
 public static class ModelFormat
 {

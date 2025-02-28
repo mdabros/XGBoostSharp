@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Runtime.InteropServices;
 
-namespace XGBoostSharp.lib;
+namespace XGBoostSharp.Lib;
 
 public class DMatrix : IDisposable
 {

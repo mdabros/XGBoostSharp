@@ -1,5 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using XGBoostSharp.lib;
+using XGBoostSharp.Lib;
 
 namespace XGBoostSharp.Test;
 
