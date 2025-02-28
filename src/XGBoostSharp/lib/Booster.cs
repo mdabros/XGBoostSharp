@@ -4,9 +4,9 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.Json;
-using static XGBoostSharp.lib.ParameterNames;
+using static XGBoostSharp.Lib.ParameterNames;
 
-namespace XGBoostSharp.lib;
+namespace XGBoostSharp.Lib;
 
 public class Booster : IDisposable
 {
@@ -101,7 +101,7 @@ public class Booster : IDisposable
             { PredictionType.training, training },
             { PredictionType.iteration_begin, iterationRange.Item1 },
             { PredictionType.iteration_end, iterationRange.Item2 },
-            { PredictionType.strict_shape, strictShape }
+            { PredictionType.strict_shape, strictShape },
         };
 
         void AssignType(int t)
@@ -114,12 +114,20 @@ public class Booster : IDisposable
         }
 
         if (outputMargin) AssignType(PredictionType.TypeOutputMargin);
-        if (predContribs) AssignType(approxContribs
+        if (predContribs)
+        {
+            AssignType(approxContribs
             ? PredictionType.TypePredContribsApprox
             : PredictionType.TypePredContribs);
-        if (predInteractions) AssignType(approxContribs
+        }
+
+        if (predInteractions)
+        {
+            AssignType(approxContribs
             ? PredictionType.TypePredInteractionsApprox
             : PredictionType.TypePredInteractions);
+        }
+
         if (predLeaf) AssignType(PredictionType.TypePredLeaf);
 
         var configBytes = JsonSerializer.SerializeToUtf8Bytes(args);
@@ -356,4 +364,3 @@ public class Booster : IDisposable
     volatile bool m_disposed = false;
     #endregion
 }
-

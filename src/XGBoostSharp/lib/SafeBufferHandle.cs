@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace XGBoostSharp.lib;
+namespace XGBoostSharp.Lib;
 
 public class SafeBufferHandle : SafeHandle
 {

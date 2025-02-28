@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using XGBoostSharp.lib;
+using XGBoostSharp.Lib;
 using static XGBoostSharp.Parameters;
 
 namespace XGBoostSharp;
@@ -94,7 +94,6 @@ public class XGBRegressor : XGBModelBase
         string device = Device.Cpu,
         bool validateParameters = false)
     {
-
         m_parameters[ParameterNames.n_estimators] = nEstimators;
         m_parameters[ParameterNames.max_depth] = maxDepth;
         m_parameters[ParameterNames.max_leaves] = maxLeaves;

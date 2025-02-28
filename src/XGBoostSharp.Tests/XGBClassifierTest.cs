@@ -2,7 +2,7 @@
 using System.IO;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using XGBoostSharp.lib;
+using XGBoostSharp.Lib;
 using static XGBoostSharp.Parameters;
 
 namespace XGBoostSharp.Test;
@@ -100,7 +100,7 @@ public class XGBClassifierTest
         var labelsTrain = TestUtils.LabelsTrain;
         var dataTest = TestUtils.DataTest;
 
-        using var sut = CreateSut(maxDepth: 10, learningRate: 0.01f, nEstimators: 50);
+        using var sut = CreateSut(nEstimators: 50, maxDepth: 10, learningRate: 0.01f);
         sut.Fit(dataTrain, labelsTrain);
 
         var expected = sut.PredictProbability(dataTest);
@@ -279,7 +279,7 @@ public class XGBClassifierTest
         sut.Fit(dataTrain, labelsTrain);
 
         using var dMatrixTest = new DMatrix(dataTest);
-        var predictionResult = sut.Predict(dMatrixTest, strictShape: true, outputMargin: true);
+        var predictionResult = sut.Predict(dMatrixTest, outputMargin: true, strictShape: true);
 
         var expected = TestUtils.ExpectedClassifierPredictionsWithOutputMargin;
 
@@ -295,7 +295,7 @@ public class XGBClassifierTest
         var dataTrain = TestUtils.DataTrain;
         var labelsTrain = TestUtils.LabelsTrain;
 
-        using var sut = CreateSut(maxDepth: 1, nEstimators: 3);
+        using var sut = CreateSut(nEstimators: 3, maxDepth: 1);
         sut.Fit(dataTrain, labelsTrain);
 
         var actual = sut.DumpModelEx();
