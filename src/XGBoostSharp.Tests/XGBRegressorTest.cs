@@ -236,7 +236,7 @@ public class XGBRegressorTest
         sut.Fit(dataTrain, labelsTrain);
 
         using var dMatrixTest = new DMatrix(dataTest);
-        var predictionResult = sut.Predict(dMatrixTest, strictShape: true, outputMargin: true);
+        var predictionResult = sut.Predict(dMatrixTest, outputMargin: true, strictShape: true);
 
         var expected = TestUtils.ExpectedRegressionPredictions;
 
@@ -252,7 +252,7 @@ public class XGBRegressorTest
         var dataTrain = TestUtils.DataTrain;
         var labelsTrain = TestUtils.LabelsTrain;
 
-        using var sut = CreateSut(maxDepth: 1, nEstimators: 3);
+        using var sut = CreateSut(nEstimators: 3, maxDepth: 1);
         sut.Fit(dataTrain, labelsTrain);
 
         var actual = sut.DumpModelEx();

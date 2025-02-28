@@ -109,10 +109,7 @@ public static partial class TestUtils
 
     public static float[] FlattenArray(Array array)
     {
-        if (array == null)
-        {
-            throw new ArgumentNullException(nameof(array));
-        }
+        ArgumentNullException.ThrowIfNull(array);
 
         var result = new List<float>();
         FlattenArrayRecursive(array, result);
