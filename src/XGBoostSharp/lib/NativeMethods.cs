@@ -102,7 +102,7 @@ public static class NativeMethods
 
     [DllImport(XGBoostNtvDllName)]
     public static extern int XGDMatrixCreateFromFile(
-        string fname, int silent, out IntPtr DMtrxHandle);
+        string fname, int silent, out IntPtr dMatrixHandle);
 
     [DllImport(XGBoostNtvDllName)]
     public static extern int XGBoosterDumpModel(
