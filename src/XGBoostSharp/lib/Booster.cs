@@ -19,18 +19,15 @@ public class Booster : IDisposable
     public Booster(IDictionary<string, object> parameters, DMatrix train)
     {
         var dmats = new[] { train.Handle };
-        var length = unchecked((ulong)dmats.Length);
-        ThrowIfError(NativeMethods.XGBoosterCreate(dmats, length, out var handle));
+        ThrowIfError(NativeMethods.XGBoosterCreate(dmats, (ulong)dmats.Length, out var handle));
         m_safeBoosterHandle = new SafeBoosterHandle(handle);
-
         SetParameters(parameters);
     }
 
     public Booster(DMatrix train)
     {
         var dmats = new[] { train.Handle };
-        var length = unchecked((ulong)dmats.Length);
-        ThrowIfError(NativeMethods.XGBoosterCreate(dmats, length, out var handle));
+        ThrowIfError(NativeMethods.XGBoosterCreate(dmats, (ulong)dmats.Length, out var handle));
         m_safeBoosterHandle = new SafeBoosterHandle(handle);
     }
 
@@ -53,29 +50,22 @@ public class Booster : IDisposable
 
     public byte[] SaveRaw(string rawFormat = ModelFormat.Ubj)
     {
-        ulong outLen;
-        IntPtr outDptr;
-        var config = JsonSerializer.SerializeToUtf8Bytes(new { format = rawFormat });
-        ThrowIfError(NativeMethods.XGBoosterSaveModelToBuffer(Handle, config, out outLen, out outDptr));
+        var jsonConfig = JsonSerializer.SerializeToUtf8Bytes(new { format = rawFormat });
+        ThrowIfError(NativeMethods.XGBoosterSaveModelToBuffer(Handle,
+            jsonConfig, out var outLen, out var outDptr));
 
-        var length = unchecked((int)outLen);
-        var buffer = new byte[length];
-        Marshal.Copy(outDptr, buffer, 0, length);
-
+        var buffer = new byte[(int)outLen];
+        Marshal.Copy(outDptr, buffer, 0, buffer.Length);
         return buffer;
     }
 
     public void Update(DMatrix train, int iteration) =>
-        ThrowIfError(NativeMethods.XGBoosterUpdateOneIter(
-            Handle, iteration, train.Handle));
+        ThrowIfError(NativeMethods.XGBoosterUpdateOneIter(Handle, iteration, train.Handle));
 
     public float[] Predict(DMatrix test)
     {
-        ulong predsLen;
-        IntPtr predsPtr;
-        ThrowIfError(NativeMethods.XGBoosterPredict(
-            Handle, test.Handle, NormalPrediction,
-                ntreeLimit: 0, training: 0, out predsLen, out predsPtr));
+        ThrowIfError(NativeMethods.XGBoosterPredict(Handle, test.Handle, NormalPrediction, 0, 0,
+            out var predsLen, out var predsPtr));
         return GetPredictionsArray(predsPtr, predsLen);
     }
 
@@ -193,23 +183,14 @@ public class Booster : IDisposable
 
     public static float[] GetPredictionsArray(IntPtr predsPtr, ulong predsLen)
     {
-        var length = unchecked((int)predsLen);
+        var length = (int)predsLen;
         var preds = new float[length];
-        for (var i = 0; i < length; i++)
-        {
-            var floatBytes = new byte[4];
-            for (var b = 0; b < 4; b++)
-            {
-                floatBytes[b] = Marshal.ReadByte(predsPtr, 4 * i + b);
-            }
-            preds[i] = BitConverter.ToSingle(floatBytes, 0);
-        }
+        Marshal.Copy(predsPtr, preds, 0, length);
         return preds;
     }
 
     public void SetParameters(IDictionary<string, object> parameters)
     {
-        // support internationalization i.e. support floats with commas (e.g. 0,5F)
         var nfi = new NumberFormatInfo { NumberDecimalSeparator = "." };
 
         foreach (var kvp in parameters)
@@ -258,21 +239,13 @@ public class Booster : IDisposable
 
     public string[] DumpModelEx(string fmap, int with_stats)
     {
-        int length;
-        IntPtr treePtr;
-        var intptrSize = IntPtr.Size;
-        ThrowIfError(NativeMethods.XGBoosterDumpModel(Handle,
-            fmap, with_stats, out length, out treePtr));
+        ThrowIfError(NativeMethods.XGBoosterDumpModel(Handle, fmap, with_stats, out var length, out var treePtr));
         var trees = new string[length];
-        var handle2 = GCHandle.Alloc(treePtr, GCHandleType.Pinned);
-
         for (var i = 0; i < length; i++)
         {
-            var ipt1 = Marshal.ReadIntPtr(Marshal.ReadIntPtr(handle2.AddrOfPinnedObject()), intptrSize * i);
-            var s = Marshal.PtrToStringAnsi(ipt1);
-            trees[i] = $"booster[{i}]\n{s}";
+            var ipt1 = Marshal.ReadIntPtr(treePtr, i * IntPtr.Size);
+            trees[i] = $"booster[{i}]\n{Marshal.PtrToStringAnsi(ipt1)}";
         }
-        handle2.Free();
         return trees;
     }
 
@@ -301,7 +274,7 @@ public class Booster : IDisposable
         }
 
         var shape = new int[(int)outDim];
-        Marshal.Copy(shapeHandle, shape, 0, (int)outDim);
+        Marshal.Copy(shapeHandle, shape, 0, shape.Length);
 
         var totalScores = shape.Aggregate(1, (acc, val) => acc * val);
         var scoreArray = new float[totalScores];
@@ -318,7 +291,7 @@ public class Booster : IDisposable
 
     static void ThrowIfError(int output)
     {
-        if (output == -1)
+        if (output != 0)
         {
             throw new DllFailException(NativeMethods.XGBGetLastError());
         }
