@@ -19,21 +19,29 @@
     <LangVersion>12.0</LangVersion>
     <Deterministic>true</Deterministic>
     <DebugType>portable</DebugType>
-    <Platforms>x64</Platforms>
+    <Platforms>AnyCPU</Platforms>
 
     <PublishRelease>true</PublishRelease>
     <PackRelease>true</PackRelease>
 
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
 
+    <!-- https://github.com/dotnet/roslyn/issues/41640 🤦 -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>CS1591;CS1668</NoWarn>
+
     <AnalysisLevel>latest</AnalysisLevel>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <CodeAnalysisTreatWarningsAsErrors>true</CodeAnalysisTreatWarningsAsErrors>
-    <NoWarn>CS1591;CS1668</NoWarn>
 
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Roslynator.Analyzers" Version="4.12.11" PrivateAssets="All"/>
+    <PackageReference Include="Roslynator.Formatting.Analyzers" Version="4.12.11" PrivateAssets="All"/>
+  </ItemGroup>
   
   <Import Project="$(MSBuildThisFileDirectory)\OutputBuildProps.props" />
 

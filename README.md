@@ -1,4 +1,6 @@
-﻿[![Build Status](https://github.com/mdabros/XGBoostSharp/actions/workflows/dotnet.yml/badge.svg?branch=master)](https://github.com/mdabros/XGBoostSharp/actions/workflows/dotnet.yml)
+﻿[![Build Status](https://github.com/mdabros/XGBoostSharp/actions/workflows/dotnet.yml/badge.svg?branch=main)](https://github.com/mdabros/XGBoostSharp/actions/workflows/dotnet.yml)
+[![Nuget](https://img.shields.io/nuget/v/XGBoostSharp?color=orange)](https://www.nuget.org/packages/XGBoostSharp/)
+[![downloads](https://img.shields.io/nuget/dt/XGBoostSharp)](https://www.nuget.org/packages/XGBoostSharp)
 [![License](https://img.shields.io/github/license/mdabros/XGBoostSharp)](https://github.com/mdabros/XGBoostSharp/blob/master/LICENSE)
 
 # XGBoostSharp
@@ -17,6 +19,9 @@ classifier.Fit(dataTrain, labelsTrain);
 var predictions = classifier.Predict(dataTest);
 var probabilities = classifier.PredictProbability(dataTest);
 
+// Get feature importance.
+var featureImportance = classifier.GetFeatureImportance(ImportanceType.Weight);
+
 // Save and load the classifier.
 var modelFileName = "classifier.json";
 classifier.SaveModelToFile(modelFileName)
@@ -31,6 +36,9 @@ regressor.Fit(dataTrain, labelsTrain);
 
 // make predictions.
 var predictions = regressor.Predict(dataTest);
+
+// Get feature importance.
+var featureImportance = regressor.GetFeatureImportance(ImportanceType.Weight);
 
 // Save and load the regressor.
 var modelFileName = "regressor.json";
@@ -47,6 +55,10 @@ var loadedRegressor = XGBRegressor.LoadFromFile(modelFileName);
      packages for cpu for win-x64, linux-x64, and osx-x64.
 2. If using the XGBoostSharp package the native packages can be installed
    separately from nuget.org.
-   - https://www.nuget.org/packages/libxgboost-2.0.3-win-x64/
-   - https://www.nuget.org/packages/libxgboost-2.0.3-linux-x64/
-   - https://www.nuget.org/packages/libxgboost-2.0.3-osx-x64/
+   - x64 packages:
+     - https://www.nuget.org/packages/libxgboost-2.0.3-win-x64/
+     - https://www.nuget.org/packages/libxgboost-2.0.3-linux-x64/
+     - https://www.nuget.org/packages/libxgboost-2.0.3-osx-x64/
+   - ARM64 packages (note that these are not part of the XGBoostSharp-cpu
+     package):
+     - https://www.nuget.org/packages/libxgboost-2.0.3-osx-arm64/

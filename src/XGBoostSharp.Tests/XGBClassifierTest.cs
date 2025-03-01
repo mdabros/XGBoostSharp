@@ -1,6 +1,8 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using XGBoostSharp.lib;
+using XGBoostSharp.Lib;
 using static XGBoostSharp.Parameters;
 
 namespace XGBoostSharp.Test;
@@ -98,7 +100,7 @@ public class XGBClassifierTest
         var labelsTrain = TestUtils.LabelsTrain;
         var dataTest = TestUtils.DataTest;
 
-        using var sut = CreateSut(maxDepth: 10, learningRate: 0.01f, nEstimators: 50);
+        using var sut = CreateSut(nEstimators: 50, maxDepth: 10, learningRate: 0.01f);
         sut.Fit(dataTrain, labelsTrain);
 
         var expected = sut.PredictProbability(dataTest);
@@ -111,16 +113,216 @@ public class XGBClassifierTest
     }
 
     [TestMethod]
+    public void XGBClassifierTest_UsingDMatrixDirectly()
+    {
+        var dataTrain = TestUtils.DataTrain;
+        var labelsTrain = TestUtils.LabelsTrain;
+        var dataTest = TestUtils.DataTest;
+
+        using var sut = CreateSut();
+        using var dMatrixTrain = new DMatrix(dataTrain, labelsTrain);
+        sut.Fit(dMatrixTrain);
+
+        using var dMatrixTest = new DMatrix(dataTest);
+        var actual = sut.PredictProbability(dMatrixTest);
+        var expected = TestUtils.ExpectedClassifierProbabilityPredictions;
+
+        TestUtils.AssertAreEqual(expected, actual);
+    }
+
+    [TestMethod]
+    public void XGBClassifierTest_PredictionContributions()
+    {
+        var dataTrain = TestUtils.DataTrain;
+        var labelsTrain = TestUtils.LabelsTrain;
+        var dataTest = TestUtils.DataTest;
+
+        using var sut = CreateSut();
+        using var dMatrixTrain = new DMatrix(dataTrain, labelsTrain);
+        sut.Fit(dMatrixTrain);
+
+        using var dMatrixTest = new DMatrix(dataTest);
+        var predictionContributions = sut.Predict(dMatrixTest, predContribs: true);
+        var predictedProbabilities = sut.PredictProbability(dMatrixTest);
+
+        static float AggregateProbability(float[] values)
+        {
+            // In a binary classification problem, the raw margin is transformed
+            // into a probability using the logistic function.
+            return 1f / (1f + (float)Math.Exp(-values.Sum()));
+        }
+
+        // We want to check that the sum of the contributions(contributions +
+        // last column, which is bias) is equal to the prediction.
+        var actual = TestUtils.AggregateColumns(predictionContributions,
+            AggregateProbability);
+        var expected = predictedProbabilities.Select(x => x[1]).ToArray();
+
+        TestUtils.AssertAreEqual(expected, actual);
+    }
+
+    [TestMethod]
+    public void XGBRegressorTest_PredictionContributionsApprox()
+    {
+        var dataTrain = TestUtils.DataTrain;
+        var labelsTrain = TestUtils.LabelsTrain;
+        var dataTest = TestUtils.DataTest;
+
+        using var sut = CreateSut();
+        sut.Fit(dataTrain, labelsTrain);
+
+        using var dMatrixTest = new DMatrix(dataTest);
+        var predictionContributions = sut.Predict(dMatrixTest, predContribs: true, approxContribs: true);
+        var predictedProbabilities = sut.PredictProbability(dMatrixTest);
+
+        Assert.AreEqual(2, predictionContributions.Rank);
+
+        static float AggregateProbability(float[] values)
+        {
+            // In a binary classification problem, the raw margin is transformed
+            // into a probability using the logistic function.
+            return 1f / (1f + (float)Math.Exp(-values.Sum()));
+        }
+
+        // We want to check that the sum of the contributions(contributions +
+        // last column, which is bias) is equal to the prediction.
+        var actual = TestUtils.AggregateColumns(predictionContributions,
+            AggregateProbability);
+        var expected = predictedProbabilities.Select(x => x[1]).ToArray();
+
+        TestUtils.AssertAreEqual(expected, actual);
+    }
+
+    [TestMethod]
+    public void XGBClassifierTest_PredictionInteractions()
+    {
+        var dataTrain = TestUtils.DataTrain;
+        var labelsTrain = TestUtils.LabelsTrain;
+        var dataTest = TestUtils.DataTest;
+
+        using var sut = CreateSut();
+        sut.Fit(dataTrain, labelsTrain);
+
+        using var dMatrixTest = new DMatrix(dataTest);
+        var predictionInteractions = sut.Predict(dMatrixTest, predInteractions: true);
+        var predictedProbabilities = sut.PredictProbability(dMatrixTest);
+
+        Assert.AreEqual(3, predictionInteractions.Rank);
+
+        static float AggregateProbability(float[] values)
+        {
+            // In a binary classification problem, the raw margin is transformed
+            // into a probability using the logistic function.
+            return 1f / (1f + (float)Math.Exp(-values.Sum()));
+        }
+
+        var actual = TestUtils.AggregateColumns(predictionInteractions,
+            AggregateProbability);
+        var expected = predictedProbabilities.Select(x => x[1]).ToArray();
+
+        TestUtils.AssertAreEqual(expected, actual);
+    }
+
+    [TestMethod]
+    public void XGBClassifierTest_PredictionLeaf()
+    {
+        var dataTrain = TestUtils.DataTrain;
+        var labelsTrain = TestUtils.LabelsTrain;
+        var dataTest = TestUtils.DataTest;
+
+        using var sut = CreateSut();
+        sut.Fit(dataTrain, labelsTrain);
+
+        using var dMatrixTest = new DMatrix(dataTest);
+        var actualLeafs = sut.Predict(dMatrixTest, predLeaf: true);
+
+        Assert.AreEqual(2, actualLeafs.Rank);
+
+        var expected = TestUtils.ExpectedClassifierPredictionLeafs;
+
+        var actual = TestUtils.AggregateColumns(actualLeafs,
+            floats => floats.Sum());
+
+        TestUtils.AssertAreEqual(expected, actual);
+    }
+
+    [TestMethod]
+    public void XGBClassifierTest_PredictWithStrictShape()
+    {
+        var dataTrain = TestUtils.DataTrain;
+        var labelsTrain = TestUtils.LabelsTrain;
+        var dataTest = TestUtils.DataTest;
+
+        using var sut = CreateSut();
+        sut.Fit(dataTrain, labelsTrain);
+
+        using var dMatrixTest = new DMatrix(dataTest);
+        var predictionResult = sut.Predict(dMatrixTest, strictShape: true);
+
+        var expected = TestUtils.ExpectedClassifierPredictions;
+
+        Assert.AreEqual(2, predictionResult.Rank);
+
+        var flattenedActual = TestUtils.FlattenArray(predictionResult);
+        var actual = flattenedActual.Select(v => v > 0.5f ? 1f : 0f).ToArray();
+        TestUtils.AssertAreEqual(expected, actual);
+    }
+
+    [TestMethod]
+    public void XGBClassifierTest_PredictWithOutputMargin()
+    {
+        var dataTrain = TestUtils.DataTrain;
+        var labelsTrain = TestUtils.LabelsTrain;
+        var dataTest = TestUtils.DataTest;
+
+        using var sut = CreateSut();
+        sut.Fit(dataTrain, labelsTrain);
+
+        using var dMatrixTest = new DMatrix(dataTest);
+        var predictionResult = sut.Predict(dMatrixTest, outputMargin: true, strictShape: true);
+
+        var expected = TestUtils.ExpectedClassifierPredictionsWithOutputMargin;
+
+        Assert.AreEqual(2, predictionResult.Rank);
+
+        var actual = TestUtils.FlattenArray(predictionResult);
+        TestUtils.AssertAreEqual(expected, actual);
+    }
+
+    [TestMethod]
     public void XGBClassifierTest_DumpModelEx()
     {
         var dataTrain = TestUtils.DataTrain;
         var labelsTrain = TestUtils.LabelsTrain;
 
-        using var sut = CreateSut(maxDepth: 1, nEstimators: 3);
+        using var sut = CreateSut(nEstimators: 3, maxDepth: 1);
         sut.Fit(dataTrain, labelsTrain);
 
         var actual = sut.DumpModelEx();
         var expected = TestUtils.ExpectedClassifierModelDump;
+
+        TestUtils.AssertAreEqual(expected, actual);
+    }
+
+    [DataTestMethod]
+    [DataRow(ImportanceType.Weight, new[] { 44f, 445f, 74f })]
+    [DataRow(ImportanceType.Gain, new[] { 10.73017f, 2.07062745f, 2.41420126f })]
+    [DataRow(ImportanceType.Cover, new[] { 97.0292f, 93.3664856f, 102.020782f })]
+    [DataRow(ImportanceType.TotalGain, new[] { 472.127472f, 921.42926f, 178.6509f })]
+    [DataRow(ImportanceType.TotalCover, new[] { 4269.28467f, 41548.0859f, 7549.538f })]
+    public void XGBClassifierTest_GetFeatureImportance(string importanceType, float[] featureImportances)
+    {
+        var dataTrain = TestUtils.DataTrain;
+        var labelsTrain = TestUtils.LabelsTrain;
+
+        using var sut = CreateSut();
+        sut.Fit(dataTrain, labelsTrain);
+
+        var actual = sut.GetFeatureImportance(importanceType);
+
+        var featureNames = new[] { "f0", "f1", "f2" };
+        var expected = featureNames.Zip(featureImportances, (name, score) => new { name, score })
+                                   .ToDictionary(x => x.name, x => x.score);
 
         TestUtils.AssertAreEqual(expected, actual);
     }

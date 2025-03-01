@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using XGBoostSharp.lib;
+using XGBoostSharp.Lib;
 using static XGBoostSharp.Parameters;
 
 namespace XGBoostSharp;
@@ -94,7 +94,6 @@ public class XGBRegressor : XGBModelBase
         string device = Device.Cpu,
         bool validateParameters = false)
     {
-
         m_parameters[ParameterNames.n_estimators] = nEstimators;
         m_parameters[ParameterNames.max_depth] = maxDepth;
         m_parameters[ParameterNames.max_leaves] = maxLeaves;
@@ -155,7 +154,18 @@ public class XGBRegressor : XGBModelBase
     public void Fit(float[][] data, float[] labels)
     {
         using var train = new DMatrix(data, labels);
-        m_booster = Train(m_parameters, train);
+        Fit(train);
+    }
+
+    /// <summary>
+    ///   Fit the gradient boosting model
+    /// </summary>
+    /// <param name="dMatrix">
+    ///   DMatrix
+    /// </param>
+    public void Fit(DMatrix dMatrix)
+    {
+        m_booster = Train(m_parameters, dMatrix);
     }
 
     public void SetParameter(string parameterName, object parameterValue) =>
@@ -165,7 +175,7 @@ public class XGBRegressor : XGBModelBase
     ///   Predict using the gradient boosted model
     /// </summary>
     /// <param name="data">
-    ///   Feature matrix to do predicitons on
+    ///   Feature matrix to do predictions on
     /// </param>
     /// <returns>
     ///   Predictions
@@ -173,6 +183,17 @@ public class XGBRegressor : XGBModelBase
     public float[] Predict(float[][] data)
     {
         using var test = new DMatrix(data);
-        return m_booster.Predict(test);
+        return Predict(test);
     }
+
+    /// <summary>
+    ///   Predict using the gradient boosted model
+    /// </summary>
+    /// <param name="dMatrix">
+    ///   DMatrix to do predictions on
+    /// </param>
+    /// <returns>
+    ///   Predictions
+    /// </returns>
+    public float[] Predict(DMatrix dMatrix) => m_booster.Predict(dMatrix);
 }

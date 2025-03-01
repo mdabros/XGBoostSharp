@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace XGBoostSharp.lib;
+namespace XGBoostSharp.Lib;
 
 // Relevant links XGBoost:
 // https://github.com/dmlc/xgboost/blob/7a6121669097745f57b8aaad1dd3a162fef96612/jvm-packages/xgboost4j/src/main/java/ml/dmlc/xgboost4j/java/XGBoostJNI.java#L105
@@ -47,6 +47,16 @@ public static class NativeMethods
         float[] array, ulong len);
 
     [DllImport(XGBoostNtvDllName)]
+    public static extern int XGDMatrixSetStrFeatureInfo(
+        IntPtr handle, string field,
+        string[] values, ulong len);
+
+    [DllImport(XGBoostNtvDllName)]
+    public static extern int XGDMatrixGetStrFeatureInfo(
+        IntPtr handle, string field,
+        out ulong len, out IntPtr result);
+
+    [DllImport(XGBoostNtvDllName)]
     public static extern int XGBoosterCreate(
         // array of safehandles is not supported, stick with IntPtr.
         IntPtr[] dmats, ulong len,
@@ -72,6 +82,11 @@ public static class NativeMethods
         int training, // Only relevant for DART training. See https://github.com/dmlc/xgboost/issues/5601.
         out ulong predsLen,
         out SafeBufferHandle predsPtr);
+
+    [DllImport(XGBoostNtvDllName)]
+    public static extern int XGBoosterPredictFromDMatrix(
+        IntPtr handle, IntPtr dmat, byte[] jsonConfig,
+        out IntPtr outShape, out ulong outDim, out IntPtr outResult);
 
     [DllImport(XGBoostNtvDllName)]
     public static extern int XGBoosterSaveModel(
@@ -101,4 +116,14 @@ public static class NativeMethods
         SafeBoosterHandle handle, string fmap,
         int with_stats, out int out_len,
         out SafeBufferHandle dumpStr);
+
+    [DllImport(XGBoostNtvDllName)]
+    public static extern int XGBoosterFeatureScore(
+        IntPtr handle,
+        string config,
+        out ulong out_n_features,
+        out IntPtr out_features,
+        out ulong out_dim,
+        out IntPtr out_shape,
+        out IntPtr out_scores);
 }

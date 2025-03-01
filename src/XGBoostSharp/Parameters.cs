@@ -30,7 +30,7 @@ public static class Parameters
         /// <summary>
         /// Linear booster.
         /// </summary>
-        public const string Gbliner = "gblinear";
+        public const string Gblinear = "gblinear";
         /// <summary>
         /// Dart booster.
         /// </summary>
