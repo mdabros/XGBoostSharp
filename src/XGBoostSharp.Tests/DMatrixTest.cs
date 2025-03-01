@@ -35,4 +35,15 @@ public class DMatrixTest
         var featureTypesFromDMatrix = sut.GetFeatureTypes();
         TestUtils.AssertAreEqual(featureTypes, featureTypesFromDMatrix);
     }
+
+    [TestMethod]
+    public void DMatrix_GetAndSetLabel()
+    {
+        var sut = new DMatrix(m_dataTrain, m_labelsTrain);
+        var expected = new float[] { 0, 1, 0, 1 };
+        sut.Label = expected;
+
+        var actual = sut.Label;
+        TestUtils.AssertAreEqual(expected, actual);
+    }
 }

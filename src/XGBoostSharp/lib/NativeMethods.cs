@@ -7,6 +7,7 @@ namespace XGBoostSharp.Lib;
 // https://github.com/dmlc/xgboost/blob/7a6121669097745f57b8aaad1dd3a162fef96612/jvm-packages/xgboost4j/src/main/java/ml/dmlc/xgboost4j/java/XGBoostJNI.java#L105
 // https://github.com/dmlc/xgboost/blob/7a6121669097745f57b8aaad1dd3a162fef96612/src/c_api/c_api.cc#L895
 // https://xgboost.readthedocs.io/en/stable/tutorials/c_api_tutorial.html
+// https://xgboost.readthedocs.io/en/stable/dev/c__api_8h.html
 
 // Relevant links for cross-platform DllImport:
 // https://docs.microsoft.com/en-us/dotnet/standard/native-interop/pinvoke
