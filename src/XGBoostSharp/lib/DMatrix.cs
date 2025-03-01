@@ -9,7 +9,8 @@ public class DMatrix : IDisposable
     readonly SafeDMatrixHandle m_safeDMatrixHandle;
     readonly float m_missing = -1.0F; // arbitrary value used to represent a missing value
 
-    public IntPtr Handle => m_safeDMatrixHandle.DangerousGetHandle();
+    public SafeDMatrixHandle Handle => m_safeDMatrixHandle;
+    public IntPtr DangerousHandle => m_safeDMatrixHandle.DangerousGetHandle();
 
     public float[] Label
     {
@@ -25,10 +26,9 @@ public class DMatrix : IDisposable
     public DMatrix(float[] data1D, ulong nrows, ulong ncols, float[] labels = null)
     {
         var output = NativeMethods.XGDMatrixCreateFromMat(
-            data1D, nrows, ncols, m_missing, out var handle);
+            data1D, nrows, ncols, m_missing, out m_safeDMatrixHandle);
 
         ThrowIfError(output);
-        m_safeDMatrixHandle = new SafeDMatrixHandle(handle);
 
         if (labels != null)
         {
@@ -41,22 +41,22 @@ public class DMatrix : IDisposable
 
     float[] GetFloatInfo(string field)
     {
-        ulong lengthULong;
-        IntPtr result;
-        var output = NativeMethods.XGDMatrixGetFloatInfo(Handle,
-            field, out lengthULong, out result);
+        var output = NativeMethods.XGDMatrixGetFloatInfo(m_safeDMatrixHandle, field,
+            out var lengthULong, out var result);
 
         ThrowIfError(output);
 
         var length = unchecked((int)lengthULong);
         var floatInfo = new float[length];
         var floatBytes = new byte[length * 4];
-        Marshal.Copy(result, floatBytes, 0, floatBytes.Length);
+        Marshal.Copy(result.DangerousGetHandle(), floatBytes, 0, floatBytes.Length);
 
         for (var i = 0; i < length; i++)
         {
             floatInfo[i] = BitConverter.ToSingle(floatBytes, i * 4);
         }
+
+        result.Dispose(); // Ensure the SafeBufferHandle is disposed properly
 
         return floatInfo;
     }
@@ -64,7 +64,8 @@ public class DMatrix : IDisposable
     void SetFloatInfo(string field, float[] floatInfo)
     {
         var length = (ulong)floatInfo.Length;
-        var output = NativeMethods.XGDMatrixSetFloatInfo(Handle, field, floatInfo, length);
+        var output = NativeMethods.XGDMatrixSetFloatInfo(
+            m_safeDMatrixHandle, field, floatInfo, length);
         ThrowIfError(output);
     }
 
