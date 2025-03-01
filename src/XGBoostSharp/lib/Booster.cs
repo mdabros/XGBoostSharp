@@ -10,18 +10,17 @@ namespace XGBoostSharp.Lib;
 
 public class Booster : IDisposable
 {
-    readonly SafeBoosterHandle m_safeBoosterHandle;
     const int NormalPrediction = 0;  // optionMask value for XGBoosterPredict
     int m_numClass = 1;
 
-    public SafeBoosterHandle Handle => m_safeBoosterHandle;
+    public SafeBoosterHandle Handle { get; }
 
     public Booster(IDictionary<string, object> parameters, DMatrix train)
     {
         var dmats = new[] { train.DangerousHandle };
         var length = unchecked((ulong)dmats.Length);
         ThrowIfError(NativeMethods.XGBoosterCreate(dmats, length, out var handle));
-        m_safeBoosterHandle = handle;
+        Handle = handle;
 
         SetParameters(parameters);
     }
@@ -31,14 +30,14 @@ public class Booster : IDisposable
         var dmats = new[] { train.DangerousHandle };
         var length = unchecked((ulong)dmats.Length);
         ThrowIfError(NativeMethods.XGBoosterCreate(dmats, length, out var handle));
-        m_safeBoosterHandle = handle;
+        Handle = handle;
     }
 
     public Booster(string fileName)
     {
         ThrowIfError(NativeMethods.XGBoosterCreate(null, 0, out var handle));
         ThrowIfError(NativeMethods.XGBoosterLoadModel(handle, fileName));
-        m_safeBoosterHandle = handle;
+        Handle = handle;
     }
 
     public Booster(byte[] bytes)
@@ -48,7 +47,7 @@ public class Booster : IDisposable
         ThrowIfError(NativeMethods.XGBoosterCreate(null, 0, out var boosterHandle));
         ThrowIfError(NativeMethods.XGBoosterLoadModelFromBuffer(boosterHandle,
             handle, bytes.Length));
-        m_safeBoosterHandle = boosterHandle;
+        Handle = boosterHandle;
     }
 
     public byte[] SaveRaw(string rawFormat = ModelFormat.Ubj)
@@ -134,10 +133,10 @@ public class Booster : IDisposable
         return ProcessPredictions(predsPtr, shapePtr, dims);
     }
 
-    static Array ProcessPredictions(IntPtr predsPtr, IntPtr shapePtr, ulong dims)
+    static Array ProcessPredictions(SafeBufferHandle predsPtr, SafeBufferHandle shapePtr, ulong dims)
     {
         var shape = new long[dims];
-        Marshal.Copy(shapePtr, shape, 0, (int)dims);
+        Marshal.Copy(shapePtr.DangerousGetHandle(), shape, 0, (int)dims);
 
         var length = shape.Aggregate(1L, (acc, val) => acc * val);
 
@@ -148,7 +147,7 @@ public class Booster : IDisposable
         }
 
         var predictions = new float[length];
-        Marshal.Copy(predsPtr, predictions, 0, (int)length);
+        Marshal.Copy(predsPtr.DangerousGetHandle(), predictions, 0, (int)length);
 
         /*
          * The prediction response can be anything from a 1D float array to a 4D array.
@@ -187,7 +186,7 @@ public class Booster : IDisposable
         return result;
     }
 
-    public static float[] GetPredictionsArray(IntPtr predsPtr, ulong predsLen)
+    public unsafe static float[] GetPredictionsArray(SafeBufferHandle predsHandle, ulong predsLen)
     {
         var length = unchecked((int)predsLen);
         var preds = new float[length];
@@ -319,7 +318,7 @@ public class Booster : IDisposable
 
     void DisposeManagedResources()
     {
-        m_safeBoosterHandle?.Dispose();
+        Handle?.Dispose();
     }
 
     #region Dispose

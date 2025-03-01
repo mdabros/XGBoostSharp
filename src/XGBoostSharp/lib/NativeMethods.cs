@@ -48,13 +48,13 @@ public static class NativeMethods
 
     [DllImport(XGBoostNtvDllName)]
     public static extern int XGDMatrixSetStrFeatureInfo(
-        IntPtr handle, string field,
+        SafeDMatrixHandle dHandle, string field,
         string[] values, ulong len);
 
     [DllImport(XGBoostNtvDllName)]
     public static extern int XGDMatrixGetStrFeatureInfo(
-        IntPtr handle, string field,
-        out ulong len, out IntPtr result);
+        SafeDMatrixHandle dHandle, string field,
+        out ulong len, out SafeBufferHandle result);
 
     [DllImport(XGBoostNtvDllName)]
     public static extern int XGBoosterCreate(
@@ -85,8 +85,8 @@ public static class NativeMethods
 
     [DllImport(XGBoostNtvDllName)]
     public static extern int XGBoosterPredictFromDMatrix(
-        IntPtr handle, IntPtr dmat, byte[] jsonConfig,
-        out IntPtr outShape, out ulong outDim, out IntPtr outResult);
+        SafeBoosterHandle bHandle, SafeDMatrixHandle dHandle, byte[] jsonConfig,
+        out SafeBufferHandle outShape, out ulong outDim, out SafeBufferHandle outResult);
 
     [DllImport(XGBoostNtvDllName)]
     public static extern int XGBoosterSaveModel(
@@ -109,7 +109,7 @@ public static class NativeMethods
     [DllImport(XGBoostNtvDllName)]
     public static extern int XGDMatrixCreateFromFile(
         string fname, int silent,
-        out SafeDMatrixHandle DMtrxHandle);
+        out SafeDMatrixHandle dMatrixHandle);
 
     [DllImport(XGBoostNtvDllName)]
     public static extern int XGBoosterDumpModel(
@@ -119,7 +119,7 @@ public static class NativeMethods
 
     [DllImport(XGBoostNtvDllName)]
     public static extern int XGBoosterFeatureScore(
-        IntPtr handle,
+        SafeBoosterHandle bHandle,
         string config,
         out ulong out_n_features,
         out IntPtr out_features,
