@@ -276,6 +276,46 @@ public class Booster : IDisposable
         return trees;
     }
 
+    public Dictionary<string, float> FeatureScore(string importanceType)
+    {
+        var jsonImportanceType = JsonSerializer.Serialize(new { importance_type = importanceType });
+
+        // See: https://xgboost.readthedocs.io/en/stable/dev/group__Booster.html#ga13c99414c4631fff42b81be28ecd52bd
+        var result = NativeMethods.XGBoosterFeatureScore(
+            Handle,
+            jsonImportanceType,
+            out var nOutFeatures,
+            out var featuresHandle,
+            out var outDim,
+            out var shapeHandle,
+            out var scoresHandle);
+
+        ThrowIfError(result);
+
+        // Extract the feature names and scores from the native memory.
+        var featureNames = new string[nOutFeatures];
+        for (ulong i = 0; i < nOutFeatures; i++)
+        {
+            var featurePtr = Marshal.ReadIntPtr(featuresHandle, (int)(i * (ulong)IntPtr.Size));
+            featureNames[i] = Marshal.PtrToStringAnsi(featurePtr);
+        }
+
+        var shape = new int[(int)outDim];
+        Marshal.Copy(shapeHandle, shape, 0, (int)outDim);
+
+        var totalScores = shape.Aggregate(1, (acc, val) => acc * val);
+        var scoreArray = new float[totalScores];
+        Marshal.Copy(scoresHandle, scoreArray, 0, totalScores);
+
+        var results = new Dictionary<string, float>();
+        for (ulong i = 0; i < nOutFeatures; i++)
+        {
+            results[featureNames[i]] = scoreArray[i];
+        }
+
+        return results;
+    }
+
     static void ThrowIfError(int output)
     {
         if (output == -1)

@@ -261,6 +261,29 @@ public class XGBRegressorTest
         TestUtils.AssertAreEqual(expected, actual);
     }
 
+    [DataTestMethod]
+    [DataRow(ImportanceType.Weight, new[] { 49f, 499f, 86f })]
+    [DataRow(ImportanceType.Gain, new[] { 2.31486464f, 0.454449239f, 0.500057459f })]
+    [DataRow(ImportanceType.Cover, new[] { 409.326538f, 439.118225f, 323.4535f })]
+    [DataRow(ImportanceType.TotalGain, new[] { 113.428368f, 226.770172f, 43.00494f })]
+    [DataRow(ImportanceType.TotalCover, new[] { 20057f, 219120f, 27817f })]
+    public void XGBRegressorTest_GetFeatureImportance(string importanceType, float[] featureImportances)
+    {
+        var dataTrain = TestUtils.DataTrain;
+        var labelsTrain = TestUtils.LabelsTrain;
+
+        using var sut = CreateSut();
+        sut.Fit(dataTrain, labelsTrain);
+
+        var actual = sut.GetFeatureImportance(importanceType);
+
+        var featureNames = new[] { "f0", "f1", "f2" };
+        var expected = featureNames.Zip(featureImportances, (name, score) => new { name, score })
+                                   .ToDictionary(x => x.name, x => x.score);
+
+        TestUtils.AssertAreEqual(expected, actual);
+    }
+
     // Specify all hyperparameters to make tests independant of changing
     // defaults.
     static XGBRegressor CreateSut(int nEstimators = 100,
