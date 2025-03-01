@@ -13,12 +13,12 @@ public class DMatrix : IDisposable
 
     public float[] Label
     {
-        get { return GetFloatInfo(Fields.label); }
-        set { SetFloatInfo(Fields.label, value); }
+        get => GetFloatInfo(Fields.label);
+        set => SetFloatInfo(Fields.label, value);
     }
 
     public DMatrix(float[][] data, float[] labels = null)
-        : this(Flatten2DArray(data), unchecked((ulong)data.Length), unchecked((ulong)data[0].Length), labels)
+        : this(Flatten2DArray(data), (ulong)data.Length, (ulong)data[0].Length, labels)
     {
     }
 
@@ -41,22 +41,13 @@ public class DMatrix : IDisposable
 
     float[] GetFloatInfo(string field)
     {
-        ulong lengthULong;
-        IntPtr result;
-        var output = NativeMethods.XGDMatrixGetFloatInfo(Handle,
-            field, out lengthULong, out result);
-
+        var output = NativeMethods.XGDMatrixGetFloatInfo(
+            Handle, field, out var lengthULong, out var result);
         ThrowIfError(output);
 
-        var length = unchecked((int)lengthULong);
+        var length = (int)lengthULong;
         var floatInfo = new float[length];
-        var floatBytes = new byte[length * 4];
-        Marshal.Copy(result, floatBytes, 0, floatBytes.Length);
-
-        for (var i = 0; i < length; i++)
-        {
-            floatInfo[i] = BitConverter.ToSingle(floatBytes, i * 4);
-        }
+        Marshal.Copy(result, floatInfo, 0, length);
 
         return floatInfo;
     }
@@ -79,18 +70,16 @@ public class DMatrix : IDisposable
     void SetFeatureInfo(string[] featureInfo, string field)
     {
         var length = (ulong)featureInfo.Length;
-        var output = NativeMethods.XGDMatrixSetStrFeatureInfo(
-            Handle, field, featureInfo, length);
+        var output = NativeMethods.XGDMatrixSetStrFeatureInfo(Handle, field, featureInfo, length);
         ThrowIfError(output);
     }
 
     string[] GetFeatureInfo(string field)
     {
-        var output = NativeMethods.XGDMatrixGetStrFeatureInfo(
-            Handle, field, out var lengthULong, out var result);
+        var output = NativeMethods.XGDMatrixGetStrFeatureInfo(Handle, field, out var lengthULong, out var result);
         ThrowIfError(output);
 
-        var length = unchecked((int)lengthULong);
+        var length = (int)lengthULong;
         var featureInfo = new string[length];
         for (var i = 0; i < length; i++)
         {
@@ -103,7 +92,7 @@ public class DMatrix : IDisposable
 
     static void ThrowIfError(int output)
     {
-        if (output == -1)
+        if (output != 0)
         {
             throw new DllFailException(NativeMethods.XGBGetLastError());
         }
