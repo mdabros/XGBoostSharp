@@ -7,7 +7,7 @@ namespace XGBoostSharp.Lib;
 public class DMatrix : IDisposable
 {
     readonly SafeDMatrixHandle m_safeDMatrixHandle;
-    readonly float m_missing = -1.0F; // arbitrary value used to represent a missing value
+    const float DefaultMissing = float.NaN;
 
     public IntPtr Handle => m_safeDMatrixHandle.DangerousGetHandle();
 
@@ -17,15 +17,31 @@ public class DMatrix : IDisposable
         set => SetFloatInfo(Fields.label, value);
     }
 
-    public DMatrix(float[][] data, float[] labels = null)
-        : this(Flatten2DArray(data), (ulong)data.Length, (ulong)data[0].Length, labels)
+    /// <summary>
+    /// Creates a DMatrix from a 2D array of float values with optional labels.
+    /// </summary>
+    /// <param name="data">The 2D array containing the feature data.</param>
+    /// <param name="labels">Optional array of labels corresponding to the data rows. Default is null.</param>
+    /// <param name="missing">Value to be treated as missing in the dataset. Default is float.NaN.</param>
+    /// <exception cref="DllFailException">Thrown when the native XGBoost library encounters an error during matrix creation.</exception>
+    public DMatrix(float[][] data, float[] labels = null, float missing = DefaultMissing)
+        : this(Flatten2DArray(data), (ulong)data.Length, (ulong)data[0].Length, labels, missing)
     {
     }
 
-    public DMatrix(float[] data1D, ulong nrows, ulong ncols, float[] labels = null)
+    /// <summary>
+    /// Creates a DMatrix from a 1D array of float values with specified dimensions and optional labels.
+    /// </summary>
+    /// <param name="data1D">The 1D array containing the feature data in row-major order.</param>
+    /// <param name="nrows">Number of rows in the matrix.</param>
+    /// <param name="ncols">Number of columns in the matrix.</param>
+    /// <param name="labels">Optional array of labels corresponding to the data rows. Default is null.</param>
+    /// <param name="missing">Value to be treated as missing in the dataset. Default is float.NaN.</param>
+    /// <exception cref="DllFailException">Thrown when the native XGBoost library encounters an error during matrix creation.</exception>
+    public DMatrix(float[] data1D, ulong nrows, ulong ncols, float[] labels = null, float missing = DefaultMissing)
     {
         var output = NativeMethods.XGDMatrixCreateFromMat(
-            data1D, nrows, ncols, m_missing, out var handle);
+            data1D, nrows, ncols, missing, out var handle);
 
         ThrowIfError(output);
         m_safeDMatrixHandle = new SafeDMatrixHandle(handle);
