@@ -22,10 +22,10 @@ public class DMatrix : IDisposable
     /// </summary>
     /// <param name="data">The 2D array containing the feature data.</param>
     /// <param name="labels">Optional array of labels corresponding to the data rows. Default is null.</param>
-    /// <param name="m_missing">Value to be treated as missing in the dataset. Default is float.NaN.</param>
+    /// <param name="missing">Value to be treated as missing in the dataset. Default is float.NaN.</param>
     /// <exception cref="DllFailException">Thrown when the native XGBoost library encounters an error during matrix creation.</exception>
-    public DMatrix(float[][] data, float[] labels = null, float m_missing = DefaultMissing)
-        : this(Flatten2DArray(data), unchecked((ulong)data.Length), unchecked((ulong)data[0].Length), labels, m_missing)
+    public DMatrix(float[][] data, float[] labels = null, float missing = DefaultMissing)
+        : this(Flatten2DArray(data), unchecked((ulong)data.Length), unchecked((ulong)data[0].Length), labels, missing)
     {
     }
 
@@ -36,12 +36,12 @@ public class DMatrix : IDisposable
     /// <param name="nrows">Number of rows in the matrix.</param>
     /// <param name="ncols">Number of columns in the matrix.</param>
     /// <param name="labels">Optional array of labels corresponding to the data rows. Default is null.</param>
-    /// <param name="m_missing">Value to be treated as missing in the dataset. Default is float.NaN.</param>
+    /// <param name="missing">Value to be treated as missing in the dataset. Default is float.NaN.</param>
     /// <exception cref="DllFailException">Thrown when the native XGBoost library encounters an error during matrix creation.</exception>
-    public DMatrix(float[] data1D, ulong nrows, ulong ncols, float[] labels = null, float m_missing = DefaultMissing)
+    public DMatrix(float[] data1D, ulong nrows, ulong ncols, float[] labels = null, float missing = DefaultMissing)
     {
         var output = NativeMethods.XGDMatrixCreateFromMat(
-            data1D, nrows, ncols, m_missing, out var handle);
+            data1D, nrows, ncols, missing, out var handle);
 
         ThrowIfError(output);
         m_safeDMatrixHandle = new SafeDMatrixHandle(handle);
