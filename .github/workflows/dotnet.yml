@@ -30,11 +30,11 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0 # Important for Nerdbank.GitVersioning to calculate versions
     - name: Setup .NET
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
         global-json-file: global.json
     - name: Restore dependencies
@@ -45,7 +45,7 @@ jobs:
       run: dotnet test -c ${{ matrix.configuration }} -p:Platform="Any CPU" --no-build --verbosity normal --collect:"XPlat Code Coverage"
     - name: Upload coverage reports to Codecov
       if: matrix.os != 'macos-13' # Temporary disable for macos-13 until issue fixed. See https://github.com/codecov/codecov-action/issues/1549
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v5
       with:
         flags: ${{ matrix.os }},${{ matrix.configuration }}
       
@@ -57,9 +57,9 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Setup .NET
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
         global-json-file: global.json
     - name: Format verify no changes
@@ -68,11 +68,11 @@ jobs:
   pack:
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0 # Important for Nerdbank.GitVersioning to calculate versions
     - name: Setup .NET
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
         global-json-file: global.json
     - name: Pack XGBoostSharp
@@ -105,7 +105,7 @@ jobs:
     if: ${{ github.event.inputs.version != ''  && github.actor == 'mdabros'}}
   
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Download nuget packages
       uses: actions/download-artifact@v4
       with:
@@ -143,7 +143,7 @@ jobs:
         asset_name: XGBoostSharp-cpu.${{ github.event.inputs.version }}.nupkg
         asset_content_type: application/zip
     - name: Setup .NET
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
         global-json-file: global.json
     - name: Push XGBoostSharp package

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using XGBoostSharp.lib;
+using XGBoostSharp.Lib;
 
 namespace XGBoostSharp;
 
@@ -54,6 +54,10 @@ public abstract class XGBModelBase : IDisposable
             iterationRange,
             strictShape);
     }
+
+    public Dictionary<string, float> GetFeatureImportance(
+        string importanceType = Parameters.ImportanceType.Weight) =>
+            m_booster.FeatureScore(importanceType);
 
     void DisposeManagedResources()
     {

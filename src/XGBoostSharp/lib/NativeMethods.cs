@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace XGBoostSharp.lib;
+namespace XGBoostSharp.Lib;
 
 // Relevant links XGBoost:
 // https://github.com/dmlc/xgboost/blob/7a6121669097745f57b8aaad1dd3a162fef96612/jvm-packages/xgboost4j/src/main/java/ml/dmlc/xgboost4j/java/XGBoostJNI.java#L105
 // https://github.com/dmlc/xgboost/blob/7a6121669097745f57b8aaad1dd3a162fef96612/src/c_api/c_api.cc#L895
 // https://xgboost.readthedocs.io/en/stable/tutorials/c_api_tutorial.html
+// https://xgboost.readthedocs.io/en/stable/dev/c__api_8h.html
 
 // Relevant links for cross-platform DllImport:
 // https://docs.microsoft.com/en-us/dotnet/standard/native-interop/pinvoke
@@ -102,11 +103,21 @@ public static class NativeMethods
 
     [DllImport(XGBoostNtvDllName)]
     public static extern int XGDMatrixCreateFromFile(
-        string fname, int silent, out IntPtr DMtrxHandle);
+        string fname, int silent, out IntPtr dMatrixHandle);
 
     [DllImport(XGBoostNtvDllName)]
     public static extern int XGBoosterDumpModel(
         IntPtr handle, string fmap,
         int with_stats, out int out_len,
         out IntPtr dumpStr);
+
+    [DllImport(XGBoostNtvDllName)]
+    public static extern int XGBoosterFeatureScore(
+        IntPtr handle,
+        string config,
+        out ulong out_n_features,
+        out IntPtr out_features,
+        out ulong out_dim,
+        out IntPtr out_shape,
+        out IntPtr out_scores);
 }

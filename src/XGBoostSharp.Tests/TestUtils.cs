@@ -53,6 +53,18 @@ public static partial class TestUtils
         }
     }
 
+    public static void AssertAreEqual(
+        Dictionary<string, float> expected,
+        Dictionary<string, float> actual)
+    {
+        Assert.AreEqual(expected.Count, actual.Count);
+        foreach (var key in expected.Keys)
+        {
+            Assert.IsTrue(actual.ContainsKey(key));
+            Assert.AreEqual(expected[key], actual[key], Delta);
+        }
+    }
+
     public static void TracePredictions(float[] predictions)
     {
         for (var i = 0; i < predictions.Length; i++)
@@ -109,10 +121,7 @@ public static partial class TestUtils
 
     public static float[] FlattenArray(Array array)
     {
-        if (array == null)
-        {
-            throw new ArgumentNullException(nameof(array));
-        }
+        ArgumentNullException.ThrowIfNull(array);
 
         var result = new List<float>();
         FlattenArrayRecursive(array, result);

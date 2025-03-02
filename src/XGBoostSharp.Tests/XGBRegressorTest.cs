@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using XGBoostSharp.lib;
+using XGBoostSharp.Lib;
 using static XGBoostSharp.Parameters;
 
 namespace XGBoostSharp.Test;
@@ -236,7 +236,7 @@ public class XGBRegressorTest
         sut.Fit(dataTrain, labelsTrain);
 
         using var dMatrixTest = new DMatrix(dataTest);
-        var predictionResult = sut.Predict(dMatrixTest, strictShape: true, outputMargin: true);
+        var predictionResult = sut.Predict(dMatrixTest, outputMargin: true, strictShape: true);
 
         var expected = TestUtils.ExpectedRegressionPredictions;
 
@@ -252,11 +252,34 @@ public class XGBRegressorTest
         var dataTrain = TestUtils.DataTrain;
         var labelsTrain = TestUtils.LabelsTrain;
 
-        using var sut = CreateSut(maxDepth: 1, nEstimators: 3);
+        using var sut = CreateSut(nEstimators: 3, maxDepth: 1);
         sut.Fit(dataTrain, labelsTrain);
 
         var actual = sut.DumpModelEx();
         var expected = TestUtils.ExpectedRegressorModelDump;
+
+        TestUtils.AssertAreEqual(expected, actual);
+    }
+
+    [DataTestMethod]
+    [DataRow(ImportanceType.Weight, new[] { 49f, 499f, 86f })]
+    [DataRow(ImportanceType.Gain, new[] { 2.31486464f, 0.454449239f, 0.500057459f })]
+    [DataRow(ImportanceType.Cover, new[] { 409.326538f, 439.118225f, 323.4535f })]
+    [DataRow(ImportanceType.TotalGain, new[] { 113.428368f, 226.770172f, 43.00494f })]
+    [DataRow(ImportanceType.TotalCover, new[] { 20057f, 219120f, 27817f })]
+    public void XGBRegressorTest_GetFeatureImportance(string importanceType, float[] featureImportances)
+    {
+        var dataTrain = TestUtils.DataTrain;
+        var labelsTrain = TestUtils.LabelsTrain;
+
+        using var sut = CreateSut();
+        sut.Fit(dataTrain, labelsTrain);
+
+        var actual = sut.GetFeatureImportance(importanceType);
+
+        var featureNames = new[] { "f0", "f1", "f2" };
+        var expected = featureNames.Zip(featureImportances, (name, score) => new { name, score })
+                                   .ToDictionary(x => x.name, x => x.score);
 
         TestUtils.AssertAreEqual(expected, actual);
     }
