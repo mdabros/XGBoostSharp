@@ -38,6 +38,21 @@ public class XGBClassifierTest
     }
 
     [TestMethod]
+    public void XGBClassifierTest_PredictRaw_Multi_Label()
+    {
+        var dataTrain = TestUtils.DataTrainMultiLabel;
+        var labelsTrain = TestUtils.LabelsTrainMultiLabel;
+
+        var sut = CreateSut(learningRate: 0.3f, objective: Objective.Multi.Softmax, numClass: 3);
+        sut.Fit(dataTrain, labelsTrain);
+
+        float[] expected = [0, 0, 0, 1, 2, 2];
+        var actual = sut.PredictRaw(dataTrain);
+
+        TestUtils.AssertAreEqual(expected, actual);
+    }
+
+    [TestMethod]
     public void XGBClassifierTest_PredictProbability()
     {
         var dataTrain = TestUtils.DataTrain;
@@ -49,6 +64,29 @@ public class XGBClassifierTest
 
         var actual = sut.PredictProbability(dataTest);
         var expected = TestUtils.ExpectedClassifierProbabilityPredictions;
+
+        TestUtils.AssertAreEqual(expected, actual);
+    }
+
+    [TestMethod]
+    public void XGBClassifierTest_PredictProbability_Multi_Label()
+    {
+        var dataTrain = TestUtils.DataTrainMultiLabel;
+        var labelsTrain = TestUtils.LabelsTrainMultiLabel;
+
+        var sut = CreateSut(learningRate: 0.3f, objective: Objective.Multi.Softprob, numClass: 3);
+        sut.Fit(dataTrain, labelsTrain);
+
+        float[][] expected =
+        [
+            [0.418939859f, 0.418790877f, 0.162269279f],
+            [0.547294259f, 0.163445055f, 0.289260715f],
+            [0.418939859f, 0.418790877f, 0.162269279f],
+            [0.1631396f, 0.5467392f, 0.2901212f],
+            [0.2258435f, 0.226117283f, 0.5480392f],
+            [0.2258435f, 0.226117283f, 0.5480392f],
+        ];
+        var actual = sut.PredictProbability(dataTrain);
 
         TestUtils.AssertAreEqual(expected, actual);
     }
@@ -330,7 +368,8 @@ public class XGBClassifierTest
     // Specify all hyperparameters to make tests independant of changing
     // defaults.
     static XGBClassifier CreateSut(int nEstimators = 100,
-        int maxDepth = 3, float learningRate = 0.1f)
+        int maxDepth = 3, float learningRate = 0.1f,
+        string objective = Objective.Binary.Logistic, int numClass = 1)
     {
         return new XGBClassifier(
             nEstimators,
@@ -340,7 +379,7 @@ public class XGBClassifierTest
             growPolicy: GrowPolicy.DepthWise,
             learningRate,
             verbosity: 0,
-            objective: Objective.Binary.Logistic,
+            objective,
             booster: BoosterType.Gbtree,
             treeMethod: TreeMethod.Auto,
             nThread: -1,
@@ -362,6 +401,6 @@ public class XGBClassifierTest
             importanceType: ImportanceType.Gain,
             device: Device.Cpu,
             validateParameters: false,
-            numClass: 1);
+            numClass);
     }
 }
