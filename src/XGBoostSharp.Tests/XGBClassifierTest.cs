@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -42,23 +40,14 @@ public class XGBClassifierTest
     [TestMethod]
     public void XGBClassifierTest_PredictRaw_Multi_Label()
     {
-        float[][] trainData =
-        [
-            [ 1.0f, 2.0f ],
-            [ 1.1f, 2.2f ],
-            [ 2.0f, 1.0f ],
-            [ 2.1f, 1.1f ],
-            [ 3.0f, 3.0f ],
-            [ 3.1f, 3.1f ],
-        ];
-
-        float[] labels = [0, 0, 1, 1, 2, 2];
+        var dataTrain = TestUtils.DataTrainMultiLabel;
+        var labelsTrain = TestUtils.LabelsTrainMultiLabel;
 
         var sut = CreateSut(learningRate: 0.3f, objective: Objective.Multi.Softmax, numClass: 3);
-        sut.Fit(trainData, labels);
+        sut.Fit(dataTrain, labelsTrain);
 
         float[] expected = [0, 0, 0, 1, 2, 2];
-        var actual = sut.PredictRaw(trainData);
+        var actual = sut.PredictRaw(dataTrain);
 
         TestUtils.AssertAreEqual(expected, actual);
     }
@@ -82,20 +71,11 @@ public class XGBClassifierTest
     [TestMethod]
     public void XGBClassifierTest_PredictProbability_Multi_Label()
     {
-        float[][] trainData =
-        [
-            [ 1.0f, 2.0f ],
-            [ 1.1f, 2.2f ],
-            [ 2.0f, 1.0f ],
-            [ 2.1f, 1.1f ],
-            [ 3.0f, 3.0f ],
-            [ 3.1f, 3.1f ],
-        ];
-
-        float[] labels = [0, 0, 1, 1, 2, 2];
+        var dataTrain = TestUtils.DataTrainMultiLabel;
+        var labelsTrain = TestUtils.LabelsTrainMultiLabel;
 
         var sut = CreateSut(learningRate: 0.3f, objective: Objective.Multi.Softprob, numClass: 3);
-        sut.Fit(trainData, labels);
+        sut.Fit(dataTrain, labelsTrain);
 
         float[][] expected =
         [
@@ -106,7 +86,7 @@ public class XGBClassifierTest
             [0.2258435f, 0.226117283f, 0.5480392f],
             [0.2258435f, 0.226117283f, 0.5480392f],
         ];
-        var actual = sut.PredictProbability(trainData);
+        var actual = sut.PredictProbability(dataTrain);
 
         TestUtils.AssertAreEqual(expected, actual);
     }
