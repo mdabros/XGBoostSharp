@@ -39,8 +39,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Roslynator.Analyzers" Version="4.13.1" PrivateAssets="All"/>
-    <PackageReference Include="Roslynator.Formatting.Analyzers" Version="4.13.1" PrivateAssets="All"/>
+    <PackageReference Include="Roslynator.Analyzers" Version="4.14.0" PrivateAssets="All"/>
+    <PackageReference Include="Roslynator.Formatting.Analyzers" Version="4.14.0" PrivateAssets="All"/>
   </ItemGroup>
   
   <Import Project="$(MSBuildThisFileDirectory)\OutputBuildProps.props" />
