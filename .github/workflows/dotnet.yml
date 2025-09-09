@@ -34,7 +34,7 @@ jobs:
       with:
         fetch-depth: 0 # Important for Nerdbank.GitVersioning to calculate versions
     - name: Setup .NET
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@v5
       with:
         global-json-file: global.json
     - name: Restore dependencies
@@ -59,7 +59,7 @@ jobs:
     steps:
     - uses: actions/checkout@v5
     - name: Setup .NET
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@v5
       with:
         global-json-file: global.json
     - name: Format verify no changes
@@ -72,7 +72,7 @@ jobs:
       with:
         fetch-depth: 0 # Important for Nerdbank.GitVersioning to calculate versions
     - name: Setup .NET
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@v5
       with:
         global-json-file: global.json
     - name: Pack XGBoostSharp
@@ -143,7 +143,7 @@ jobs:
         asset_name: XGBoostSharp-cpu.${{ github.event.inputs.version }}.nupkg
         asset_content_type: application/zip
     - name: Setup .NET
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@v5
       with:
         global-json-file: global.json
     - name: Push XGBoostSharp package
