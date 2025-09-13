@@ -27,7 +27,7 @@ public class DMatrixTest
         string[] featureTypes = [FeatureType.Categorical,
             FeatureType.Float,
             FeatureType.Integer,
-            FeatureType.Boolean];
+            FeatureType.Boolean,];
 
         var sut = new DMatrix(m_dataTrain, m_labelsTrain);
         sut.SetFeatureTypes(featureTypes);
