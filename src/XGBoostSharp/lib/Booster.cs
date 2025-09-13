@@ -156,7 +156,7 @@ public class Booster : IDisposable
             2 => Reshape(predictions, (int)shape[0], (int)shape[1]),
             3 => Reshape(predictions, (int)shape[0], (int)shape[1], (int)shape[2]),
             4 => Reshape(predictions, (int)shape[0], (int)shape[1], (int)shape[2], (int)shape[3]),
-            _ => throw new InvalidOperationException("Unsupported number of dimensions.")
+            _ => throw new InvalidOperationException("Unsupported number of dimensions."),
         };
     }
 
@@ -201,7 +201,7 @@ public class Booster : IDisposable
                 float floatValue => floatValue.ToString(nfi),
                 bool boolValue => boolValue.ToString(),
                 string stringValue => stringValue,
-                _ => throw new ArgumentException($"Unsupported parameter type: {kvp.Value.GetType()}")
+                _ => throw new ArgumentException($"Unsupported parameter type: {kvp.Value.GetType()}"),
             };
 
             SetParameter(kvp.Key, valueAsString);
@@ -224,7 +224,7 @@ public class Booster : IDisposable
                 float floatValue => floatValue.ToString(CultureInfo.InvariantCulture),
                 bool boolValue => boolValue.ToString(),
                 string stringValue => stringValue,
-                _ => throw new ArgumentException($"Unsupported parameter type: {kvp.Value.GetType()}")
+                _ => throw new ArgumentException($"Unsupported parameter type: {kvp.Value.GetType()}"),
             };
 
             Console.WriteLine($"{kvp.Key}: {valueAsString}");

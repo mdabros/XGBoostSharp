@@ -2583,7 +2583,7 @@ public static partial class TestUtils
         1.10409832f,
         -1.84407115f,
         -1.66593695f,
-        0.358836174f
+        0.358836174f,
     ];
 
     public static float[] ExpectedRegressionPredictions =>
@@ -3428,7 +3428,7 @@ public static partial class TestUtils
         1055,
         776,
         850,
-        985
+        985,
     ];
 
     // The prediction leafs have been summed up to avoid having a 418*100 array in test data
@@ -3851,20 +3851,20 @@ public static partial class TestUtils
         974,
         704,
         826,
-        895
+        895,
     ];
 
     public static string[] ExpectedClassifierModelDump =>
     [
         "booster[0]\n0:[f0<3] yes=1,no=2,missing=2\n\t1:leaf=0.0227722786\n\t2:leaf=-0.102222227\n",
         "booster[1]\n0:[f0<3] yes=1,no=2,missing=2\n\t1:leaf=0.0205203202\n\t2:leaf=-0.0923302621\n",
-        "booster[2]\n0:[f1<52.5541992] yes=1,no=2,missing=2\n\t1:leaf=-0.0608263575\n\t2:leaf=0.0751752257\n"
+        "booster[2]\n0:[f1<52.5541992] yes=1,no=2,missing=2\n\t1:leaf=-0.0608263575\n\t2:leaf=0.0751752257\n",
     ];
 
     public static string[] ExpectedRegressorModelDump =>
     [
         "booster[0]\n0:[f0<3] yes=1,no=2,missing=2\n\t1:leaf=0.0057356609\n\t2:leaf=-0.0257113818\n",
         "booster[1]\n0:[f0<3] yes=1,no=2,missing=2\n\t1:leaf=0.00516352756\n\t2:leaf=-0.0231454689\n",
-        "booster[2]\n0:[f1<52.5541992] yes=1,no=2,missing=2\n\t1:leaf=-0.0151525661\n\t2:leaf=0.0191417374\n"
+        "booster[2]\n0:[f1<52.5541992] yes=1,no=2,missing=2\n\t1:leaf=-0.0151525661\n\t2:leaf=0.0191417374\n",
     ];
 }
