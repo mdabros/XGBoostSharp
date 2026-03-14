@@ -30,7 +30,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
       with:
         fetch-depth: 0 # Important for Nerdbank.GitVersioning to calculate versions
     - name: Setup .NET
@@ -57,7 +57,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - name: Setup .NET
       uses: actions/setup-dotnet@v5
       with:
@@ -68,7 +68,7 @@ jobs:
   pack:
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
       with:
         fetch-depth: 0 # Important for Nerdbank.GitVersioning to calculate versions
     - name: Setup .NET
@@ -105,7 +105,7 @@ jobs:
     if: ${{ github.event.inputs.version != ''  && github.actor == 'mdabros'}}
   
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - name: Download nuget packages
       uses: actions/download-artifact@v6
       with:
