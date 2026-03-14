@@ -261,7 +261,7 @@ public class XGBRegressorTest
         TestUtils.AssertAreEqual(expected, actual);
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(ImportanceType.Weight, new[] { 49f, 499f, 86f })]
     [DataRow(ImportanceType.Gain, new[] { 2.31486464f, 0.454449239f, 0.500057459f })]
     [DataRow(ImportanceType.Cover, new[] { 409.326538f, 439.118225f, 323.4535f })]
