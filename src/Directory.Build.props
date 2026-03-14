@@ -16,7 +16,7 @@
     <LibraryTargetFramework>netstandard2.0</LibraryTargetFramework>
     <TestTargetFramework>net10.0</TestTargetFramework>
 
-    <LangVersion>12.0</LangVersion>
+    <LangVersion>14.0</LangVersion>
     <Deterministic>true</Deterministic>
     <DebugType>portable</DebugType>
     <Platforms>AnyCPU</Platforms>
