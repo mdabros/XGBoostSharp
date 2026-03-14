@@ -70,14 +70,12 @@ public abstract class XGBModelBase : IDisposable
         var array2D = (float[,])predictions;
         var nSamples = array2D.GetLength(0);
         var nOutputs = array2D.GetLength(1);
+        var rowByteCount = nOutputs * sizeof(float);
         var result = new float[nSamples][];
         for (var i = 0; i < nSamples; i++)
         {
             result[i] = new float[nOutputs];
-            for (var j = 0; j < nOutputs; j++)
-            {
-                result[i][j] = array2D[i, j];
-            }
+            Buffer.BlockCopy(array2D, i * rowByteCount, result[i], 0, rowByteCount);
         }
         return result;
     }
