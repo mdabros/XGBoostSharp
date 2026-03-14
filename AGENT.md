@@ -4,7 +4,9 @@
 
 XGBoostSharp is a C# wrapper for [XGBoost](https://github.com/dmlc/xgboost), modelled closely after
 the [Python scikit-learn API](https://xgboost.readthedocs.io/en/latest/python/index.html).
-The library targets `netstandard2.0`; the test project targets `net8`.
+The library targets `netstandard2.0`; the test project targets `net10.0`.
+The solution file is `XGBoostSharp.slnx` (XML-based solution format) at the repository root.
+C# language version is `12.0` (set in `src/Directory.Build.props`).
 
 ## Repository Layout
 
@@ -28,7 +30,8 @@ src/
     XGBClassifier.cs      # High-level classifier (mirrors Python XGBClassifier)
     XGBRegressor.cs       # High-level regressor (mirrors Python XGBRegressor)
     Parameters.cs         # Strongly-typed parameter constants (C# PascalCase)
-  XGBoostSharp.Tests/     # MSTest test project (net8)
+  XGBoostSharp.Tests/     # MSTest test project (net10.0)
+    AssemblyInitializeCultureTest.cs  # Sets InvariantCulture for all test threads
     XGBClassifierTest.cs
     XGBRegressorTest.cs
     DMatrixTest.cs
@@ -49,6 +52,16 @@ src/
 - **Namespaces:** Low-level types live in `XGBoostSharp.Lib`; high-level types live in `XGBoostSharp`.
 
 ## Architecture and Implementation Details
+
+### Shared Build Configuration (`src/Directory.Build.props`)
+
+- `LibraryTargetFramework` and `TestTargetFramework` are defined here; do not hard-code TFMs in
+  individual project files.
+- `LangVersion` is set to `12.0`, enabling C# 12 features (e.g., primary constructors,
+  collection expressions).
+- `GenerateDocumentationFile`, analyzer settings, and `NoWarn` entries are all centralised here.
+- `Nerdbank.GitVersioning` is used for automatic version calculation from Git history; CI
+  checkouts must use `fetch-depth: 0`.
 
 ### P/Invoke Layer (`NativeMethods.cs`)
 
@@ -80,11 +93,18 @@ src/
 - Both classes inherit from `XGBModelBase` and delegate to `Booster` for all native operations.
 - Implement `IDisposable` via the base class to ensure native resources are released.
 
+### Dependencies
+
+- **`System.Text.Json`** is an explicit package reference in the library project; it is used in
+  `Booster.cs` to serialise JSON configuration structs passed to the XGBoost C API (e.g.,
+  `XGBoosterPredictFromDMatrix`, `XGBoosterSaveModelToBuffer`). Do not replace it with an
+  alternative serialiser.
+
 ## Code Style and Formatting
 
 - **Adhere to `.editorconfig`:** Strictly follow all formatting rules defined in `.editorconfig`.
-- **Indentation:** 4 spaces for C# files; 2 spaces for `.csproj`, `.props`, `.targets`, and
-  `.json` files.
+- **Indentation:** 4 spaces for C# and `.json` files; 2 spaces for `.csproj`, `.props`, and
+  `.targets` files.
 - **Line length:** Keep declaration lines around 100–120 characters; split long signatures across
   multiple lines.
 - **No unnecessary blank lines:** Avoid adding extra empty lines within methods or between tightly
@@ -97,8 +117,8 @@ src/
 - All public types and members MUST have XML `<summary>` documentation.
 - For `NativeMethods.cs` methods and for any type that wraps an XGBoost concept, include a
   `<see href="..."/>` link to the relevant XGBoost documentation page.
-- `GenerateDocumentationFile` is enabled for the library project; missing docs will produce
-  compiler warnings.
+- `GenerateDocumentationFile` is enabled; however, `CS1591` (missing XML comment) is suppressed
+  via `<NoWarn>` in `Directory.Build.props` and will not produce build errors.
 
 ## Testing
 
@@ -120,10 +140,10 @@ Always align bindings and parameter names with the latest XGBoost release. Key r
 
 ## Workflow
 
-- **Format before committing:** Run `dotnet format` from the `src/` directory before every commit.
-- **Build:** Run `dotnet build src/` to verify the solution builds cleanly.
-- **Tests:** Run `dotnet test src/` to execute all tests. All tests must pass before a change is
-  considered complete.
+- **Format before committing:** Run `dotnet format` from the repository root before every commit.
+- **Build:** Run `dotnet build` from the repository root to verify the solution builds cleanly.
+- **Tests:** Run `dotnet test` from the repository root to execute all tests. All tests must pass
+  before a change is considered complete.
 - **Atomic commits:** Commit after each successful change or logical unit of work.
 
 ## Agent Instruction Source
