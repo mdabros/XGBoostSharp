@@ -68,13 +68,13 @@ public abstract class XGBModelBase : IDisposable
     protected static float[][] ExtractMultiOutputPredictions(Array predictions)
     {
         var array2D = (float[,])predictions;
-        var nSamples = array2D.GetLength(0);
-        var nOutputs = array2D.GetLength(1);
-        var rowByteCount = nOutputs * sizeof(float);
-        var result = new float[nSamples][];
-        for (var i = 0; i < nSamples; i++)
+        var sampleCount = array2D.GetLength(0);
+        var outputCount = array2D.GetLength(1);
+        var rowByteCount = outputCount * sizeof(float);
+        var result = new float[sampleCount][];
+        for (var i = 0; i < sampleCount; i++)
         {
-            result[i] = new float[nOutputs];
+            result[i] = new float[outputCount];
             Buffer.BlockCopy(array2D, i * rowByteCount, result[i], 0, rowByteCount);
         }
         return result;
