@@ -165,6 +165,20 @@ public class XGBClassifier : XGBModelBase
     }
 
     /// <summary>
+    ///   Fit the gradient boosting model for multi-label classification.
+    ///   Each row of <paramref name="labels"/> contains one binary (0/1) value per label.
+    /// </summary>
+    /// <param name="data">Feature matrix shaped <c>[n_samples, n_features]</c>.</param>
+    /// <param name="labels">
+    ///   Multi-label indicators shaped <c>[n_samples, n_labels]</c>, values are 0 or 1.
+    /// </param>
+    public void Fit(float[][] data, float[][] labels)
+    {
+        using var train = new DMatrix(data, labels);
+        Fit(train);
+    }
+
+    /// <summary>
     ///   Fit the gradient boosting model
     /// </summary>
     /// <param name="matrix">
@@ -265,5 +279,60 @@ public class XGBClassifier : XGBModelBase
         }
 
         return results;
+    }
+
+    /// <summary>
+    ///   Predict binary class assignments for each label in a multi-label classification model.
+    ///   Each inner array contains a 0 or 1 for each label of the corresponding sample.
+    /// </summary>
+    /// <param name="data">Feature matrix shaped <c>[n_samples, n_features]</c>.</param>
+    /// <returns>Binary label predictions shaped <c>[n_samples, n_labels]</c>.</returns>
+    public float[][] PredictMultiLabel(float[][] data)
+    {
+        using var dMatrix = new DMatrix(data);
+        return PredictMultiLabel(dMatrix);
+    }
+
+    /// <summary>
+    ///   Predict binary class assignments for each label in a multi-label classification model.
+    ///   Each inner array contains a 0 or 1 for each label of the corresponding sample.
+    /// </summary>
+    /// <param name="dMatrix">DMatrix to do predictions on.</param>
+    /// <returns>Binary label predictions shaped <c>[n_samples, n_labels]</c>.</returns>
+    public float[][] PredictMultiLabel(DMatrix dMatrix)
+    {
+        var probabilities = PredictProbabilityMultiLabel(dMatrix);
+        for (var i = 0; i < probabilities.Length; i++)
+        {
+            for (var j = 0; j < probabilities[i].Length; j++)
+            {
+                probabilities[i][j] = probabilities[i][j] > 0.5f ? 1f : 0f;
+            }
+        }
+        return probabilities;
+    }
+
+    /// <summary>
+    ///   Predict label probabilities for each label in a multi-label classification model.
+    ///   Each inner array contains the predicted probability per label for the corresponding sample.
+    /// </summary>
+    /// <param name="data">Feature matrix shaped <c>[n_samples, n_features]</c>.</param>
+    /// <returns>Label probabilities shaped <c>[n_samples, n_labels]</c>, values in [0, 1].</returns>
+    public float[][] PredictProbabilityMultiLabel(float[][] data)
+    {
+        using var dMatrix = new DMatrix(data);
+        return PredictProbabilityMultiLabel(dMatrix);
+    }
+
+    /// <summary>
+    ///   Predict label probabilities for each label in a multi-label classification model.
+    ///   Each inner array contains the predicted probability per label for the corresponding sample.
+    /// </summary>
+    /// <param name="dMatrix">DMatrix to do predictions on.</param>
+    /// <returns>Label probabilities shaped <c>[n_samples, n_labels]</c>, values in [0, 1].</returns>
+    public float[][] PredictProbabilityMultiLabel(DMatrix dMatrix)
+    {
+        var raw = Predict(dMatrix, strictShape: true);
+        return ExtractMultiOutputPredictions(raw);
     }
 }

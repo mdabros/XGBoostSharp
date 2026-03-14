@@ -30,6 +30,20 @@ public class DMatrix : IDisposable
     }
 
     /// <summary>
+    /// Creates a DMatrix from a 2D array of float values with multi-output labels, where each row
+    /// of <paramref name="labels"/> contains the target values for one sample.
+    /// XGBoost infers the number of outputs from <c>labels.Length * labels[0].Length / nrows</c>.
+    /// </summary>
+    /// <param name="data">The 2D array containing the feature data.</param>
+    /// <param name="labels">2D array of labels shaped <c>[n_samples, n_outputs]</c>.</param>
+    /// <param name="missing">Value to be treated as missing in the dataset. Default is float.NaN.</param>
+    /// <exception cref="DllFailException">Thrown when the native XGBoost library encounters an error during matrix creation.</exception>
+    public DMatrix(float[][] data, float[][] labels, float missing = DefaultMissing)
+        : this(Flatten2DArray(data), (ulong)data.Length, (ulong)data[0].Length, labels, missing)
+    {
+    }
+
+    /// <summary>
     /// Creates a DMatrix from a 1D array of float values with specified dimensions and optional labels.
     /// </summary>
     /// <param name="data1D">The 1D array containing the feature data in row-major order.</param>
@@ -49,6 +63,31 @@ public class DMatrix : IDisposable
         if (labels != null)
         {
             Label = labels;
+        }
+    }
+
+    /// <summary>
+    /// Creates a DMatrix from a 1D array of float values with specified dimensions and multi-output
+    /// labels, where each row of <paramref name="labels"/> contains the target values for one sample.
+    /// XGBoost infers the number of outputs from <c>labels.Length * labels[0].Length / nrows</c>.
+    /// </summary>
+    /// <param name="data1D">The 1D array containing the feature data in row-major order.</param>
+    /// <param name="nrows">Number of rows in the matrix.</param>
+    /// <param name="ncols">Number of columns in the matrix.</param>
+    /// <param name="labels">2D array of labels shaped <c>[n_samples, n_outputs]</c>.</param>
+    /// <param name="missing">Value to be treated as missing in the dataset. Default is float.NaN.</param>
+    /// <exception cref="DllFailException">Thrown when the native XGBoost library encounters an error during matrix creation.</exception>
+    public DMatrix(float[] data1D, ulong nrows, ulong ncols, float[][] labels, float missing = DefaultMissing)
+    {
+        var output = NativeMethods.XGDMatrixCreateFromMat(
+            data1D, nrows, ncols, missing, out var handle);
+
+        ThrowIfError(output);
+        m_safeDMatrixHandle = new SafeDMatrixHandle(handle);
+
+        if (labels != null)
+        {
+            SetFloatInfo(Fields.label, Flatten2DArray(labels));
         }
     }
 

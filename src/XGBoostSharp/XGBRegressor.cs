@@ -158,6 +158,20 @@ public class XGBRegressor : XGBModelBase
     }
 
     /// <summary>
+    ///   Fit the gradient boosting model for multi-output regression.
+    ///   Each row of <paramref name="labels"/> contains one target value per output.
+    /// </summary>
+    /// <param name="data">Feature matrix shaped <c>[n_samples, n_features]</c>.</param>
+    /// <param name="labels">
+    ///   Multi-output labels shaped <c>[n_samples, n_outputs]</c>.
+    /// </param>
+    public void Fit(float[][] data, float[][] labels)
+    {
+        using var train = new DMatrix(data, labels);
+        Fit(train);
+    }
+
+    /// <summary>
     ///   Fit the gradient boosting model
     /// </summary>
     /// <param name="dMatrix">
@@ -196,4 +210,30 @@ public class XGBRegressor : XGBModelBase
     ///   Predictions
     /// </returns>
     public float[] Predict(DMatrix dMatrix) => m_booster.Predict(dMatrix);
+
+    /// <summary>
+    ///   Predict using the gradient boosted model for multi-output regression.
+    /// </summary>
+    /// <param name="data">Feature matrix shaped <c>[n_samples, n_features]</c>.</param>
+    /// <returns>
+    ///   Predictions shaped <c>[n_samples, n_outputs]</c>.
+    /// </returns>
+    public float[][] PredictMultiOutput(float[][] data)
+    {
+        using var dMatrix = new DMatrix(data);
+        return PredictMultiOutput(dMatrix);
+    }
+
+    /// <summary>
+    ///   Predict using the gradient boosted model for multi-output regression.
+    /// </summary>
+    /// <param name="dMatrix">DMatrix to do predictions on.</param>
+    /// <returns>
+    ///   Predictions shaped <c>[n_samples, n_outputs]</c>.
+    /// </returns>
+    public float[][] PredictMultiOutput(DMatrix dMatrix)
+    {
+        var raw = Predict(dMatrix, strictShape: true);
+        return ExtractMultiOutputPredictions(raw);
+    }
 }
