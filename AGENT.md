@@ -4,7 +4,7 @@
 
 XGBoostSharp is a C# wrapper for [XGBoost](https://github.com/dmlc/xgboost) modelled after the
 [Python scikit-learn API](https://xgboost.readthedocs.io/en/latest/python/index.html).
-Solution: `XGBoostSharp.slnx` (root). Library: `netstandard2.0`. Tests: `net10.0`. C#: `12.0`.
+Solution: `XGBoostSharp.slnx` (root). Library: `netstandard2.0`. Tests: `net10.0`. C#: `14.0`.
 
 ## Repository Layout
 
