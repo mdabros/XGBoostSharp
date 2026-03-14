@@ -342,7 +342,7 @@ public class XGBClassifierTest
         TestUtils.AssertAreEqual(expected, actual);
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(ImportanceType.Weight, new[] { 44f, 445f, 74f })]
     [DataRow(ImportanceType.Gain, new[] { 10.73017f, 2.07062745f, 2.41420126f })]
     [DataRow(ImportanceType.Cover, new[] { 97.0292f, 93.3664856f, 102.020782f })]
