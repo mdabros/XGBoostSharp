@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>libxgboost-2.0.3-osx-x64</id>
+    <version>$version$</version>
+    <authors>mdabros</authors>
+    <description>XGBoost native library for macOS x64. This package contains the libxgboost.dylib native library built for macOS x64 platforms.</description>
+    <license type="expression">Apache-2.0</license>
+    <projectUrl>https://github.com/mdabros/XGBoostSharp</projectUrl>
+    <repository type="git" url="https://github.com/mdabros/XGBoostSharp" />
+    <tags>xgboost native macos osx machine-learning</tags>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <readme>README.md</readme>
+  </metadata>
+  <files>
+    <!-- Native library -->
+    <file src="..\native\osx-x64\libxgboost.dylib" target="runtimes\osx-x64\native\libxgboost.dylib" />
+
+    <!-- Build props to include the native library -->
+    <file src="libxgboost-osx-x64.props" target="build\libxgboost-2.0.3-osx-x64.props" />
+    <file src="libxgboost-osx-x64.props" target="buildTransitive\libxgboost-2.0.3-osx-x64.props" />
+
+    <!-- README -->
+    <file src="README-NATIVE.md" target="README.md" />
+  </files>
+</package>
