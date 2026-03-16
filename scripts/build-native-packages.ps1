@@ -44,16 +44,30 @@ Write-Host ""
 # Check if nuget.exe is available
 $nugetExe = Get-Command nuget.exe -ErrorAction SilentlyContinue
 if (-not $nugetExe) {
-    Write-Host "nuget.exe not found in PATH. Attempting to use dotnet pack instead..." -ForegroundColor Yellow
-    $useDotnetPack = $false
-    $nugetExe = Get-Command dotnet.exe -ErrorAction SilentlyContinue
-    if (-not $nugetExe) {
-        Write-Error "Neither nuget.exe nor dotnet.exe found in PATH. Please install NuGet CLI or .NET SDK."
-        exit 1
+    # Check for local nuget.exe in repo root
+    $localNuget = Join-Path $repoRoot "nuget.exe"
+    if (Test-Path $localNuget) {
+        Write-Host "Using local nuget.exe from repository root"
+        $nugetCommand = $localNuget
+    }
+    else {
+        Write-Host "nuget.exe not found. Downloading..." -ForegroundColor Yellow
+        try {
+            $nugetUrl = "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
+            $ProgressPreference = 'SilentlyContinue'
+            Invoke-WebRequest -Uri $nugetUrl -OutFile $localNuget
+            $ProgressPreference = 'Continue'
+            Write-Host "Downloaded nuget.exe successfully" -ForegroundColor Green
+            $nugetCommand = $localNuget
+        }
+        catch {
+            Write-Error "Failed to download nuget.exe: $_"
+            exit 1
+        }
     }
 }
 else {
-    $useDotnetPack = $false
+    $nugetCommand = "nuget.exe"
 }
 
 # Create output directory
@@ -100,9 +114,9 @@ foreach ($package in $packages) {
             "-Properties", "Configuration=$Configuration"
         )
 
-        Write-Host "Running: nuget.exe $($packArgs -join ' ')"
+        Write-Host "Running: nuget pack $([System.IO.Path]::GetFileName($nuspecPath))..."
 
-        & nuget.exe @packArgs
+        & $nugetCommand @packArgs
 
         if ($LASTEXITCODE -eq 0) {
             Write-Host "Successfully built $package" -ForegroundColor Green

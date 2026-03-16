@@ -112,26 +112,35 @@ if (Test-Path $TempDir) {
 }
 New-Item -ItemType Directory -Path $TempDir -Force | Out-Null
 
-# Base URL for nightly builds
-$baseUrl = "https://s3-us-west-2.amazonaws.com/xgboost-nightly-builds/release_$XGBoostVersion"
+# Try to get wheel URLs from PyPI API
+Write-Host "Fetching wheel information from PyPI..."
+try {
+    $pypiUrl = "https://pypi.org/pypi/xgboost/$XGBoostVersion/json"
+    $pypiResponse = Invoke-RestMethod -Uri $pypiUrl -UseBasicParsing
+    $wheels = $pypiResponse.urls | Where-Object { $_.packagetype -eq "bdist_wheel" }
+}
+catch {
+    Write-Error "Failed to fetch wheel information from PyPI: $_"
+    exit 1
+}
 
 # Define platforms and their wheel patterns
 $platforms = @(
     @{
         Name = "linux-x64"
-        WheelPattern = "xgboost-$XGBoostVersion-py3-none-manylinux2014_x86_64.whl"
+        WheelPattern = "*manylinux*x86_64.whl"
         LibraryPattern = "libxgboost.so"
         OutputSubDir = "linux-x64"
     },
     @{
         Name = "osx-x64"
-        WheelPattern = "xgboost-$XGBoostVersion-py3-none-macosx_10_15_x86_64.whl"
+        WheelPattern = "*macosx*x86_64.whl"
         LibraryPattern = "libxgboost.dylib"
         OutputSubDir = "osx-x64"
     },
     @{
         Name = "win-x64"
-        WheelPattern = "xgboost-$XGBoostVersion-py3-none-win_amd64.whl"
+        WheelPattern = "*win_amd64.whl"
         LibraryPattern = "xgboost.dll"
         OutputSubDir = "win-x64"
     }
@@ -144,10 +153,22 @@ foreach ($platform in $platforms) {
     Write-Host ""
     Write-Host "=== Processing $($platform.Name) ===" -ForegroundColor Yellow
 
-    $wheelUrl = "$baseUrl/$($platform.WheelPattern)"
-    $wheelPath = Join-Path $TempDir $platform.WheelPattern
+    # Find matching wheel from PyPI
+    $matchingWheel = $wheels | Where-Object { $_.filename -like $platform.WheelPattern } | Select-Object -First 1
+
+    if (-not $matchingWheel) {
+        Write-Warning "No wheel found for $($platform.Name) matching pattern: $($platform.WheelPattern)"
+        $failCount++
+        continue
+    }
+
+    $wheelUrl = $matchingWheel.url
+    $wheelFilename = $matchingWheel.filename
+    $wheelPath = Join-Path $TempDir $wheelFilename
     $extractPath = Join-Path $TempDir "$($platform.Name)_extracted"
     $outputPath = Join-Path $OutputDir $platform.OutputSubDir
+
+    Write-Host "Found wheel: $wheelFilename"
 
     # Download the wheel
     $downloaded = Download-FileWithProgress -Url $wheelUrl -OutputPath $wheelPath
