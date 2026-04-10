@@ -121,12 +121,9 @@ foreach ($package in $packages) {
         if ($LASTEXITCODE -eq 0) {
             Write-Host "Successfully built $package" -ForegroundColor Green
 
-            # Determine package filename
-            $packageId = [System.IO.Path]::GetFileNameWithoutExtension($package)
-            $packageFile = "$packageId.$Version.nupkg"
-            $packagePath = Join-Path $OutputDir $packageFile
-
-            $builtPackages += $packagePath
+            # Discover the actual .nupkg file produced (ID comes from the nuspec <id> field)
+            $produced = Get-ChildItem -Path $OutputDir -Filter "*.nupkg" | Where-Object { $_.Name -notIn ($builtPackages | ForEach-Object { Split-Path $_ -Leaf }) }
+            foreach ($p in $produced) { $builtPackages += $p.FullName }
             $successCount++
         }
         else {

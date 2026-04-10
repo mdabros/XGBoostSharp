@@ -4,8 +4,10 @@
 .DESCRIPTION
     This script publishes the native XGBoost NuGet packages to a NuGet feed.
     Supports NuGet.org, Azure Artifacts, and other NuGet v3 feeds.
+.PARAMETER XGBoostVersion
+    The XGBoost version embedded in the package IDs (e.g., "2.0.3")
 .PARAMETER Version
-    The version number of the packages to publish (e.g., "1.0.4")
+    The NuGet package version to publish (e.g., "1.0.4")
 .PARAMETER Source
     The NuGet feed URL to publish to (default: https://api.nuget.org/v3/index.json)
 .PARAMETER ApiKey
@@ -15,14 +17,17 @@
 .PARAMETER SkipDuplicate
     Skip packages that already exist on the feed (useful for re-runs)
 .EXAMPLE
-    .\publish-native-packages.ps1 -Version "1.0.4" -ApiKey "your-api-key"
+    .\publish-native-packages.ps1 -XGBoostVersion "2.0.3" -Version "1.0.4" -ApiKey "your-api-key"
 .EXAMPLE
-    .\publish-native-packages.ps1 -Version "1.0.4" -Source "https://nuget.pkg.github.com/username/index.json" -ApiKey "ghp_token"
+    .\publish-native-packages.ps1 -XGBoostVersion "2.0.3" -Version "1.0.4" -Source "https://nuget.pkg.github.com/username/index.json" -ApiKey "ghp_token"
 .EXAMPLE
-    .\publish-native-packages.ps1 -Version "1.0.4" -ApiKey "key" -SkipDuplicate
+    .\publish-native-packages.ps1 -XGBoostVersion "2.0.3" -Version "1.0.4" -ApiKey "key" -SkipDuplicate
 #>
 
 param(
+    [Parameter(Mandatory=$true)]
+    [string]$XGBoostVersion,
+
     [Parameter(Mandatory=$true)]
     [string]$Version,
 
@@ -48,7 +53,8 @@ Set-Location $repoRoot
 
 Write-Host "=== XGBoost Native Package Publisher ===" -ForegroundColor Cyan
 Write-Host "Repository Root: $repoRoot"
-Write-Host "Version: $Version"
+Write-Host "XGBoost Version: $XGBoostVersion"
+Write-Host "Package Version: $Version"
 Write-Host "Package Directory: $PackageDir"
 Write-Host "Target Source: $Source"
 Write-Host "Skip Duplicate: $SkipDuplicate"
@@ -71,11 +77,11 @@ if (-not (Test-Path $PackageDir)) {
     exit 1
 }
 
-# Define the expected package names
+# Define the expected package names using the XGBoost version embedded in the package IDs
 $packageNames = @(
-    "libxgboost-2.0.3-linux-x64",
-    "libxgboost-2.0.3-osx-x64",
-    "libxgboost-2.0.3-win-x64"
+    "libxgboost-$XGBoostVersion-linux-x64",
+    "libxgboost-$XGBoostVersion-osx-x64",
+    "libxgboost-$XGBoostVersion-win-x64"
 )
 
 $successCount = 0
