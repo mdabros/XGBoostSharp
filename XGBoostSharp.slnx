@@ -1,11 +1,16 @@
 <Solution>
-  <Project Path="src\XGBoostSharp\XGBoostSharp.csproj" />
-  <Project Path="src\XGBoostSharp.Tests\XGBoostSharp.Test.csproj" />
   <Folder Name="/ci/">
     <File Path=".github\dependabot.yml" />
     <File Path=".github\workflows\dotnet.yml" />
   </Folder>
   <Folder Name="/pkg/">
+    <File Path="pkg/libxgboost-linux-x64.nuspec" />
+    <File Path="pkg/libxgboost-linux-x64.props" />
+    <File Path="pkg/libxgboost-osx-x64.nuspec" />
+    <File Path="pkg/libxgboost-osx-x64.props" />
+    <File Path="pkg/libxgboost-win-x64.nuspec" />
+    <File Path="pkg/libxgboost-win-x64.props" />
+    <File Path="pkg/README-NATIVE.md" />
     <File Path="pkg\XGBoostSharp-cpu.nuspec" />
   </Folder>
   <Folder Name="/root/">
@@ -28,4 +33,6 @@
     <File Path="src\OutputBuildTargets.props" />
     <File Path="src\SourceLink.GitHub.props" />
   </Folder>
+  <Project Path="src\XGBoostSharp.Tests\XGBoostSharp.Test.csproj" />
+  <Project Path="src\XGBoostSharp\XGBoostSharp.csproj" />
 </Solution>
