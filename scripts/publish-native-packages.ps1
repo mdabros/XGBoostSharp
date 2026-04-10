@@ -77,12 +77,31 @@ if (-not (Test-Path $PackageDir)) {
     exit 1
 }
 
-# Define the expected package names using the XGBoost version embedded in the package IDs
-$packageNames = @(
-    "libxgboost-$XGBoostVersion-linux-x64",
-    "libxgboost-$XGBoostVersion-osx-x64",
-    "libxgboost-$XGBoostVersion-win-x64"
-)
+# Discover all packages to publish
+Write-Host "Discovering packages in $PackageDir..." -ForegroundColor Cyan
+
+$allPackages = Get-ChildItem -Path $PackageDir -Filter "*.nupkg" | Where-Object {
+    $_.Name -match "libxgboost-$XGBoostVersion.*\.$Version\.nupkg"
+}
+
+if ($allPackages.Count -eq 0) {
+    Write-Error "No packages found matching libxgboost-$XGBoostVersion*.$Version.nupkg in $PackageDir"
+    exit 1
+}
+
+Write-Host "Found $($allPackages.Count) packages to publish:"
+foreach ($pkg in $allPackages) {
+    Write-Host "  - $($pkg.Name)"
+}
+Write-Host ""
+
+# Sort packages so part packages are published before meta-packages
+# This ensures dependencies are available when the meta-package is pushed
+$sortedPackages = $allPackages | Sort-Object {
+    if ($_.Name -match "-part\d+\.") { 0 }      # Part packages first
+    elseif ($_.Name -match "-meta\.") { 2 }     # Meta packages last
+    else { 1 }                                   # Regular packages in the middle
+}
 
 $successCount = 0
 $failCount = 0
@@ -90,15 +109,9 @@ $skippedCount = 0
 $publishedPackages = @()
 
 # Publish each package
-foreach ($packageName in $packageNames) {
-    $packageFile = "$packageName.$Version.nupkg"
-    $packagePath = Join-Path $PackageDir $packageFile
-
-    if (-not (Test-Path $packagePath)) {
-        Write-Warning "Package file not found: $packagePath"
-        $failCount++
-        continue
-    }
+foreach ($package in $sortedPackages) {
+    $packageFile = $package.Name
+    $packagePath = $package.FullName
 
     Write-Host ""
     Write-Host "=== Publishing $packageFile ===" -ForegroundColor Yellow
