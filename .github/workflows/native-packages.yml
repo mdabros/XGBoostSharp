@@ -1,0 +1,105 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+
+name: native-packages
+
+permissions: read-all
+
+on:
+  workflow_dispatch:
+    inputs:
+      xgboost_version:
+        description: 'XGBoost version to download and package (e.g., 2.0.3)'
+        required: true
+        default: '2.0.3'
+      package_version:
+        description: 'NuGet package version to publish (e.g., 1.0.3)'
+        required: true
+
+env:
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+  DOTNET_NOLOGO: true
+  NuGetDirectory: ${{ github.workspace }}/nuget
+
+jobs:
+  pack-native:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v6
+      with:
+        fetch-depth: 0
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v5
+      with:
+        global-json-file: global.json
+    - name: Download native libraries
+      run: .\scripts\download-native-libs.ps1 -XGBoostVersion "${{ github.event.inputs.xgboost_version }}"
+    - name: Build native packages
+      run: .\scripts\build-native-packages.ps1 -Version "${{ github.event.inputs.package_version }}" -OutputDir "${{ env.NuGetDirectory }}"
+    - uses: actions/upload-artifact@v6
+      with:
+        name: nuget-native
+        if-no-files-found: error
+        retention-days: 7
+        path: ${{ env.NuGetDirectory }}/*.nupkg
+
+  create-release-push-native:
+    needs: [ pack-native ]
+    runs-on: windows-latest
+    permissions:
+      contents: write
+    if: ${{ github.actor == 'mdabros' }}
+
+    steps:
+    - uses: actions/checkout@v6
+    - name: Download nuget packages
+      uses: actions/download-artifact@v7
+      with:
+        name: nuget-native
+        path: ${{ env.NuGetDirectory }}
+    - name: Create release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.ACTION_GITHUB_TOKEN }}
+      with:
+        tag_name: native-v${{ github.event.inputs.package_version }}
+        release_name: Native Packages ${{ github.event.inputs.package_version }} (XGBoost ${{ github.event.inputs.xgboost_version }})
+        draft: true
+    - name: Create tag (for release)
+      run: |
+        git tag native-v${{ github.event.inputs.package_version }}
+        git push origin native-v${{ github.event.inputs.package_version }}
+    - name: Upload linux-x64 package
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.ACTION_GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ${{ env.NuGetDirectory }}/libxgboost-${{ github.event.inputs.xgboost_version }}-linux-x64.${{ github.event.inputs.package_version }}.nupkg
+        asset_name: libxgboost-${{ github.event.inputs.xgboost_version }}-linux-x64.${{ github.event.inputs.package_version }}.nupkg
+        asset_content_type: application/zip
+    - name: Upload osx-x64 package
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.ACTION_GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ${{ env.NuGetDirectory }}/libxgboost-${{ github.event.inputs.xgboost_version }}-osx-x64.${{ github.event.inputs.package_version }}.nupkg
+        asset_name: libxgboost-${{ github.event.inputs.xgboost_version }}-osx-x64.${{ github.event.inputs.package_version }}.nupkg
+        asset_content_type: application/zip
+    - name: Upload win-x64 package
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.ACTION_GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ${{ env.NuGetDirectory }}/libxgboost-${{ github.event.inputs.xgboost_version }}-win-x64.${{ github.event.inputs.package_version }}.nupkg
+        asset_name: libxgboost-${{ github.event.inputs.xgboost_version }}-win-x64.${{ github.event.inputs.package_version }}.nupkg
+        asset_content_type: application/zip
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v5
+      with:
+        global-json-file: global.json
+    - name: Push native packages to NuGet.org
+      run: .\scripts\publish-native-packages.ps1 -XGBoostVersion "${{ github.event.inputs.xgboost_version }}" -Version "${{ github.event.inputs.package_version }}" -ApiKey "${{ secrets.NUGET_API_KEY }}" -PackageDir "${{ env.NuGetDirectory }}" -SkipDuplicate
