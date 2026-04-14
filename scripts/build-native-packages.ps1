@@ -79,26 +79,15 @@ if (-not (Test-Path $OutputDir)) {
 # Get absolute path for output directory
 $OutputDir = (Resolve-Path $OutputDir).Path
 
-# Select the appropriate Linux nuspec - split or regular
-$linuxPart1 = Join-Path $repoRoot "native\linux-x64\libxgboost.so.part1"
-if (Test-Path $linuxPart1) {
-    Write-Host "Detected split Linux library - using split packages" -ForegroundColor Yellow
-    $packages = @(
-        "libxgboost-linux-x64-part1.nuspec",
-        "libxgboost-linux-x64-part2.nuspec",
-        "libxgboost-linux-x64-meta.nuspec",
-        "libxgboost-osx-x64.nuspec",
-        "libxgboost-osx-arm64.nuspec",
-        "libxgboost-win-x64.nuspec"
-    )
-} else {
-    $packages = @(
-        "libxgboost-linux-x64.nuspec",
-        "libxgboost-osx-x64.nuspec",
-        "libxgboost-osx-arm64.nuspec",
-        "libxgboost-win-x64.nuspec"
-    )
-}
+# Linux library is always split into parts due to NuGet's 250 MB package size limit
+$packages = @(
+    "libxgboost-linux-x64-part1.nuspec",
+    "libxgboost-linux-x64-part2.nuspec",
+    "libxgboost-linux-x64-meta.nuspec",
+    "libxgboost-osx-x64.nuspec",
+    "libxgboost-osx-arm64.nuspec",
+    "libxgboost-win-x64.nuspec"
+)
 
 $successCount = 0
 $failCount = 0
