@@ -9,7 +9,10 @@
     <File Path="pkg/libxgboost-linux-x64-part1.nuspec" />
     <File Path="pkg/libxgboost-linux-x64-part2.nuspec" />
     <File Path="pkg/libxgboost-linux-x64-meta.nuspec" />
+    <File Path="pkg/libxgboost-osx-arm64.nuspec" />
+    <File Path="pkg/libxgboost-osx-arm64.targets" />
     <File Path="pkg/libxgboost-osx-x64.nuspec" />
+    <File Path="pkg/libxgboost-osx-x64.targets" />
     <File Path="pkg/libxgboost-win-x64.nuspec" />
     <File Path="pkg/README-NATIVE.md" />
     <File Path="pkg\XGBoostSharp-cpu.nuspec" />
