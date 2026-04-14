@@ -129,19 +129,25 @@ $platforms = @(
     @{
         Name = "linux-x64"
         WheelPattern = "*manylinux*x86_64.whl"
-        LibraryPattern = "libxgboost.so"
+        LibraryPatterns = @("libxgboost.so", "libgomp*")
         OutputSubDir = "linux-x64"
     },
     @{
         Name = "osx-x64"
         WheelPattern = "*macosx*x86_64.whl"
-        LibraryPattern = "libxgboost.dylib"
+        LibraryPatterns = @("libxgboost.dylib", "libomp.dylib")
         OutputSubDir = "osx-x64"
+    },
+    @{
+        Name = "osx-arm64"
+        WheelPattern = "*macosx*arm64.whl"
+        LibraryPatterns = @("libxgboost.dylib", "libomp.dylib")
+        OutputSubDir = "osx-arm64"
     },
     @{
         Name = "win-x64"
         WheelPattern = "*win_amd64.whl"
-        LibraryPattern = "xgboost.dll"
+        LibraryPatterns = @("xgboost.dll")
         OutputSubDir = "win-x64"
     }
 )
@@ -189,15 +195,26 @@ foreach ($platform in $platforms) {
         continue
     }
 
-    # Copy native library
-    $copied = Copy-NativeLibrary -ExtractedPath $extractPath -DestinationPath $outputPath -LibraryPattern $platform.LibraryPattern
+    # Copy native libraries (may be multiple patterns per platform)
+    $allCopied = $true
+    foreach ($pattern in $platform.LibraryPatterns) {
+        $copied = Copy-NativeLibrary -ExtractedPath $extractPath -DestinationPath $outputPath -LibraryPattern $pattern
 
-    if ($copied) {
+        if (-not $copied) {
+            Write-Warning "No file found matching pattern '$pattern' for $($platform.Name)"
+            # Only fail if the primary library (first pattern) is missing
+            if ($pattern -eq $platform.LibraryPatterns[0]) {
+                $allCopied = $false
+            }
+        }
+    }
+
+    if ($allCopied) {
         Write-Host "Successfully processed $($platform.Name)" -ForegroundColor Green
         $successCount++
     }
     else {
-        Write-Warning "Failed to copy native library for $($platform.Name)"
+        Write-Warning "Failed to copy primary native library for $($platform.Name)"
         $failCount++
     }
 }

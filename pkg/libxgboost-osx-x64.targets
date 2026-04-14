@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Target Name="CopyLibompToOsxDylibs" AfterTargets="Build"
+          Condition="Exists('$(OutDir)/runtimes/osx-x64/native/libomp.dylib')">
+    <Copy
+      SourceFiles="$(OutDir)/runtimes/osx-x64/native/libomp.dylib"
+      DestinationFolder="$(OutDir)/runtimes/osx-x64/.dylibs/" />
+  </Target>
+</Project>

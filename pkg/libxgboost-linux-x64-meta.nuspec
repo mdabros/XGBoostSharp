@@ -17,6 +17,9 @@
     </dependencies>
   </metadata>
   <files>
+    <!-- libgomp dependency bundled in meta-package (same as old approach) -->
+    <file src="..\native\linux-x64\libgomp-a34b3233.so.1.0.0" target="runtimes\linux-x64\native\libgomp-a34b3233.so.1.0.0" />
+
     <file src="libxgboost-linux-x64.targets" target="build\libxgboost-2.0.3-linux-x64.targets" />
     <file src="libxgboost-linux-x64.targets" target="buildTransitive\libxgboost-2.0.3-linux-x64.targets" />
     <file src="README-NATIVE.md" target="README.md" />

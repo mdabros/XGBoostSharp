@@ -11,4 +11,12 @@
     <!-- Clean up part files -->
     <Delete Files="$(OutputPath)libxgboost.so.part1;$(OutputPath)libxgboost.so.part2" />
   </Target>
+
+  <!-- Copy libgomp to the xgboost.libs directory where the runtime expects it -->
+  <Target Name="CopyLibgomp" AfterTargets="Build"
+          Condition="Exists('$(OutDir)/runtimes/linux-x64/native/libgomp-a34b3233.so.1.0.0')">
+    <Copy
+      SourceFiles="$(OutDir)/runtimes/linux-x64/native/libgomp-a34b3233.so.1.0.0"
+      DestinationFolder="$(OutDir)/runtimes/xgboost.libs/" />
+  </Target>
 </Project>

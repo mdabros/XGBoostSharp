@@ -88,12 +88,14 @@ if (Test-Path $linuxPart1) {
         "libxgboost-linux-x64-part2.nuspec",
         "libxgboost-linux-x64-meta.nuspec",
         "libxgboost-osx-x64.nuspec",
+        "libxgboost-osx-arm64.nuspec",
         "libxgboost-win-x64.nuspec"
     )
 } else {
     $packages = @(
         "libxgboost-linux-x64.nuspec",
         "libxgboost-osx-x64.nuspec",
+        "libxgboost-osx-arm64.nuspec",
         "libxgboost-win-x64.nuspec"
     )
 }
