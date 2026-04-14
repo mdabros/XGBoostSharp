@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Target Name="ReassembleXGBoostLinux" AfterTargets="Build"
-          Condition="Exists('$(OutputPath)libxgboost.so.part1')">
+          Condition="Exists('$(OutDir)/runtimes/linux-x64/native/libxgboost.so.part1')">
     <!-- Windows: use copy /b to concatenate binary files -->
-    <Exec Command="copy /b &quot;$(OutputPath)libxgboost.so.part1&quot;+&quot;$(OutputPath)libxgboost.so.part2&quot; &quot;$(OutputPath)libxgboost.so&quot;"
+    <Exec Command="copy /b &quot;$(OutDir)runtimes\linux-x64\native\libxgboost.so.part1&quot;+&quot;$(OutDir)runtimes\linux-x64\native\libxgboost.so.part2&quot; &quot;$(OutDir)runtimes\linux-x64\native\libxgboost.so&quot;"
           Condition="'$(OS)' == 'Windows_NT'" />
     <!-- Unix: use cat to concatenate -->
-    <Exec Command="cat &quot;$(OutputPath)libxgboost.so.part1&quot; &quot;$(OutputPath)libxgboost.so.part2&quot; &gt; &quot;$(OutputPath)libxgboost.so&quot;"
+    <Exec Command="cat &quot;$(OutDir)runtimes/linux-x64/native/libxgboost.so.part1&quot; &quot;$(OutDir)runtimes/linux-x64/native/libxgboost.so.part2&quot; &gt; &quot;$(OutDir)runtimes/linux-x64/native/libxgboost.so&quot;"
           Condition="'$(OS)' != 'Windows_NT'" />
     <!-- Clean up part files -->
-    <Delete Files="$(OutputPath)libxgboost.so.part1;$(OutputPath)libxgboost.so.part2" />
+    <Delete Files="$(OutDir)/runtimes/linux-x64/native/libxgboost.so.part1;$(OutDir)/runtimes/linux-x64/native/libxgboost.so.part2" />
   </Target>
 
   <!-- Copy libgomp to the xgboost.libs directory where the runtime expects it -->
