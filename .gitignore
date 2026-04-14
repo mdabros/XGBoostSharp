@@ -11,13 +11,6 @@ out/
 artifacts/
 native/
 
-# Temporary package splitting files
-temp_parts/
-pkg/*-part*.nuspec
-pkg/*-meta.nuspec
-pkg/libxgboost-*-linux-x64.props
-pkg/libxgboost-*-linux-x64.targets
-
 # User-specific Files
 *.user
 *.suo

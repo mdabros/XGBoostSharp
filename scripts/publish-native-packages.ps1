@@ -2,12 +2,8 @@
 .SYNOPSIS
     Publishes native XGBoost NuGet packages
 .DESCRIPTION
-    This script publishes the native XGBoost NuGet packages to a NuGet feed.
+    This script publishes all .nupkg files found in the specified directory to a NuGet feed.
     Supports NuGet.org, Azure Artifacts, and other NuGet v3 feeds.
-.PARAMETER XGBoostVersion
-    The XGBoost version embedded in the package IDs (e.g., "2.0.3")
-.PARAMETER Version
-    The NuGet package version to publish (e.g., "1.0.4")
 .PARAMETER Source
     The NuGet feed URL to publish to (default: https://api.nuget.org/v3/index.json)
 .PARAMETER ApiKey
@@ -17,20 +13,14 @@
 .PARAMETER SkipDuplicate
     Skip packages that already exist on the feed (useful for re-runs)
 .EXAMPLE
-    .\publish-native-packages.ps1 -XGBoostVersion "2.0.3" -Version "1.0.4" -ApiKey "your-api-key"
+    .\publish-native-packages.ps1 -ApiKey "your-api-key"
 .EXAMPLE
-    .\publish-native-packages.ps1 -XGBoostVersion "2.0.3" -Version "1.0.4" -Source "https://nuget.pkg.github.com/username/index.json" -ApiKey "ghp_token"
+    .\publish-native-packages.ps1 -Source "https://nuget.pkg.github.com/username/index.json" -ApiKey "ghp_token"
 .EXAMPLE
-    .\publish-native-packages.ps1 -XGBoostVersion "2.0.3" -Version "1.0.4" -ApiKey "key" -SkipDuplicate
+    .\publish-native-packages.ps1 -ApiKey "key" -SkipDuplicate
 #>
 
 param(
-    [Parameter(Mandatory=$true)]
-    [string]$XGBoostVersion,
-
-    [Parameter(Mandatory=$true)]
-    [string]$Version,
-
     [Parameter(Mandatory=$false)]
     [string]$Source = "https://api.nuget.org/v3/index.json",
 
@@ -53,8 +43,6 @@ Set-Location $repoRoot
 
 Write-Host "=== XGBoost Native Package Publisher ===" -ForegroundColor Cyan
 Write-Host "Repository Root: $repoRoot"
-Write-Host "XGBoost Version: $XGBoostVersion"
-Write-Host "Package Version: $Version"
 Write-Host "Package Directory: $PackageDir"
 Write-Host "Target Source: $Source"
 Write-Host "Skip Duplicate: $SkipDuplicate"
@@ -80,12 +68,10 @@ if (-not (Test-Path $PackageDir)) {
 # Discover all packages to publish
 Write-Host "Discovering packages in $PackageDir..." -ForegroundColor Cyan
 
-$allPackages = Get-ChildItem -Path $PackageDir -Filter "*.nupkg" | Where-Object {
-    $_.Name -match "libxgboost-$XGBoostVersion.*\.$Version\.nupkg"
-}
+$allPackages = Get-ChildItem -Path $PackageDir -Filter "*.nupkg"
 
 if ($allPackages.Count -eq 0) {
-    Write-Error "No packages found matching libxgboost-$XGBoostVersion*.$Version.nupkg in $PackageDir"
+    Write-Error "No .nupkg files found in $PackageDir"
     exit 1
 }
 
@@ -95,21 +81,13 @@ foreach ($pkg in $allPackages) {
 }
 Write-Host ""
 
-# Sort packages so part packages are published before meta-packages
-# This ensures dependencies are available when the meta-package is pushed
-$sortedPackages = $allPackages | Sort-Object {
-    if ($_.Name -match "-part\d+\.") { 0 }      # Part packages first
-    elseif ($_.Name -match "-meta\.") { 2 }     # Meta packages last
-    else { 1 }                                   # Regular packages in the middle
-}
-
 $successCount = 0
 $failCount = 0
 $skippedCount = 0
 $publishedPackages = @()
 
 # Publish each package
-foreach ($package in $sortedPackages) {
+foreach ($package in $allPackages) {
     $packageFile = $package.Name
     $packagePath = $package.FullName
 

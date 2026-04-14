@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>libxgboost-2.0.3-linux-x64</id>
+    <version>$version$</version>
+    <authors>mdabros</authors>
+    <description>XGBoost native library for Linux x64. Reassembles the library from part packages at build time.</description>
+    <license type="expression">Apache-2.0</license>
+    <projectUrl>https://github.com/mdabros/XGBoostSharp</projectUrl>
+    <repository type="git" url="https://github.com/mdabros/XGBoostSharp" />
+    <tags>xgboost native linux machine-learning</tags>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <readme>README.md</readme>
+    <dependencies>
+      <dependency id="libxgboost-2.0.3-linux-x64-part1" version="$version$" />
+      <dependency id="libxgboost-2.0.3-linux-x64-part2" version="$version$" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="libxgboost-linux-x64.targets" target="build\libxgboost-2.0.3-linux-x64.targets" />
+    <file src="libxgboost-linux-x64.targets" target="buildTransitive\libxgboost-2.0.3-linux-x64.targets" />
+    <file src="README-NATIVE.md" target="README.md" />
+  </files>
+</package>

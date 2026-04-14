@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Target Name="ReassembleXGBoostLinux" AfterTargets="Build"
+          Condition="Exists('$(OutputPath)libxgboost.so.part1')">
+    <!-- Windows: use copy /b to concatenate binary files -->
+    <Exec Command="copy /b &quot;$(OutputPath)libxgboost.so.part1&quot;+&quot;$(OutputPath)libxgboost.so.part2&quot; &quot;$(OutputPath)libxgboost.so&quot;"
+          Condition="'$(OS)' == 'Windows_NT'" />
+    <!-- Unix: use cat to concatenate -->
+    <Exec Command="cat &quot;$(OutputPath)libxgboost.so.part1&quot; &quot;$(OutputPath)libxgboost.so.part2&quot; &gt; &quot;$(OutputPath)libxgboost.so&quot;"
+          Condition="'$(OS)' != 'Windows_NT'" />
+    <!-- Clean up part files -->
+    <Delete Files="$(OutputPath)libxgboost.so.part1;$(OutputPath)libxgboost.so.part2" />
+  </Target>
+</Project>

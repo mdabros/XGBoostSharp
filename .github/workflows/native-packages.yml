@@ -70,36 +70,18 @@ jobs:
       run: |
         git tag native-v${{ github.event.inputs.package_version }}
         git push origin native-v${{ github.event.inputs.package_version }}
-    - name: Upload linux-x64 package
-      uses: actions/upload-release-asset@v1
+    - name: Upload packages to release
       env:
-        GITHUB_TOKEN: ${{ secrets.ACTION_GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ${{ env.NuGetDirectory }}/libxgboost-${{ github.event.inputs.xgboost_version }}-linux-x64.${{ github.event.inputs.package_version }}.nupkg
-        asset_name: libxgboost-${{ github.event.inputs.xgboost_version }}-linux-x64.${{ github.event.inputs.package_version }}.nupkg
-        asset_content_type: application/zip
-    - name: Upload osx-x64 package
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.ACTION_GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ${{ env.NuGetDirectory }}/libxgboost-${{ github.event.inputs.xgboost_version }}-osx-x64.${{ github.event.inputs.package_version }}.nupkg
-        asset_name: libxgboost-${{ github.event.inputs.xgboost_version }}-osx-x64.${{ github.event.inputs.package_version }}.nupkg
-        asset_content_type: application/zip
-    - name: Upload win-x64 package
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.ACTION_GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ${{ env.NuGetDirectory }}/libxgboost-${{ github.event.inputs.xgboost_version }}-win-x64.${{ github.event.inputs.package_version }}.nupkg
-        asset_name: libxgboost-${{ github.event.inputs.xgboost_version }}-win-x64.${{ github.event.inputs.package_version }}.nupkg
-        asset_content_type: application/zip
+        GH_TOKEN: ${{ secrets.ACTION_GITHUB_TOKEN }}
+      run: |
+        $tag = "native-v${{ github.event.inputs.package_version }}"
+        Get-ChildItem "${{ env.NuGetDirectory }}" -Filter "*.nupkg" | ForEach-Object {
+          Write-Host "Uploading $($_.Name)..."
+          gh release upload $tag $_.FullName --clobber
+        }
     - name: Setup .NET
       uses: actions/setup-dotnet@v5
       with:
         global-json-file: global.json
     - name: Push native packages to NuGet.org
-      run: .\scripts\publish-native-packages.ps1 -XGBoostVersion "${{ github.event.inputs.xgboost_version }}" -Version "${{ github.event.inputs.package_version }}" -ApiKey "${{ secrets.NUGET_API_KEY }}" -PackageDir "${{ env.NuGetDirectory }}" -SkipDuplicate
+      run: .\scripts\publish-native-packages.ps1 -ApiKey "${{ secrets.NUGET_API_KEY }}" -PackageDir "${{ env.NuGetDirectory }}" -SkipDuplicate
