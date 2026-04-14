@@ -25,6 +25,11 @@ param(
 
 $ErrorActionPreference = "Stop"
 
+# Ensure we're in the repository root
+$scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$repoRoot = Split-Path -Parent $scriptDir
+Set-Location $repoRoot
+
 # Function to extract .whl files (which are just ZIP files)
 function Extract-WheelFile {
     param(
