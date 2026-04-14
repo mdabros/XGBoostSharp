@@ -17,10 +17,6 @@
     <file src="..\native\osx-x64\libxgboost.dylib" target="runtimes\osx-x64\native\libxgboost.dylib" />
     <file src="..\native\osx-x64\libomp.dylib" target="runtimes\osx-x64\native\libomp.dylib" />
 
-    <!-- Build props to include the native library -->
-    <file src="libxgboost-osx-x64.props" target="build\libxgboost-2.0.3-osx-x64.props" />
-    <file src="libxgboost-osx-x64.props" target="buildTransitive\libxgboost-2.0.3-osx-x64.props" />
-
     <!-- Build targets to copy libomp to .dylibs -->
     <file src="libxgboost-osx-x64.targets" target="build\libxgboost-2.0.3-osx-x64.targets" />
     <file src="libxgboost-osx-x64.targets" target="buildTransitive\libxgboost-2.0.3-osx-x64.targets" />

@@ -13,7 +13,5 @@
   </metadata>
   <files>
     <file src="..\native\linux-x64\libxgboost.so.part1" target="runtimes\linux-x64\native\libxgboost.so.part1" />
-    <file src="libxgboost-linux-x64-part1.props" target="build\libxgboost-2.0.3-linux-x64-part1.props" />
-    <file src="libxgboost-linux-x64-part1.props" target="buildTransitive\libxgboost-2.0.3-linux-x64-part1.props" />
   </files>
 </package>

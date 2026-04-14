@@ -16,10 +16,6 @@
     <!-- Native library -->
     <file src="..\native\win-x64\xgboost.dll" target="runtimes\win-x64\native\xgboost.dll" />
 
-    <!-- Build props to include the native library -->
-    <file src="libxgboost-win-x64.props" target="build\libxgboost-2.0.3-win-x64.props" />
-    <file src="libxgboost-win-x64.props" target="buildTransitive\libxgboost-2.0.3-win-x64.props" />
-
     <!-- README -->
     <file src="README-NATIVE.md" target="README.md" />
   </files>
