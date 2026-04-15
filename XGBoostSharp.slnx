@@ -31,7 +31,6 @@
   <Folder Name="/scripts/">
     <File Path="scripts/build-native-packages.ps1" />
     <File Path="scripts/download-native-libs.ps1" />
-    <File Path="scripts/publish-native-packages.ps1" />
   </Folder>
   <Folder Name="/src/">
     <File Path="src\Directory.Build.props" />
