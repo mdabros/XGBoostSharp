@@ -4,10 +4,8 @@
     <File Path=".github\workflows\dotnet.yml" />
   </Folder>
   <Folder Name="/pkg/">
+    <File Path="pkg/libxgboost-linux-x64.nuspec" />
     <File Path="pkg/libxgboost-linux-x64.targets" />
-    <File Path="pkg/libxgboost-linux-x64-part1.nuspec" />
-    <File Path="pkg/libxgboost-linux-x64-part2.nuspec" />
-    <File Path="pkg/libxgboost-linux-x64-meta.nuspec" />
     <File Path="pkg/libxgboost-osx-arm64.nuspec" />
     <File Path="pkg/libxgboost-osx-arm64.targets" />
     <File Path="pkg/libxgboost-osx-x64.nuspec" />

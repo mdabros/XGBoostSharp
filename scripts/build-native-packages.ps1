@@ -79,11 +79,8 @@ if (-not (Test-Path $OutputDir)) {
 # Get absolute path for output directory
 $OutputDir = (Resolve-Path $OutputDir).Path
 
-# Linux library is always split into parts due to NuGet's 250 MB package size limit
 $packages = @(
-    "libxgboost-linux-x64-part1.nuspec",
-    "libxgboost-linux-x64-part2.nuspec",
-    "libxgboost-linux-x64-meta.nuspec",
+    "libxgboost-linux-x64.nuspec",
     "libxgboost-osx-x64.nuspec",
     "libxgboost-osx-arm64.nuspec",
     "libxgboost-win-x64.nuspec"

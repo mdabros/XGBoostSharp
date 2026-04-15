@@ -229,48 +229,6 @@ Write-Host ""
 Write-Host "Cleaning up temporary files..."
 Remove-Item -Path $TempDir -Recurse -Force
 
-# Split large libraries for NuGet.org's 250 MB package size limit
-$linuxLibPath = Join-Path $OutputDir "linux-x64\libxgboost.so"
-if (Test-Path $linuxLibPath) {
-    $sizeMB = (Get-Item $linuxLibPath).Length / 1MB
-    if ($sizeMB -gt 200) {
-        Write-Host ""
-        Write-Host "Linux library is $([Math]::Round($sizeMB)) MB - splitting into 2 parts for NuGet.org limit..." -ForegroundColor Yellow
-        $fileLen = (Get-Item $linuxLibPath).Length
-        $mid = [Math]::Floor($fileLen / 2)
-        $buffer = New-Object byte[] (64 * 1024)
-
-        $srcStream = [System.IO.File]::OpenRead($linuxLibPath)
-        try {
-            # Part 1
-            $part1Path = "$linuxLibPath.part1"
-            $dstStream = [System.IO.File]::Create($part1Path)
-            $remaining = $mid
-            while ($remaining -gt 0) {
-                $toRead = [Math]::Min($buffer.Length, $remaining)
-                $read = $srcStream.Read($buffer, 0, $toRead)
-                $dstStream.Write($buffer, 0, $read)
-                $remaining -= $read
-            }
-            $dstStream.Close()
-
-            # Part 2
-            $part2Path = "$linuxLibPath.part2"
-            $dstStream = [System.IO.File]::Create($part2Path)
-            while (($read = $srcStream.Read($buffer, 0, $buffer.Length)) -gt 0) {
-                $dstStream.Write($buffer, 0, $read)
-            }
-            $dstStream.Close()
-        }
-        finally {
-            $srcStream.Close()
-        }
-
-        Write-Host "  Created: libxgboost.so.part1 ($([Math]::Round((Get-Item $part1Path).Length / 1MB)) MB)" -ForegroundColor Green
-        Write-Host "  Created: libxgboost.so.part2 ($([Math]::Round((Get-Item $part2Path).Length / 1MB)) MB)" -ForegroundColor Green
-    }
-}
-
 # Summary
 Write-Host ""
 Write-Host "=== Summary ===" -ForegroundColor Cyan
