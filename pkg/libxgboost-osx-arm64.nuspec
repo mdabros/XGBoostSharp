@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <metadata>
-    <id>libxgboost-2.0.3-osx-arm64</id>
+    <id>libxgboost-3.2.0-osx-arm64</id>
     <version>$version$</version>
     <authors>mdabros</authors>
     <description>XGBoost native library for macOS ARM64. This package contains the libxgboost.dylib native library built for macOS ARM64 (Apple Silicon) platforms.</description>
@@ -18,8 +18,8 @@
     <file src="..\native\osx-arm64\libomp.dylib" target="runtimes\osx-arm64\native\libomp.dylib" />
 
     <!-- Build targets to copy libomp to .dylibs -->
-    <file src="libxgboost-osx-arm64.targets" target="build\libxgboost-2.0.3-osx-arm64.targets" />
-    <file src="libxgboost-osx-arm64.targets" target="buildTransitive\libxgboost-2.0.3-osx-arm64.targets" />
+    <file src="libxgboost-osx-arm64.targets" target="build\libxgboost-3.2.0-osx-arm64.targets" />
+    <file src="libxgboost-osx-arm64.targets" target="buildTransitive\libxgboost-3.2.0-osx-arm64.targets" />
 
     <!-- README -->
     <file src="README-NATIVE.md" target="README.md" />

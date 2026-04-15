@@ -5,11 +5,11 @@
     This script downloads XGBoost Python wheels from PyPI and extracts
     the native libraries for linux-x64, osx-x64, and win-x64 platforms.
 .PARAMETER XGBoostVersion
-    The XGBoost version to download (e.g., "2.0.3")
+    The XGBoost version to download (e.g., "3.2.0")
 .PARAMETER OutputDir
     The output directory where native libraries will be extracted (default: ./native)
 .EXAMPLE
-    .\download-native-libs.ps1 -XGBoostVersion "2.0.3"
+    .\download-native-libs.ps1 -XGBoostVersion "3.2.0"
 #>
 
 param(

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <metadata>
-    <id>libxgboost-2.0.3-linux-x64</id>
+    <id>libxgboost-3.2.0-linux-x64</id>
     <version>$version$</version>
     <authors>mdabros</authors>
     <description>XGBoost native library for Linux x64. This package contains the libxgboost.so native library built for Linux x64 platforms.</description>
@@ -18,8 +18,8 @@
     <file src="..\native\linux-x64\libgomp-a34b3233.so.1.0.0" target="runtimes\linux-x64\native\libgomp-a34b3233.so.1.0.0" />
 
     <!-- Build targets to copy libgomp to xgboost.libs -->
-    <file src="libxgboost-linux-x64.targets" target="build\libxgboost-2.0.3-linux-x64.targets" />
-    <file src="libxgboost-linux-x64.targets" target="buildTransitive\libxgboost-2.0.3-linux-x64.targets" />
+    <file src="libxgboost-linux-x64.targets" target="build\libxgboost-3.2.0-linux-x64.targets" />
+    <file src="libxgboost-linux-x64.targets" target="buildTransitive\libxgboost-3.2.0-linux-x64.targets" />
 
     <!-- README -->
     <file src="README-NATIVE.md" target="README.md" />

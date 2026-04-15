@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <metadata>
-    <id>libxgboost-2.0.3-win-x64</id>
+    <id>libxgboost-3.2.0-win-x64</id>
     <version>$version$</version>
     <authors>mdabros</authors>
     <description>XGBoost native library for Windows x64. This package contains the xgboost.dll native library built for Windows x64 platforms.</description>
