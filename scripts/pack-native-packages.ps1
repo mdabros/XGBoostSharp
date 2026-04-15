@@ -11,9 +11,9 @@
 .PARAMETER Configuration
     Build configuration (default: Release)
 .EXAMPLE
-    .\build-native-packages.ps1 -Version "1.0.4"
+    .\pack-native-packages.ps1 -Version "1.0.4"
 .EXAMPLE
-    .\build-native-packages.ps1 -Version "1.0.4" -OutputDir "C:\packages"
+    .\pack-native-packages.ps1 -Version "1.0.4" -OutputDir "C:\packages"
 #>
 
 param(

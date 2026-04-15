@@ -27,8 +27,8 @@
     <File Path="version.json" />
   </Folder>
   <Folder Name="/scripts/">
-    <File Path="scripts/build-native-packages.ps1" />
     <File Path="scripts/download-native-libs.ps1" />
+    <File Path="scripts/pack-native-packages.ps1" />
   </Folder>
   <Folder Name="/src/">
     <File Path="src\Directory.Build.props" />
