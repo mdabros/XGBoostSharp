@@ -43,11 +43,9 @@ jobs:
         retention-days: 7
         path: ${{ env.NuGetDirectory }}/*.nupkg
 
-  create-release-push-native:
+  push-native:
     needs: [ pack-native ]
     runs-on: windows-latest
-    permissions:
-      contents: write
     if: ${{ github.actor == 'mdabros' }}
 
     steps:
@@ -57,28 +55,6 @@ jobs:
       with:
         name: nuget-native
         path: ${{ env.NuGetDirectory }}
-    - name: Create release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.ACTION_GITHUB_TOKEN }}
-      with:
-        tag_name: native-v${{ github.event.inputs.package_version }}
-        release_name: Native Packages ${{ github.event.inputs.package_version }} (XGBoost ${{ github.event.inputs.xgboost_version }})
-        draft: true
-    - name: Create tag (for release)
-      run: |
-        git tag native-v${{ github.event.inputs.package_version }}
-        git push origin native-v${{ github.event.inputs.package_version }}
-    - name: Upload packages to release
-      env:
-        GH_TOKEN: ${{ secrets.ACTION_GITHUB_TOKEN }}
-      run: |
-        $tag = "native-v${{ github.event.inputs.package_version }}"
-        Get-ChildItem "${{ env.NuGetDirectory }}" -Filter "*.nupkg" | ForEach-Object {
-          Write-Host "Uploading $($_.Name)..."
-          gh release upload $tag $_.FullName --clobber
-        }
     - name: Setup .NET
       uses: actions/setup-dotnet@v5
       with:
