@@ -1,6 +1,5 @@
 <Solution>
   <Folder Name="/ci/">
-    <File Path=".github/workflows/native-packages.yml" />
     <File Path=".github\dependabot.yml" />
     <File Path=".github\workflows\dotnet.yml" />
   </Folder>
