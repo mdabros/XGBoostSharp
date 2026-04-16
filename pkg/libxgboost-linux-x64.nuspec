@@ -15,7 +15,7 @@
   <files>
     <!-- Native libraries -->
     <file src="..\native\linux-x64\libxgboost.so" target="runtimes\linux-x64\native\libxgboost.so" />
-    <file src="..\native\linux-x64\libgomp-a34b3233.so.1.0.0" target="runtimes\linux-x64\native\libgomp-a34b3233.so.1.0.0" />
+    <file src="..\native\linux-x64\libgomp*.so.1.0.0" target="runtimes\linux-x64\native\" />
 
     <!-- Build targets to copy libgomp to xgboost.libs -->
     <file src="libxgboost-linux-x64.targets" target="build\libxgboost-3.2.0-linux-x64.targets" />

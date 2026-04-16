@@ -15,7 +15,6 @@
   <files>
     <!-- Native libraries -->
     <file src="..\native\osx-x64\libxgboost.dylib" target="runtimes\osx-x64\native\libxgboost.dylib" />
-    <file src="..\native\osx-x64\libomp.dylib" target="runtimes\osx-x64\native\libomp.dylib" />
 
     <!-- Build targets to copy libomp to .dylibs -->
     <file src="libxgboost-osx-x64.targets" target="build\libxgboost-3.2.0-osx-x64.targets" />

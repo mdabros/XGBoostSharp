@@ -2,10 +2,12 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <!-- Copy libgomp to the xgboost.libs directory where the runtime expects it -->
-  <Target Name="CopyLibgomp" AfterTargets="Build"
-          Condition="Exists('$(OutDir)runtimes/linux-x64/native/libgomp-a34b3233.so.1.0.0')">
-    <Copy
-      SourceFiles="$(OutDir)runtimes/linux-x64/native/libgomp-a34b3233.so.1.0.0"
-      DestinationFolder="$(OutDir)runtimes/xgboost.libs/" />
+  <Target Name="CopyLibgomp" AfterTargets="Build">
+    <ItemGroup>
+      <_LibgompFiles Include="$(OutDir)runtimes/linux-x64/native/libgomp*.so.1.0.0" />
+    </ItemGroup>
+    <Copy SourceFiles="@(_LibgompFiles)"
+          DestinationFolder="$(OutDir)runtimes/xgboost.libs/"
+          Condition="'@(_LibgompFiles)' != ''" />
   </Target>
 </Project>
