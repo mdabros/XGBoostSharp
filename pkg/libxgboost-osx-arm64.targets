@@ -1,18 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Target Name="CopyLibompToOsxDylibs" AfterTargets="Build"
-          Condition="Exists('$(OutDir)runtimes/osx-arm64/native/libomp.dylib')">
-    <Copy
-      SourceFiles="$(OutDir)runtimes/osx-arm64/native/libomp.dylib"
-      DestinationFolder="$(OutDir)runtimes/osx-arm64/.dylibs/" />
-  </Target>
-
-  <!-- Patch libxgboost.dylib to find libomp via @loader_path/../.dylibs instead of the
-       Homebrew path (/usr/local/opt/libomp/lib) baked in by the XGBoost Python wheel build.
-       IgnoreExitCode: install_name_tool returns 1 if the rpath already exists. -->
-  <Target Name="PatchLibxgboostRpath" AfterTargets="CopyLibompToOsxDylibs"
+  <!-- Patch libxgboost.dylib to find libomp.dylib in the same directory via @loader_path,
+       overriding the Homebrew path (/usr/local/opt/libomp/lib) baked in by the XGBoost
+       Python wheel build. IgnoreExitCode: install_name_tool returns 1 if the rpath already exists. -->
+  <Target Name="PatchLibxgboostRpath" AfterTargets="Build"
           Condition="'$(OS)' != 'Windows_NT' AND Exists('$(OutDir)runtimes/osx-arm64/native/libxgboost.dylib')">
-    <Exec Command="install_name_tool -add_rpath @loader_path/../.dylibs &quot;$(OutDir)runtimes/osx-arm64/native/libxgboost.dylib&quot;"
+    <Exec Command="install_name_tool -add_rpath @loader_path &quot;$(OutDir)runtimes/osx-arm64/native/libxgboost.dylib&quot;"
           IgnoreExitCode="true" />
   </Target>
 </Project>
