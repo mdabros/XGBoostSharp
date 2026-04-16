@@ -8,7 +8,7 @@
     <dependencies>
       <dependency id="XGBoostSharp" version="$version$" />
       <dependency id="libxgboost-3.2.0-linux-x64" version="1.0.0" />
-      <dependency id="libxgboost-3.2.0-osx-x64" version="1.0.0" />
+      <dependency id="libxgboost-3.2.0-osx-x64" version="1.0.1" />
       <dependency id="libxgboost-3.2.0-win-x64" version="1.0.0" />
     </dependencies>
   </metadata>
