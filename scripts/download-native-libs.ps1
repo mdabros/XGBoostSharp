@@ -104,6 +104,90 @@ function Download-FileWithProgress {
     }
 }
 
+# Function to download libomp.dylib from a Homebrew bottle on ghcr.io
+function Download-LibompFromHomebrew {
+    param(
+        [string]$Bottle,
+        [string]$DestinationPath,
+        [string]$TempDir,
+        [int]$MaxRetries = 3,
+        [int]$RetryDelaySeconds = 5
+    )
+
+    Write-Host "Fetching libomp bottle info from Homebrew..."
+    $brewInfo = Invoke-RestMethod "https://formulae.brew.sh/api/formula/libomp.json" -UseBasicParsing
+    $libompVersion = $brewInfo.versions.stable
+    $bottleInfo = $brewInfo.bottle.stable.files.$Bottle
+
+    if (-not $bottleInfo) {
+        Write-Warning "No Homebrew bottle found for libomp/$Bottle"
+        return $false
+    }
+
+    $sha256 = $bottleInfo.sha256
+    $blobUrl = "https://ghcr.io/v2/homebrew/core/libomp/blobs/sha256:$sha256"
+    Write-Host "Downloading libomp $libompVersion ($Bottle) from Homebrew..."
+
+    # Get anonymous token for ghcr.io
+    $tokenResp = Invoke-RestMethod "https://ghcr.io/token?scope=repository:homebrew/core/libomp:pull&service=ghcr.io" -UseBasicParsing
+    $token = $tokenResp.token
+
+    $tarPath = Join-Path $TempDir "libomp-$Bottle.tar.gz"
+    $extractDir = Join-Path $TempDir "libomp-$Bottle"
+
+    for ($attempt = 1; $attempt -le $MaxRetries; $attempt++) {
+        $originalProgressPreference = $ProgressPreference
+        try {
+            if (Test-Path $tarPath) { Remove-Item $tarPath -Force }
+
+            $ProgressPreference = 'SilentlyContinue'
+            Invoke-WebRequest -Uri $blobUrl -OutFile $tarPath -UseBasicParsing -Headers @{
+                'Authorization' = "Bearer $token"
+                'Accept'        = 'application/octet-stream'
+                'User-Agent'    = 'PowerShell/XGBoostSharp Native Library Downloader'
+            }
+            Write-Host "Download completed successfully"
+            break
+        }
+        catch {
+            if (Test-Path $tarPath) { Remove-Item $tarPath -Force -ErrorAction SilentlyContinue }
+
+            if ($attempt -lt $MaxRetries) {
+                Write-Warning "Download attempt $attempt of $MaxRetries failed: $_"
+                Write-Host "Retrying in $RetryDelaySeconds seconds..."
+                Start-Sleep -Seconds $RetryDelaySeconds
+            }
+            else {
+                Write-Warning "Failed to download libomp bottle after $MaxRetries attempts: $_"
+                return $false
+            }
+        }
+        finally {
+            $ProgressPreference = $originalProgressPreference
+        }
+    }
+
+    # Extract bottle tarball (tar is available on Windows 10+)
+    Write-Host "Extracting libomp bottle..."
+    New-Item -ItemType Directory -Path $extractDir -Force | Out-Null
+    tar -xzf $tarPath -C $extractDir
+
+    # Find libomp.dylib inside the extracted bottle (path: libomp/<version>/lib/libomp.dylib)
+    $dylib = Get-ChildItem -Path $extractDir -Recurse -Filter "libomp.dylib" | Select-Object -First 1
+    if (-not $dylib) {
+        Write-Warning "libomp.dylib not found inside extracted bottle"
+        return $false
+    }
+
+    if (-not (Test-Path $DestinationPath)) {
+        New-Item -ItemType Directory -Path $DestinationPath -Force | Out-Null
+    }
+
+    $destFile = Join-Path $DestinationPath "libomp.dylib"
+    Write-Host "Copying $($dylib.FullName) to $destFile"
+    Copy-Item -Path $dylib.FullName -Destination $destFile -Force
+    return $true
+}
 # Main script
 Write-Host "=== XGBoost Native Library Downloader ===" -ForegroundColor Cyan
 Write-Host "XGBoost Version: $XGBoostVersion"
@@ -140,13 +224,15 @@ $platforms = @(
     @{
         Name = "osx-x64"
         WheelPattern = "*macosx*x86_64.whl"
-        LibraryPatterns = @("libxgboost.dylib", "libomp.dylib")
+        LibraryPatterns = @("libxgboost.dylib")
+        LibompBottle   = "sonoma"
         OutputSubDir = "osx-x64"
     },
     @{
         Name = "osx-arm64"
         WheelPattern = "*macosx*arm64.whl"
-        LibraryPatterns = @("libxgboost.dylib", "libomp.dylib")
+        LibraryPatterns = @("libxgboost.dylib")
+        LibompBottle   = "arm64_sonoma"
         OutputSubDir = "osx-arm64"
     },
     @{
@@ -211,6 +297,16 @@ foreach ($platform in $platforms) {
             if ($pattern -eq $platform.LibraryPatterns[0]) {
                 $allCopied = $false
             }
+        }
+    }
+
+    # Download libomp from Homebrew if this platform specifies a bottle
+    if ($platform.LibompBottle -and $allCopied) {
+        Write-Host "Downloading libomp from Homebrew for $($platform.Name)..."
+        $libompOk = Download-LibompFromHomebrew -Bottle $platform.LibompBottle -DestinationPath $outputPath -TempDir $TempDir
+        if (-not $libompOk) {
+            Write-Warning "Failed to download libomp for $($platform.Name)"
+            $allCopied = $false
         }
     }
 
