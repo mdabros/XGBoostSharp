@@ -140,13 +140,13 @@ $platforms = @(
     @{
         Name = "osx-x64"
         WheelPattern = "*macosx*x86_64.whl"
-        LibraryPatterns = @("libxgboost.dylib")
+        LibraryPatterns = @("libxgboost.dylib", "libomp.dylib")
         OutputSubDir = "osx-x64"
     },
     @{
         Name = "osx-arm64"
         WheelPattern = "*macosx*arm64.whl"
-        LibraryPatterns = @("libxgboost.dylib")
+        LibraryPatterns = @("libxgboost.dylib", "libomp.dylib")
         OutputSubDir = "osx-arm64"
     },
     @{
