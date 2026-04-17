@@ -52,7 +52,7 @@ var loadedRegressor = XGBRegressor.LoadFromFile(modelFileName);
    - https://www.nuget.org/packages/XGBoostSharp. Note that this requires a
      reference to one of the native packages (see below).
    - https://www.nuget.org/packages/XGBoostSharp-cpu: This comes with native
-     packages for cpu for win-x64, linux-x64, and osx-x64.
+     packages for cpu for win-x64, linux-x64, osx-x64, and osx-arm64.
 2. If using the XGBoostSharp package the native packages can be installed
    separately from nuget.org.
    - x64 packages:
