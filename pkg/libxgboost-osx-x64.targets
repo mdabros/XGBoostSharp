@@ -3,7 +3,7 @@
   <!-- Patch libxgboost.dylib to find libomp.dylib in the same directory via @loader_path,
        overriding the Homebrew path (/usr/local/opt/libomp/lib) baked in by the XGBoost
        Python wheel build. IgnoreExitCode: install_name_tool returns 1 if the rpath already exists. -->
-  <Target Name="PatchLibxgboostRpath" AfterTargets="Build"
+  <Target Name="PatchLibxgboostRpathOsxX64" AfterTargets="Build"
           Condition="'$(OS)' != 'Windows_NT' AND Exists('$(OutDir)runtimes/osx-x64/native/libxgboost.dylib')">
     <Exec Command="install_name_tool -add_rpath @loader_path &quot;$(OutDir)runtimes/osx-x64/native/libxgboost.dylib&quot;"
           IgnoreExitCode="true" />
