@@ -1,11 +1,17 @@
 <Solution>
-  <Project Path="src\XGBoostSharp\XGBoostSharp.csproj" />
-  <Project Path="src\XGBoostSharp.Tests\XGBoostSharp.Test.csproj" />
   <Folder Name="/ci/">
     <File Path=".github\dependabot.yml" />
     <File Path=".github\workflows\dotnet.yml" />
   </Folder>
   <Folder Name="/pkg/">
+    <File Path="pkg/libxgboost-linux-x64.nuspec" />
+    <File Path="pkg/libxgboost-linux-x64.targets" />
+    <File Path="pkg/libxgboost-osx-arm64.nuspec" />
+    <File Path="pkg/libxgboost-osx-arm64.targets" />
+    <File Path="pkg/libxgboost-osx-x64.nuspec" />
+    <File Path="pkg/libxgboost-osx-x64.targets" />
+    <File Path="pkg/libxgboost-win-x64.nuspec" />
+    <File Path="pkg/README-NATIVE.md" />
     <File Path="pkg\XGBoostSharp-cpu.nuspec" />
   </Folder>
   <Folder Name="/root/">
@@ -20,6 +26,10 @@
     <File Path="rename.ps1" />
     <File Path="version.json" />
   </Folder>
+  <Folder Name="/scripts/">
+    <File Path="scripts/download-native-libs.ps1" />
+    <File Path="scripts/pack-native-packages.ps1" />
+  </Folder>
   <Folder Name="/src/">
     <File Path="src\Directory.Build.props" />
     <File Path="src\Directory.Build.targets" />
@@ -28,4 +38,6 @@
     <File Path="src\OutputBuildTargets.props" />
     <File Path="src\SourceLink.GitHub.props" />
   </Folder>
+  <Project Path="src\XGBoostSharp.Tests\XGBoostSharp.Test.csproj" />
+  <Project Path="src\XGBoostSharp\XGBoostSharp.csproj" />
 </Solution>
