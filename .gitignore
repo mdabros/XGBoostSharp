@@ -7,6 +7,10 @@ bin/
 obj/
 out/
 
+# Native Directories
+artifacts/
+native/
+
 # User-specific Files
 *.user
 *.suo
@@ -58,3 +62,6 @@ $RECYCLE.BIN/
 Thumbs.db
 ehthumbs.db
 Desktop.ini
+
+# nuget
+nuget.exe

@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>libxgboost-3.2.0-linux-x64</id>
+    <version>$version$</version>
+    <authors>mdabros</authors>
+    <description>XGBoost native library for Linux x64. This package contains the libxgboost.so native library built for Linux x64 platforms.</description>
+    <license type="expression">Apache-2.0</license>
+    <projectUrl>https://github.com/mdabros/XGBoostSharp</projectUrl>
+    <repository type="git" url="https://github.com/mdabros/XGBoostSharp" />
+    <tags>xgboost native linux machine-learning</tags>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <readme>README.md</readme>
+  </metadata>
+  <files>
+    <!-- Native libraries -->
+    <file src="..\native\linux-x64\libxgboost.so" target="runtimes\linux-x64\native\libxgboost.so" />
+    <file src="..\native\linux-x64\libgomp*.so.1.0.0" target="runtimes\linux-x64\native\" />
+
+    <!-- Build targets to copy libgomp to xgboost.libs -->
+    <file src="libxgboost-linux-x64.targets" target="build\libxgboost-3.2.0-linux-x64.targets" />
+    <file src="libxgboost-linux-x64.targets" target="buildTransitive\libxgboost-3.2.0-linux-x64.targets" />
+
+    <!-- README -->
+    <file src="README-NATIVE.md" target="README.md" />
+  </files>
+</package>
