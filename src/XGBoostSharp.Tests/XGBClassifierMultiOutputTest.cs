@@ -75,7 +75,7 @@ public class XGBClassifierMultiOutputTest
     }
 
     [TestMethod]
-    public void XGBClassifierTest_PredictProbabilityMultiOutput_ProbabilitiesInRange()
+    public void XGBClassifierTest_PredictProbabilityMultiOutput_ReturnsExpectedProbabilities()
     {
         var dataTrain = TestUtils.DataTrainMultiOutput;
         var labelsTrain = TestUtils.LabelsTrainMultiOutputBinary;
@@ -83,16 +83,9 @@ public class XGBClassifierMultiOutputTest
         using var sut = CreateSut();
         sut.Fit(dataTrain, labelsTrain);
 
-        var probabilities = sut.PredictProbabilityMultiOutput(dataTrain);
+        var actual = sut.PredictProbabilityMultiOutput(dataTrain);
 
-        foreach (var row in probabilities)
-        {
-            foreach (var p in row)
-            {
-                Assert.IsTrue(p >= 0f && p <= 1f,
-                    $"Probability {p} is out of [0, 1] range.");
-            }
-        }
+        TestUtils.AssertAreEqual(TestUtils.ExpectedMultiOutputClassifierProbabilities, actual);
     }
 
     [TestMethod]
