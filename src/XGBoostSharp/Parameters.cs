@@ -260,4 +260,23 @@ public static class Parameters
             public const string Pairwise = "rank:pairwise";
         }
     }
+
+    /// <summary>
+    /// Controls the strategy for building trees in multi-output models.
+    /// Requires <c>tree_method</c> set to <c>hist</c> or <c>approx</c>.
+    /// See <see href="https://xgboost.readthedocs.io/en/stable/tutorials/multioutput.html"/>.
+    /// </summary>
+    public static class MultiStrategy
+    {
+        /// <summary>
+        /// Build one tree per output. This is the default behaviour and is
+        /// equivalent to training independent models.
+        /// </summary>
+        public const string OneOutputPerTree = "one_output_per_tree";
+        /// <summary>
+        /// Build multi-output trees with a vector leaf, where the leaf size
+        /// equals the number of outputs. Added in XGBoost 2.0.
+        /// </summary>
+        public const string MultiOutputTree = "multi_output_tree";
+    }
 }

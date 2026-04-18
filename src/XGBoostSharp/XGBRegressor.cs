@@ -63,6 +63,9 @@ public class XGBRegressor : XGBModelBase
     /// 'gpu'.</param>
     /// <param name="validateParameters">Validate the parameters before
     /// training.</param>
+    /// <param name="multiStrategy">Strategy for building trees in multi-output
+    /// models. Options: 'one_output_per_tree' (default), 'multi_output_tree'.
+    /// Requires <c>treeMethod</c> set to 'hist' or 'approx'.</param>
     public XGBRegressor(
         int nEstimators = 100,
         int maxDepth = 6,
@@ -92,7 +95,8 @@ public class XGBRegressor : XGBModelBase
         int numParallelTree = 1,
         string importanceType = ImportanceType.Gain,
         string device = Device.Cpu,
-        bool validateParameters = false)
+        bool validateParameters = false,
+        string multiStrategy = MultiStrategy.OneOutputPerTree)
     {
         m_parameters[ParameterNames.n_estimators] = nEstimators;
         m_parameters[ParameterNames.max_depth] = maxDepth;
@@ -124,6 +128,7 @@ public class XGBRegressor : XGBModelBase
         m_parameters[ParameterNames.importance_type] = importanceType;
         m_parameters[ParameterNames.device] = device;
         m_parameters[ParameterNames.validate_parameters] = validateParameters;
+        m_parameters[ParameterNames.multi_strategy] = multiStrategy;
 
         // For DART only.
         m_parameters[ParameterNames.sample_type] = "uniform";

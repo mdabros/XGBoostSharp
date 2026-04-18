@@ -67,6 +67,9 @@ public class XGBClassifier : XGBModelBase
     /// training.</param>
     /// <param name="numClass">Number of classes for multi-class
     /// classification.</param>
+    /// <param name="multiStrategy">Strategy for building trees in multi-output
+    /// models. Options: 'one_output_per_tree' (default), 'multi_output_tree'.
+    /// Requires <c>treeMethod</c> set to 'hist' or 'approx'.</param>
     public XGBClassifier(
             int nEstimators = 100,
             int maxDepth = 6,
@@ -97,7 +100,8 @@ public class XGBClassifier : XGBModelBase
             string importanceType = ImportanceType.Gain,
             string device = Device.Cpu,
             bool validateParameters = false,
-            int numClass = 1)
+            int numClass = 1,
+            string multiStrategy = MultiStrategy.OneOutputPerTree)
     {
         m_parameters[ParameterNames.n_estimators] = nEstimators;
         m_parameters[ParameterNames.max_depth] = maxDepth;
@@ -131,6 +135,7 @@ public class XGBClassifier : XGBModelBase
         m_parameters[ParameterNames.validate_parameters] = validateParameters;
 
         m_parameters[ParameterNames.num_class] = numClass;
+        m_parameters[ParameterNames.multi_strategy] = multiStrategy;
 
         // For DART only.
         m_parameters[ParameterNames.sampling_method] = "uniform";

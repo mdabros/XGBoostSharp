@@ -102,6 +102,27 @@ public class XGBRegressorMultiOutputTest
         }
     }
 
+    [TestMethod]
+    public void XGBRegressorTest_PredictMultiOutput_MultiOutputTreeStrategy()
+    {
+        var dataTrain = TestUtils.DataTrainMultiOutput;
+        var labelsTrain = TestUtils.LabelsTrainMultiOutputRegression;
+
+        using var sut = new XGBRegressor(nEstimators: 50, maxDepth: 3, learningRate: 0.3f,
+            objective: Objective.Reg.SquaredError,
+            treeMethod: TreeMethod.Hist,
+            multiStrategy: MultiStrategy.MultiOutputTree);
+        sut.Fit(dataTrain, labelsTrain);
+
+        var predictions = sut.PredictMultiOutput(dataTrain);
+
+        Assert.AreEqual(dataTrain.Length, predictions.Length);
+        foreach (var row in predictions)
+        {
+            Assert.AreEqual(NOutputs, row.Length);
+        }
+    }
+
     static XGBRegressor CreateSut() =>
         new(nEstimators: 50, maxDepth: 3, learningRate: 0.3f,
             objective: Objective.Reg.SquaredError);

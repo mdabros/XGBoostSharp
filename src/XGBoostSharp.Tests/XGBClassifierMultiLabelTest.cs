@@ -162,6 +162,27 @@ public class XGBClassifierMultiLabelTest
         }
     }
 
+    [TestMethod]
+    public void XGBClassifierTest_PredictMultiLabel_MultiOutputTreeStrategy()
+    {
+        var dataTrain = TestUtils.DataTrainMultiOutput;
+        var labelsTrain = TestUtils.LabelsTrainMultiLabelBinary;
+
+        using var sut = new XGBClassifier(nEstimators: 50, maxDepth: 3, learningRate: 0.3f,
+            objective: Objective.Binary.Logistic,
+            treeMethod: TreeMethod.Hist,
+            multiStrategy: MultiStrategy.MultiOutputTree);
+        sut.Fit(dataTrain, labelsTrain);
+
+        var predictions = sut.PredictMultiLabel(dataTrain);
+
+        Assert.AreEqual(dataTrain.Length, predictions.Length);
+        foreach (var row in predictions)
+        {
+            Assert.AreEqual(NLabels, row.Length);
+        }
+    }
+
     static XGBClassifier CreateSut() =>
         new(nEstimators: 50, maxDepth: 3, learningRate: 0.3f,
             objective: Objective.Binary.Logistic);
