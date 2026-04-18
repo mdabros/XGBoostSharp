@@ -389,7 +389,7 @@ public class XGBClassifierTest
 
         var actual = sut.PredictProbabilityMultiOutput(dataTrain);
 
-        TestUtils.AssertAreEqual(TestUtils.ExpectedMultiOutputTreeClassifierProbabilities, actual);
+        TestUtils.AssertAreEqual(TestUtils.ExpectedMultiOutputClassifierProbabilities_MultiOutputTree, actual);
     }
 
     [TestMethod]

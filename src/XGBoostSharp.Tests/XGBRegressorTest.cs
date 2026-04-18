@@ -293,7 +293,7 @@ public class XGBRegressorTest
 
         var actual = sut.PredictMultiOutput(dataTrain);
 
-        TestUtils.AssertAreEqual(TestUtils.ExpectedMultiOutputTreeRegressionPredictions, actual);
+        TestUtils.AssertAreEqual(TestUtils.ExpectedMultiOutputRegressionPredictions_MultiOutputTree, actual);
     }
 
     [TestMethod]

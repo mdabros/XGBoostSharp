@@ -77,32 +77,6 @@ public static partial class TestUtils
             [1f, 1f],
         ];
 
-    // Expected predictions for multi-output regression using MultiOutputTree strategy
-    // (nEstimators: 50, maxDepth: 3, learningRate: 0.3f, treeMethod: Hist, multiStrategy: MultiOutputTree).
-    public static float[][] ExpectedMultiOutputTreeRegressionPredictions =>
-        [
-            [0.298146396875f, 1.899718403816f],
-            [1.093545794487f, 1.494906663895f],
-            [1.297732234001f, 1.502716064453f],
-            [1.090160727501f, 1.897779107094f],
-            [1.097598671913f, 1.303608775139f],
-            [0.904659569263f, 1.701043128967f],
-            [1.097795486450f, 1.700029850006f],
-            [1.000476717949f, 1.398676395416f],
-            [1.093861103058f, 2.094938516617f],
-            [0.997784495354f, 0.997764289379f],
-            [0.999331951141f, 1.996132969856f],
-            [1.005967617035f, 1.304679155350f],
-            [0.999975442886f, 1.700911402702f],
-            [1.003528714180f, 1.905084133148f],
-            [1.005440115929f, 2.095287561417f],
-            [1.002178072929f, 1.497056007385f],
-            [0.996450006962f, 1.496783614159f],
-            [1.007977128029f, 1.700796246529f],
-            [1.002973675728f, 1.307531714439f],
-            [1.003453373909f, 2.003912210464f],
-        ];
-
     // Expected predictions for multi-output regression (nEstimators: 100, maxDepth: 3, learningRate: 0.1f).
     public static float[][] ExpectedMultiOutputRegressionPredictions =>
         [
@@ -126,6 +100,57 @@ public static partial class TestUtils
             [1.019136548042f, 1.698045611382f],
             [1.000552415848f, 1.307522892952f],
             [1.016016006470f, 2.004789352417f],
+        ];
+
+    // Expected predictions for multi-output regression using MultiOutputTree strategy
+    // (nEstimators: 50, maxDepth: 3, learningRate: 0.3f, treeMethod: Hist, multiStrategy: MultiOutputTree).
+    public static float[][] ExpectedMultiOutputRegressionPredictions_MultiOutputTree =>
+        [
+            [0.298146396875f, 1.899718403816f],
+            [1.093545794487f, 1.494906663895f],
+            [1.297732234001f, 1.502716064453f],
+            [1.090160727501f, 1.897779107094f],
+            [1.097598671913f, 1.303608775139f],
+            [0.904659569263f, 1.701043128967f],
+            [1.097795486450f, 1.700029850006f],
+            [1.000476717949f, 1.398676395416f],
+            [1.093861103058f, 2.094938516617f],
+            [0.997784495354f, 0.997764289379f],
+            [0.999331951141f, 1.996132969856f],
+            [1.005967617035f, 1.304679155350f],
+            [0.999975442886f, 1.700911402702f],
+            [1.003528714180f, 1.905084133148f],
+            [1.005440115929f, 2.095287561417f],
+            [1.002178072929f, 1.497056007385f],
+            [0.996450006962f, 1.496783614159f],
+            [1.007977128029f, 1.700796246529f],
+            [1.002973675728f, 1.307531714439f],
+            [1.003453373909f, 2.003912210464f],
+        ];
+
+    // Expected predictions for multi-output classification (nEstimators: 100, maxDepth: 3, learningRate: 0.1f).
+    public static float[][] ExpectedMultiOutputClassifierPredictions =>
+        [
+            [0.000000000000f, 0.000000000000f],
+            [0.000000000000f, 1.000000000000f],
+            [1.000000000000f, 0.000000000000f],
+            [1.000000000000f, 1.000000000000f],
+            [0.000000000000f, 1.000000000000f],
+            [1.000000000000f, 0.000000000000f],
+            [0.000000000000f, 1.000000000000f],
+            [1.000000000000f, 0.000000000000f],
+            [1.000000000000f, 1.000000000000f],
+            [0.000000000000f, 1.000000000000f],
+            [1.000000000000f, 0.000000000000f],
+            [0.000000000000f, 1.000000000000f],
+            [1.000000000000f, 0.000000000000f],
+            [0.000000000000f, 1.000000000000f],
+            [1.000000000000f, 0.000000000000f],
+            [0.000000000000f, 1.000000000000f],
+            [1.000000000000f, 0.000000000000f],
+            [0.000000000000f, 1.000000000000f],
+            [1.000000000000f, 0.000000000000f],
+            [1.000000000000f, 1.000000000000f],
         ];
 
     // Expected probabilities for multi-output classification (nEstimators: 100, maxDepth: 3, learningRate: 0.1f).
@@ -155,7 +180,7 @@ public static partial class TestUtils
 
     // Expected probabilities for multi-output classification using MultiOutputTree strategy
     // (nEstimators: 50, maxDepth: 3, learningRate: 0.3f, treeMethod: Hist, multiStrategy: MultiOutputTree).
-    public static float[][] ExpectedMultiOutputTreeClassifierProbabilities =>
+    public static float[][] ExpectedMultiOutputClassifierProbabilities_MultiOutputTree =>
         [
             [0.253063797951f, 0.276252359152f],
             [0.042922794819f, 0.972028613091f],
@@ -177,30 +202,5 @@ public static partial class TestUtils
             [0.061955761164f, 0.969875812531f],
             [0.968053638935f, 0.071176983416f],
             [0.829546988010f, 0.831113517284f],
-        ];
-
-    // Expected predictions for multi-output classification (nEstimators: 100, maxDepth: 3, learningRate: 0.1f).
-    public static float[][] ExpectedMultiOutputClassifierPredictions =>
-        [
-            [0.000000000000f, 0.000000000000f],
-            [0.000000000000f, 1.000000000000f],
-            [1.000000000000f, 0.000000000000f],
-            [1.000000000000f, 1.000000000000f],
-            [0.000000000000f, 1.000000000000f],
-            [1.000000000000f, 0.000000000000f],
-            [0.000000000000f, 1.000000000000f],
-            [1.000000000000f, 0.000000000000f],
-            [1.000000000000f, 1.000000000000f],
-            [0.000000000000f, 1.000000000000f],
-            [1.000000000000f, 0.000000000000f],
-            [0.000000000000f, 1.000000000000f],
-            [1.000000000000f, 0.000000000000f],
-            [0.000000000000f, 1.000000000000f],
-            [1.000000000000f, 0.000000000000f],
-            [0.000000000000f, 1.000000000000f],
-            [1.000000000000f, 0.000000000000f],
-            [0.000000000000f, 1.000000000000f],
-            [1.000000000000f, 0.000000000000f],
-            [1.000000000000f, 1.000000000000f],
         ];
 }
