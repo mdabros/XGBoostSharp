@@ -66,10 +66,10 @@ public class XGBClassifierMultiLabelTest
 
         var probabilities = sut.PredictProbabilityMultiLabel(dataTrain);
 
-        Assert.AreEqual(dataTrain.Length, probabilities.Length);
+        Assert.HasCount(dataTrain.Length, probabilities);
         foreach (var row in probabilities)
         {
-            Assert.AreEqual(NLabels, row.Length);
+            Assert.HasCount(NLabels, row);
         }
     }
 
