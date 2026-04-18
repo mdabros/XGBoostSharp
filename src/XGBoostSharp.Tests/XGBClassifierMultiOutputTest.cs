@@ -9,7 +9,6 @@ namespace XGBoostSharp.Test;
 public class XGBClassifierMultiOutputTest
 {
     const string TEST_FILE = "tmpfile_classifier_multioutput.json";
-    const int NOutputs = 2;
 
     [TestInitialize, TestCleanup]
     public void Reset()
@@ -69,7 +68,7 @@ public class XGBClassifierMultiOutputTest
     }
 
     [TestMethod]
-    public void XGBClassifierTest_PredictMultiOutput_MultiOutputTreeStrategy()
+    public void XGBClassifierTest_PredictProbabilityMultiOutput_MultiOutputTreeStrategy()
     {
         var dataTrain = TestUtils.DataTrainMultiOutput;
         var labelsTrain = TestUtils.LabelsTrainMultiOutputBinary;
@@ -80,9 +79,9 @@ public class XGBClassifierMultiOutputTest
             multiStrategy: MultiStrategy.MultiOutputTree);
         sut.Fit(dataTrain, labelsTrain);
 
-        var predictions = sut.PredictMultiOutput(dataTrain);
+        var actual = sut.PredictProbabilityMultiOutput(dataTrain);
 
-        TestUtils.AssertShape(predictions, dataTrain.Length, NOutputs);
+        TestUtils.AssertAreEqual(TestUtils.ExpectedMultiOutputTreeClassifierProbabilities, actual);
     }
 
     static XGBClassifier CreateSut() =>

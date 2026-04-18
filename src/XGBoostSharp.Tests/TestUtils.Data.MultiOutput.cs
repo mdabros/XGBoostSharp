@@ -127,6 +127,32 @@ public static partial class TestUtils
             [0.906002104282f, 0.906002104282f],
         ];
 
+    // Expected probabilities for multi-output classification using MultiOutputTree strategy
+    // (nEstimators: 50, maxDepth: 3, learningRate: 0.3f, treeMethod: Hist, multiStrategy: MultiOutputTree).
+    public static float[][] ExpectedMultiOutputTreeClassifierProbabilities =>
+        [
+            [0.253063797951f, 0.276252359152f],
+            [0.042922794819f, 0.972028613091f],
+            [0.970851540565f, 0.057642057538f],
+            [0.829546988010f, 0.894552528858f],
+            [0.037846524268f, 0.971108376980f],
+            [0.971114873886f, 0.040566358715f],
+            [0.071735382080f, 0.972231268883f],
+            [0.971114873886f, 0.040566358715f],
+            [0.883690536022f, 0.831113517284f],
+            [0.036206666380f, 0.970468699932f],
+            [0.971114873886f, 0.040566358715f],
+            [0.036206666380f, 0.970468699932f],
+            [0.971114873886f, 0.040566358715f],
+            [0.150920927525f, 0.961517572403f],
+            [0.958701252937f, 0.176460072398f],
+            [0.040147338063f, 0.971643447876f],
+            [0.971114873886f, 0.040566358715f],
+            [0.061955761164f, 0.969875812531f],
+            [0.968053638935f, 0.071176983416f],
+            [0.829546988010f, 0.831113517284f],
+        ];
+
     // Expected predictions for multi-output classification (nEstimators: 50, maxDepth: 3, learningRate: 0.3f).
     public static float[][] ExpectedMultiOutputClassifierPredictions =>
         [
