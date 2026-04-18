@@ -78,17 +78,8 @@ public class DMatrix : IDisposable
     /// <param name="missing">Value to be treated as missing in the dataset. Default is float.NaN.</param>
     /// <exception cref="DllFailException">Thrown when the native XGBoost library encounters an error during matrix creation.</exception>
     public DMatrix(float[] data1D, ulong nrows, ulong ncols, float[][] labels, float missing = DefaultMissing)
+        : this(data1D, nrows, ncols, labels != null ? Flatten2DArray(labels) : null, missing)
     {
-        var output = NativeMethods.XGDMatrixCreateFromMat(
-            data1D, nrows, ncols, missing, out var handle);
-
-        ThrowIfError(output);
-        m_safeDMatrixHandle = new SafeDMatrixHandle(handle);
-
-        if (labels != null)
-        {
-            SetFloatInfo(Fields.label, Flatten2DArray(labels));
-        }
     }
 
     static float[] Flatten2DArray(float[][] data2D) =>
