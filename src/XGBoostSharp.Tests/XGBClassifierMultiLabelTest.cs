@@ -31,11 +31,7 @@ public class XGBClassifierMultiLabelTest
 
         var predictions = sut.PredictMultiLabel(dataTrain);
 
-        Assert.AreEqual(dataTrain.Length, predictions.Length);
-        foreach (var row in predictions)
-        {
-            Assert.AreEqual(NLabels, row.Length);
-        }
+        TestUtils.AssertShape(predictions, dataTrain.Length, NLabels);
     }
 
     [TestMethod]
@@ -111,11 +107,7 @@ public class XGBClassifierMultiLabelTest
         using var dMatrixTest = new DMatrix(dataTrain);
         var predictions = sut.PredictMultiLabel(dMatrixTest);
 
-        Assert.AreEqual(dataTrain.Length, predictions.Length);
-        foreach (var row in predictions)
-        {
-            Assert.AreEqual(NLabels, row.Length);
-        }
+        TestUtils.AssertShape(predictions, dataTrain.Length, NLabels);
     }
 
     [TestMethod]
@@ -132,11 +124,7 @@ public class XGBClassifierMultiLabelTest
         var sutLoaded = XGBClassifier.LoadFromFile(TEST_FILE);
         var actual = sutLoaded.PredictMultiLabel(dataTrain);
 
-        Assert.AreEqual(expected.Length, actual.Length);
-        for (var i = 0; i < expected.Length; i++)
-        {
-            TestUtils.AssertAreEqual(expected[i], actual[i]);
-        }
+        TestUtils.AssertAreEqual(expected, actual);
     }
 
     [TestMethod]
@@ -155,11 +143,7 @@ public class XGBClassifierMultiLabelTest
         var sutLoaded = XGBClassifier.LoadFromByteArray(savedData);
         var actual = sutLoaded.PredictProbabilityMultiLabel(dataTrain);
 
-        Assert.AreEqual(expected.Length, actual.Length);
-        for (var i = 0; i < expected.Length; i++)
-        {
-            TestUtils.AssertAreEqual(expected[i], actual[i]);
-        }
+        TestUtils.AssertAreEqual(expected, actual);
     }
 
     [TestMethod]
@@ -176,11 +160,7 @@ public class XGBClassifierMultiLabelTest
 
         var predictions = sut.PredictMultiLabel(dataTrain);
 
-        Assert.AreEqual(dataTrain.Length, predictions.Length);
-        foreach (var row in predictions)
-        {
-            Assert.AreEqual(NLabels, row.Length);
-        }
+        TestUtils.AssertShape(predictions, dataTrain.Length, NLabels);
     }
 
     static XGBClassifier CreateSut() =>

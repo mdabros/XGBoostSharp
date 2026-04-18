@@ -31,11 +31,7 @@ public class XGBRegressorMultiOutputTest
 
         var predictions = sut.PredictMultiOutput(dataTrain);
 
-        Assert.AreEqual(dataTrain.Length, predictions.Length);
-        foreach (var row in predictions)
-        {
-            Assert.AreEqual(NOutputs, row.Length);
-        }
+        TestUtils.AssertShape(predictions, dataTrain.Length, NOutputs);
     }
 
     [TestMethod]
@@ -51,11 +47,7 @@ public class XGBRegressorMultiOutputTest
         using var dMatrixTest = new DMatrix(dataTrain);
         var predictions = sut.PredictMultiOutput(dMatrixTest);
 
-        Assert.AreEqual(dataTrain.Length, predictions.Length);
-        foreach (var row in predictions)
-        {
-            Assert.AreEqual(NOutputs, row.Length);
-        }
+        TestUtils.AssertShape(predictions, dataTrain.Length, NOutputs);
     }
 
     [TestMethod]
@@ -72,11 +64,7 @@ public class XGBRegressorMultiOutputTest
         var sutLoaded = XGBRegressor.LoadFromFile(TEST_FILE);
         var actual = sutLoaded.PredictMultiOutput(dataTrain);
 
-        Assert.AreEqual(expected.Length, actual.Length);
-        for (var i = 0; i < expected.Length; i++)
-        {
-            TestUtils.AssertAreEqual(expected[i], actual[i]);
-        }
+        TestUtils.AssertAreEqual(expected, actual);
     }
 
     [TestMethod]
@@ -95,11 +83,7 @@ public class XGBRegressorMultiOutputTest
         var sutLoaded = XGBRegressor.LoadFromByteArray(savedData);
         var actual = sutLoaded.PredictMultiOutput(dataTrain);
 
-        Assert.AreEqual(expected.Length, actual.Length);
-        for (var i = 0; i < expected.Length; i++)
-        {
-            TestUtils.AssertAreEqual(expected[i], actual[i]);
-        }
+        TestUtils.AssertAreEqual(expected, actual);
     }
 
     [TestMethod]
@@ -116,11 +100,7 @@ public class XGBRegressorMultiOutputTest
 
         var predictions = sut.PredictMultiOutput(dataTrain);
 
-        Assert.AreEqual(dataTrain.Length, predictions.Length);
-        foreach (var row in predictions)
-        {
-            Assert.AreEqual(NOutputs, row.Length);
-        }
+        TestUtils.AssertShape(predictions, dataTrain.Length, NOutputs);
     }
 
     static XGBRegressor CreateSut() =>

@@ -44,6 +44,15 @@ public static partial class TestUtils
         }
     }
 
+    public static void AssertShape(float[][] predictions, int expectedRows, int expectedCols)
+    {
+        Assert.AreEqual(expectedRows, predictions.Length);
+        foreach (var row in predictions)
+        {
+            Assert.AreEqual(expectedCols, row.Length);
+        }
+    }
+
     public static void AssertAreEqual(string[] expected, string[] actual)
     {
         Assert.AreEqual(expected.Length, actual.Length);
