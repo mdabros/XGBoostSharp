@@ -29,9 +29,10 @@ public class XGBRegressorMultiOutputTest
         using var sut = CreateSut();
         sut.Fit(dataTrain, labelsTrain);
 
-        var predictions = sut.PredictMultiOutput(dataTrain);
+        var actual = sut.PredictMultiOutput(dataTrain);
+        var expected = TestUtils.ExpectedMultiOutputRegressionPredictions;
 
-        TestUtils.AssertShape(predictions, dataTrain.Length, NOutputs);
+        TestUtils.AssertAreEqual(expected, actual);
     }
 
     [TestMethod]
@@ -45,9 +46,10 @@ public class XGBRegressorMultiOutputTest
         sut.Fit(dMatrixTrain);
 
         using var dMatrixTest = new DMatrix(dataTrain);
-        var predictions = sut.PredictMultiOutput(dMatrixTest);
+        var actual = sut.PredictMultiOutput(dMatrixTest);
+        var expected = TestUtils.ExpectedMultiOutputRegressionPredictions;
 
-        TestUtils.AssertShape(predictions, dataTrain.Length, NOutputs);
+        TestUtils.AssertAreEqual(expected, actual);
     }
 
     [TestMethod]
