@@ -52,8 +52,8 @@ public static partial class TestUtils
             [1.0f,  2.0f],
         ];
 
-    // Multi-label classification labels: [x0 >= 0.5 ? 1 : 0, x1 >= 0.5 ? 1 : 0].
-    public static float[][] LabelsTrainMultiLabelBinary =>
+    // Multi-output classification labels: [x0 >= 0.5 ? 1 : 0, x1 >= 0.5 ? 1 : 0].
+    public static float[][] LabelsTrainMultiOutputBinary =>
         [
             [0f, 0f],
             [0f, 1f],

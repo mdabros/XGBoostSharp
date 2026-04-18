@@ -287,26 +287,28 @@ public class XGBClassifier : XGBModelBase
     }
 
     /// <summary>
-    ///   Predict binary class assignments for each label in a multi-label classification model.
-    ///   Each inner array contains a 0 or 1 for each label of the corresponding sample.
+    ///   Predict binary class assignments for each output in a multi-output classification model.
+    ///   Each inner array contains a 0 or 1 for each output of the corresponding sample.
+    ///   Requires <c>objective: binary:logistic</c>.
     /// </summary>
     /// <param name="data">Feature matrix shaped <c>[n_samples, n_features]</c>.</param>
-    /// <returns>Binary label predictions shaped <c>[n_samples, n_labels]</c>.</returns>
-    public float[][] PredictMultiLabel(float[][] data)
+    /// <returns>Binary predictions shaped <c>[n_samples, n_outputs]</c>.</returns>
+    public float[][] PredictMultiOutput(float[][] data)
     {
         using var dMatrix = new DMatrix(data);
-        return PredictMultiLabel(dMatrix);
+        return PredictMultiOutput(dMatrix);
     }
 
     /// <summary>
-    ///   Predict binary class assignments for each label in a multi-label classification model.
-    ///   Each inner array contains a 0 or 1 for each label of the corresponding sample.
+    ///   Predict binary class assignments for each output in a multi-output classification model.
+    ///   Each inner array contains a 0 or 1 for each output of the corresponding sample.
+    ///   Requires <c>objective: binary:logistic</c>.
     /// </summary>
     /// <param name="dMatrix">DMatrix to do predictions on.</param>
-    /// <returns>Binary label predictions shaped <c>[n_samples, n_labels]</c>.</returns>
-    public float[][] PredictMultiLabel(DMatrix dMatrix)
+    /// <returns>Binary predictions shaped <c>[n_samples, n_outputs]</c>.</returns>
+    public float[][] PredictMultiOutput(DMatrix dMatrix)
     {
-        var probabilities = PredictProbabilityMultiLabel(dMatrix);
+        var probabilities = PredictProbabilityMultiOutput(dMatrix);
         for (var i = 0; i < probabilities.Length; i++)
         {
             for (var j = 0; j < probabilities[i].Length; j++)
@@ -318,24 +320,26 @@ public class XGBClassifier : XGBModelBase
     }
 
     /// <summary>
-    ///   Predict label probabilities for each label in a multi-label classification model.
-    ///   Each inner array contains the predicted probability per label for the corresponding sample.
+    ///   Predict output probabilities for each output in a multi-output classification model.
+    ///   Each inner array contains the predicted probability per output for the corresponding sample.
+    ///   Requires <c>objective: binary:logistic</c>.
     /// </summary>
     /// <param name="data">Feature matrix shaped <c>[n_samples, n_features]</c>.</param>
-    /// <returns>Label probabilities shaped <c>[n_samples, n_labels]</c>, values in [0, 1].</returns>
-    public float[][] PredictProbabilityMultiLabel(float[][] data)
+    /// <returns>Output probabilities shaped <c>[n_samples, n_outputs]</c>, values in [0, 1].</returns>
+    public float[][] PredictProbabilityMultiOutput(float[][] data)
     {
         using var dMatrix = new DMatrix(data);
-        return PredictProbabilityMultiLabel(dMatrix);
+        return PredictProbabilityMultiOutput(dMatrix);
     }
 
     /// <summary>
-    ///   Predict label probabilities for each label in a multi-label classification model.
-    ///   Each inner array contains the predicted probability per label for the corresponding sample.
+    ///   Predict output probabilities for each output in a multi-output classification model.
+    ///   Each inner array contains the predicted probability per output for the corresponding sample.
+    ///   Requires <c>objective: binary:logistic</c>.
     /// </summary>
     /// <param name="dMatrix">DMatrix to do predictions on.</param>
-    /// <returns>Label probabilities shaped <c>[n_samples, n_labels]</c>, values in [0, 1].</returns>
-    public float[][] PredictProbabilityMultiLabel(DMatrix dMatrix)
+    /// <returns>Output probabilities shaped <c>[n_samples, n_outputs]</c>, values in [0, 1].</returns>
+    public float[][] PredictProbabilityMultiOutput(DMatrix dMatrix)
     {
         var raw = Predict(dMatrix, strictShape: true);
         return ExtractMultiOutputPredictions(raw);

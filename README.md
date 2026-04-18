@@ -19,10 +19,10 @@ classifier.Fit(dataTrain, labelsTrain);
 var predictions = classifier.Predict(dataTest);
 var probabilities = classifier.PredictProbability(dataTest);
 
-// Predict multi-label. Binary class assignments shaped [n_samples, n_labels].
-var predictions = classifier.PredictMultiLabel(dataTest);
-// Predict multi-label. Probabilities shaped [n_samples, n_labels], values in [0, 1].
-var probabilities = classifier.PredictProbabilityMultiLabel(dataTest);
+// Predict multi-output. Binary class assignments shaped [n_samples, n_outputs].
+var predictions = classifier.PredictMultiOutput(dataTest);
+// Predict multi-output. Probabilities shaped [n_samples, n_outputs], values in [0, 1].
+var probabilities = classifier.PredictProbabilityMultiOutput(dataTest);
 
 // Get feature importance.
 var featureImportance = classifier.GetFeatureImportance(ImportanceType.Weight);

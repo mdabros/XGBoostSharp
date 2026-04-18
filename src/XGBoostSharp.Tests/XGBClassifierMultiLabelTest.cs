@@ -6,10 +6,10 @@ using static XGBoostSharp.Parameters;
 namespace XGBoostSharp.Test;
 
 [TestClass]
-public class XGBClassifierMultiLabelTest
+public class XGBClassifierMultiOutputTest
 {
-    const string TEST_FILE = "tmpfile_classifier_multilabel.json";
-    const int NLabels = 2;
+    const string TEST_FILE = "tmpfile_classifier_multioutput.json";
+    const int NOutputs = 2;
 
     [TestInitialize, TestCleanup]
     public void Reset()
@@ -21,29 +21,29 @@ public class XGBClassifierMultiLabelTest
     }
 
     [TestMethod]
-    public void XGBClassifierTest_PredictMultiLabel_ShapeIsCorrect()
+    public void XGBClassifierTest_PredictMultiOutput_ShapeIsCorrect()
     {
         var dataTrain = TestUtils.DataTrainMultiOutput;
-        var labelsTrain = TestUtils.LabelsTrainMultiLabelBinary;
+        var labelsTrain = TestUtils.LabelsTrainMultiOutputBinary;
 
         using var sut = CreateSut();
         sut.Fit(dataTrain, labelsTrain);
 
-        var predictions = sut.PredictMultiLabel(dataTrain);
+        var predictions = sut.PredictMultiOutput(dataTrain);
 
-        TestUtils.AssertShape(predictions, dataTrain.Length, NLabels);
+        TestUtils.AssertShape(predictions, dataTrain.Length, NOutputs);
     }
 
     [TestMethod]
-    public void XGBClassifierTest_PredictMultiLabel_ValuesAreBinary()
+    public void XGBClassifierTest_PredictMultiOutput_ValuesAreBinary()
     {
         var dataTrain = TestUtils.DataTrainMultiOutput;
-        var labelsTrain = TestUtils.LabelsTrainMultiLabelBinary;
+        var labelsTrain = TestUtils.LabelsTrainMultiOutputBinary;
 
         using var sut = CreateSut();
         sut.Fit(dataTrain, labelsTrain);
 
-        var predictions = sut.PredictMultiLabel(dataTrain);
+        var predictions = sut.PredictMultiOutput(dataTrain);
 
         foreach (var row in predictions)
         {
@@ -56,33 +56,33 @@ public class XGBClassifierMultiLabelTest
     }
 
     [TestMethod]
-    public void XGBClassifierTest_PredictProbabilityMultiLabel_ShapeIsCorrect()
+    public void XGBClassifierTest_PredictProbabilityMultiOutput_ShapeIsCorrect()
     {
         var dataTrain = TestUtils.DataTrainMultiOutput;
-        var labelsTrain = TestUtils.LabelsTrainMultiLabelBinary;
+        var labelsTrain = TestUtils.LabelsTrainMultiOutputBinary;
 
         using var sut = CreateSut();
         sut.Fit(dataTrain, labelsTrain);
 
-        var probabilities = sut.PredictProbabilityMultiLabel(dataTrain);
+        var probabilities = sut.PredictProbabilityMultiOutput(dataTrain);
 
         Assert.HasCount(dataTrain.Length, probabilities);
         foreach (var row in probabilities)
         {
-            Assert.HasCount(NLabels, row);
+            Assert.HasCount(NOutputs, row);
         }
     }
 
     [TestMethod]
-    public void XGBClassifierTest_PredictProbabilityMultiLabel_ProbabilitiesInRange()
+    public void XGBClassifierTest_PredictProbabilityMultiOutput_ProbabilitiesInRange()
     {
         var dataTrain = TestUtils.DataTrainMultiOutput;
-        var labelsTrain = TestUtils.LabelsTrainMultiLabelBinary;
+        var labelsTrain = TestUtils.LabelsTrainMultiOutputBinary;
 
         using var sut = CreateSut();
         sut.Fit(dataTrain, labelsTrain);
 
-        var probabilities = sut.PredictProbabilityMultiLabel(dataTrain);
+        var probabilities = sut.PredictProbabilityMultiOutput(dataTrain);
 
         foreach (var row in probabilities)
         {
@@ -95,34 +95,34 @@ public class XGBClassifierMultiLabelTest
     }
 
     [TestMethod]
-    public void XGBClassifierTest_PredictMultiLabel_UsingDMatrixDirectly()
+    public void XGBClassifierTest_PredictMultiOutput_UsingDMatrixDirectly()
     {
         var dataTrain = TestUtils.DataTrainMultiOutput;
-        var labelsTrain = TestUtils.LabelsTrainMultiLabelBinary;
+        var labelsTrain = TestUtils.LabelsTrainMultiOutputBinary;
 
         using var sut = CreateSut();
         using var dMatrixTrain = new DMatrix(dataTrain, labelsTrain);
         sut.Fit(dMatrixTrain);
 
         using var dMatrixTest = new DMatrix(dataTrain);
-        var predictions = sut.PredictMultiLabel(dMatrixTest);
+        var predictions = sut.PredictMultiOutput(dMatrixTest);
 
-        TestUtils.AssertShape(predictions, dataTrain.Length, NLabels);
+        TestUtils.AssertShape(predictions, dataTrain.Length, NOutputs);
     }
 
     [TestMethod]
-    public void XGBClassifierTest_PredictMultiLabel_SaveAndLoad()
+    public void XGBClassifierTest_PredictMultiOutput_SaveAndLoad()
     {
         var dataTrain = TestUtils.DataTrainMultiOutput;
-        var labelsTrain = TestUtils.LabelsTrainMultiLabelBinary;
+        var labelsTrain = TestUtils.LabelsTrainMultiOutputBinary;
 
         using var sut = CreateSut();
         sut.Fit(dataTrain, labelsTrain);
-        var expected = sut.PredictMultiLabel(dataTrain);
+        var expected = sut.PredictMultiOutput(dataTrain);
         sut.SaveModelToFile(TEST_FILE);
 
         var sutLoaded = XGBClassifier.LoadFromFile(TEST_FILE);
-        var actual = sutLoaded.PredictMultiLabel(dataTrain);
+        var actual = sutLoaded.PredictMultiOutput(dataTrain);
 
         TestUtils.AssertAreEqual(expected, actual);
     }
@@ -130,27 +130,27 @@ public class XGBClassifierMultiLabelTest
     [TestMethod]
     [DataRow(ModelFormat.Json)]
     [DataRow(ModelFormat.Ubj)]
-    public void XGBClassifierTest_PredictMultiLabel_SaveAndLoadRaw(string format)
+    public void XGBClassifierTest_PredictMultiOutput_SaveAndLoadRaw(string format)
     {
         var dataTrain = TestUtils.DataTrainMultiOutput;
-        var labelsTrain = TestUtils.LabelsTrainMultiLabelBinary;
+        var labelsTrain = TestUtils.LabelsTrainMultiOutputBinary;
 
         using var sut = CreateSut();
         sut.Fit(dataTrain, labelsTrain);
-        var expected = sut.PredictProbabilityMultiLabel(dataTrain);
+        var expected = sut.PredictProbabilityMultiOutput(dataTrain);
         var savedData = sut.SaveModelToByteArray(format);
 
         var sutLoaded = XGBClassifier.LoadFromByteArray(savedData);
-        var actual = sutLoaded.PredictProbabilityMultiLabel(dataTrain);
+        var actual = sutLoaded.PredictProbabilityMultiOutput(dataTrain);
 
         TestUtils.AssertAreEqual(expected, actual);
     }
 
     [TestMethod]
-    public void XGBClassifierTest_PredictMultiLabel_MultiOutputTreeStrategy()
+    public void XGBClassifierTest_PredictMultiOutput_MultiOutputTreeStrategy()
     {
         var dataTrain = TestUtils.DataTrainMultiOutput;
-        var labelsTrain = TestUtils.LabelsTrainMultiLabelBinary;
+        var labelsTrain = TestUtils.LabelsTrainMultiOutputBinary;
 
         using var sut = new XGBClassifier(nEstimators: 50, maxDepth: 3, learningRate: 0.3f,
             objective: Objective.Binary.Logistic,
@@ -158,9 +158,9 @@ public class XGBClassifierMultiLabelTest
             multiStrategy: MultiStrategy.MultiOutputTree);
         sut.Fit(dataTrain, labelsTrain);
 
-        var predictions = sut.PredictMultiLabel(dataTrain);
+        var predictions = sut.PredictMultiOutput(dataTrain);
 
-        TestUtils.AssertShape(predictions, dataTrain.Length, NLabels);
+        TestUtils.AssertShape(predictions, dataTrain.Length, NOutputs);
     }
 
     static XGBClassifier CreateSut() =>
