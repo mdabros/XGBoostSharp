@@ -5,10 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="libxgboost-2.0.3-linux-x64" Version="1.0.3" />
-    <PackageReference Include="libxgboost-2.0.3-osx-x64" Version="1.0.1" />
-    <PackageReference Include="libxgboost-2.0.3-win-x64" Version="1.0.0" />
-    <PackageReference Include="MSTest" Version="4.1.0" />
+    <PackageReference Include="libxgboost-3.2.0-linux-x64" Version="1.0.0" />
+    <PackageReference Include="libxgboost-3.2.0-osx-x64" Version="1.0.3" />
+    <PackageReference Include="libxgboost-3.2.0-osx-arm64" Version="1.0.3" />
+    <PackageReference Include="libxgboost-3.2.0-win-x64" Version="1.0.0" />
+    <PackageReference Include="MSTest" Version="4.2.1" />
   </ItemGroup>
 
   <ItemGroup>

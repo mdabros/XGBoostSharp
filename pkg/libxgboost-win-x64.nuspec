@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>libxgboost-3.2.0-win-x64</id>
+    <version>$version$</version>
+    <authors>mdabros</authors>
+    <description>XGBoost native library for Windows x64. This package contains the xgboost.dll native library built for Windows x64 platforms.</description>
+    <license type="expression">Apache-2.0</license>
+    <projectUrl>https://github.com/mdabros/XGBoostSharp</projectUrl>
+    <repository type="git" url="https://github.com/mdabros/XGBoostSharp" />
+    <tags>xgboost native windows machine-learning</tags>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <readme>README.md</readme>
+  </metadata>
+  <files>
+    <!-- Native library -->
+    <file src="..\native\win-x64\xgboost.dll" target="runtimes\win-x64\native\xgboost.dll" />
+
+    <!-- README -->
+    <file src="README-NATIVE.md" target="README.md" />
+  </files>
+</package>
