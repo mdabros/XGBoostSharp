@@ -44,15 +44,6 @@ public static partial class TestUtils
         }
     }
 
-    public static void AssertShape(float[][] predictions, int expectedRows, int expectedCols)
-    {
-        Assert.HasCount(expectedRows, predictions);
-        foreach (var row in predictions)
-        {
-            Assert.HasCount(expectedCols, row);
-        }
-    }
-
     public static void AssertAreEqual(string[] expected, string[] actual)
     {
         Assert.HasCount(expected.Length, actual);
