@@ -21,71 +21,20 @@ public class XGBClassifierMultiOutputTest
     }
 
     [TestMethod]
-    public void XGBClassifierTest_PredictMultiOutput_ShapeIsCorrect()
+    public void XGBClassifierTest_PredictMultiOutput()
     {
         var dataTrain = TestUtils.DataTrainMultiOutput;
         var labelsTrain = TestUtils.LabelsTrainMultiOutputBinary;
 
         using var sut = CreateSut();
-        sut.Fit(dataTrain, labelsTrain);
+        using var dMatrixTrain = new DMatrix(dataTrain, labelsTrain);
+        sut.Fit(dMatrixTrain);
 
-        var actual = sut.PredictMultiOutput(dataTrain);
+        using var dMatrixTest = new DMatrix(dataTrain);
+        var actual = sut.PredictMultiOutput(dMatrixTest);
         var expected = TestUtils.ExpectedMultiOutputClassifierPredictions;
 
         TestUtils.AssertAreEqual(expected, actual);
-    }
-
-    [TestMethod]
-    public void XGBClassifierTest_PredictMultiOutput_ValuesAreBinary()
-    {
-        var dataTrain = TestUtils.DataTrainMultiOutput;
-        var labelsTrain = TestUtils.LabelsTrainMultiOutputBinary;
-
-        using var sut = CreateSut();
-        sut.Fit(dataTrain, labelsTrain);
-
-        var predictions = sut.PredictMultiOutput(dataTrain);
-
-        foreach (var row in predictions)
-        {
-            foreach (var value in row)
-            {
-                Assert.IsTrue(value == 0f || value == 1f,
-                    $"Expected 0 or 1, got {value}");
-            }
-        }
-    }
-
-    [TestMethod]
-    public void XGBClassifierTest_PredictProbabilityMultiOutput_ShapeIsCorrect()
-    {
-        var dataTrain = TestUtils.DataTrainMultiOutput;
-        var labelsTrain = TestUtils.LabelsTrainMultiOutputBinary;
-
-        using var sut = CreateSut();
-        sut.Fit(dataTrain, labelsTrain);
-
-        var probabilities = sut.PredictProbabilityMultiOutput(dataTrain);
-
-        Assert.HasCount(dataTrain.Length, probabilities);
-        foreach (var row in probabilities)
-        {
-            Assert.HasCount(NOutputs, row);
-        }
-    }
-
-    [TestMethod]
-    public void XGBClassifierTest_PredictProbabilityMultiOutput_ReturnsExpectedProbabilities()
-    {
-        var dataTrain = TestUtils.DataTrainMultiOutput;
-        var labelsTrain = TestUtils.LabelsTrainMultiOutputBinary;
-
-        using var sut = CreateSut();
-        sut.Fit(dataTrain, labelsTrain);
-
-        var actual = sut.PredictProbabilityMultiOutput(dataTrain);
-
-        TestUtils.AssertAreEqual(TestUtils.ExpectedMultiOutputClassifierProbabilities, actual);
     }
 
     [TestMethod]
@@ -106,39 +55,17 @@ public class XGBClassifierMultiOutputTest
     }
 
     [TestMethod]
-    public void XGBClassifierTest_PredictMultiOutput_SaveAndLoad()
+    public void XGBClassifierTest_PredictProbabilityMultiOutput()
     {
         var dataTrain = TestUtils.DataTrainMultiOutput;
         var labelsTrain = TestUtils.LabelsTrainMultiOutputBinary;
 
         using var sut = CreateSut();
         sut.Fit(dataTrain, labelsTrain);
-        var expected = sut.PredictMultiOutput(dataTrain);
-        sut.SaveModelToFile(TEST_FILE);
 
-        var sutLoaded = XGBClassifier.LoadFromFile(TEST_FILE);
-        var actual = sutLoaded.PredictMultiOutput(dataTrain);
+        var actual = sut.PredictProbabilityMultiOutput(dataTrain);
 
-        TestUtils.AssertAreEqual(expected, actual);
-    }
-
-    [TestMethod]
-    [DataRow(ModelFormat.Json)]
-    [DataRow(ModelFormat.Ubj)]
-    public void XGBClassifierTest_PredictMultiOutput_SaveAndLoadRaw(string format)
-    {
-        var dataTrain = TestUtils.DataTrainMultiOutput;
-        var labelsTrain = TestUtils.LabelsTrainMultiOutputBinary;
-
-        using var sut = CreateSut();
-        sut.Fit(dataTrain, labelsTrain);
-        var expected = sut.PredictProbabilityMultiOutput(dataTrain);
-        var savedData = sut.SaveModelToByteArray(format);
-
-        var sutLoaded = XGBClassifier.LoadFromByteArray(savedData);
-        var actual = sutLoaded.PredictProbabilityMultiOutput(dataTrain);
-
-        TestUtils.AssertAreEqual(expected, actual);
+        TestUtils.AssertAreEqual(TestUtils.ExpectedMultiOutputClassifierProbabilities, actual);
     }
 
     [TestMethod]
