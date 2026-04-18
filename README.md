@@ -15,16 +15,21 @@ Currently supports `XGBoostClassifier` and `XGBoostRegressor`.
 using var classifier = new XGBClassifier(maxDepth: 3, learningRate: 0.1f, nEstimators: 100);
 classifier.Fit(dataTrain, labelsTrain);
 
-// make predictions.
+// Predict.
 var predictions = classifier.Predict(dataTest);
 var probabilities = classifier.PredictProbability(dataTest);
+
+// Predict multi-label. Binary class assignments shaped [n_samples, n_labels].
+var predictions = classifier.PredictMultiLabel(dataTest);
+// Predict multi-label. Probabilities shaped [n_samples, n_labels], values in [0, 1].
+var probabilities = classifier.PredictProbabilityMultiLabel(dataTest);
 
 // Get feature importance.
 var featureImportance = classifier.GetFeatureImportance(ImportanceType.Weight);
 
 // Save and load the classifier.
 var modelFileName = "classifier.json";
-classifier.SaveModelToFile(modelFileName)
+classifier.SaveModelToFile(modelFileName);
 var loadedClassifier = XGBClassifier.LoadFromFile(modelFileName);
 ```
 
@@ -34,8 +39,10 @@ var loadedClassifier = XGBClassifier.LoadFromFile(modelFileName);
 using var regressor = new XGBRegressor(maxDepth: 3, learningRate: 0.1f, nEstimators: 100);
 regressor.Fit(dataTrain, labelsTrain);
 
-// make predictions.
+// Predict.
 var predictions = regressor.Predict(dataTest);
+// Predict multi-output. Outputs shaped [n_samples, n_outputs].
+var predictions = regressor.PredictMultiOutput(dataTest);
 
 // Get feature importance.
 var featureImportance = regressor.GetFeatureImportance(ImportanceType.Weight);
