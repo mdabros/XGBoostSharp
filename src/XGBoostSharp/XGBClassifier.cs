@@ -67,6 +67,9 @@ public class XGBClassifier : XGBModelBase
     /// training.</param>
     /// <param name="numClass">Number of classes for multi-class
     /// classification.</param>
+    /// <param name="multiStrategy">Strategy for building trees in multi-output
+    /// models. Options: 'one_output_per_tree' (default), 'multi_output_tree'.
+    /// Requires <c>treeMethod</c> set to 'hist' or 'approx'.</param>
     public XGBClassifier(
             int nEstimators = 100,
             int maxDepth = 6,
@@ -97,7 +100,8 @@ public class XGBClassifier : XGBModelBase
             string importanceType = ImportanceType.Gain,
             string device = Device.Cpu,
             bool validateParameters = false,
-            int numClass = 1)
+            int numClass = 1,
+            string multiStrategy = MultiStrategy.OneOutputPerTree)
     {
         m_parameters[ParameterNames.n_estimators] = nEstimators;
         m_parameters[ParameterNames.max_depth] = maxDepth;
@@ -131,6 +135,7 @@ public class XGBClassifier : XGBModelBase
         m_parameters[ParameterNames.validate_parameters] = validateParameters;
 
         m_parameters[ParameterNames.num_class] = numClass;
+        m_parameters[ParameterNames.multi_strategy] = multiStrategy;
 
         // For DART only.
         m_parameters[ParameterNames.sampling_method] = "uniform";
@@ -159,6 +164,20 @@ public class XGBClassifier : XGBModelBase
     ///   Labels
     /// </param>
     public void Fit(float[][] data, float[] labels)
+    {
+        using var train = new DMatrix(data, labels);
+        Fit(train);
+    }
+
+    /// <summary>
+    ///   Fit the gradient boosting model for multi-output classification.
+    ///   Each row of <paramref name="labels"/> contains one binary (0/1) value per output.
+    /// </summary>
+    /// <param name="data">Feature matrix shaped <c>[n_samples, n_features]</c>.</param>
+    /// <param name="labels">
+    ///   Multi-output indicators shaped <c>[n_samples, n_outputs]</c>, values are 0 or 1.
+    /// </param>
+    public void Fit(float[][] data, float[][] labels)
     {
         using var train = new DMatrix(data, labels);
         Fit(train);
@@ -265,5 +284,64 @@ public class XGBClassifier : XGBModelBase
         }
 
         return results;
+    }
+
+    /// <summary>
+    ///   Predict binary class assignments for each output in a multi-output classification model.
+    ///   Each inner array contains a 0 or 1 for each output of the corresponding sample.
+    ///   Requires <c>objective: binary:logistic</c>.
+    /// </summary>
+    /// <param name="data">Feature matrix shaped <c>[n_samples, n_features]</c>.</param>
+    /// <returns>Binary predictions shaped <c>[n_samples, n_outputs]</c>.</returns>
+    public float[][] PredictMultiOutput(float[][] data)
+    {
+        using var dMatrix = new DMatrix(data);
+        return PredictMultiOutput(dMatrix);
+    }
+
+    /// <summary>
+    ///   Predict binary class assignments for each output in a multi-output classification model.
+    ///   Each inner array contains a 0 or 1 for each output of the corresponding sample.
+    ///   Requires <c>objective: binary:logistic</c>.
+    /// </summary>
+    /// <param name="dMatrix">DMatrix to do predictions on.</param>
+    /// <returns>Binary predictions shaped <c>[n_samples, n_outputs]</c>.</returns>
+    public float[][] PredictMultiOutput(DMatrix dMatrix)
+    {
+        var probabilities = PredictProbabilityMultiOutput(dMatrix);
+        for (var i = 0; i < probabilities.Length; i++)
+        {
+            for (var j = 0; j < probabilities[i].Length; j++)
+            {
+                probabilities[i][j] = probabilities[i][j] > 0.5f ? 1f : 0f;
+            }
+        }
+        return probabilities;
+    }
+
+    /// <summary>
+    ///   Predict output probabilities for each output in a multi-output classification model.
+    ///   Each inner array contains the predicted probability per output for the corresponding sample.
+    ///   Requires <c>objective: binary:logistic</c>.
+    /// </summary>
+    /// <param name="data">Feature matrix shaped <c>[n_samples, n_features]</c>.</param>
+    /// <returns>Output probabilities shaped <c>[n_samples, n_outputs]</c>, values in [0, 1].</returns>
+    public float[][] PredictProbabilityMultiOutput(float[][] data)
+    {
+        using var dMatrix = new DMatrix(data);
+        return PredictProbabilityMultiOutput(dMatrix);
+    }
+
+    /// <summary>
+    ///   Predict output probabilities for each output in a multi-output classification model.
+    ///   Each inner array contains the predicted probability per output for the corresponding sample.
+    ///   Requires <c>objective: binary:logistic</c>.
+    /// </summary>
+    /// <param name="dMatrix">DMatrix to do predictions on.</param>
+    /// <returns>Output probabilities shaped <c>[n_samples, n_outputs]</c>, values in [0, 1].</returns>
+    public float[][] PredictProbabilityMultiOutput(DMatrix dMatrix)
+    {
+        var raw = Predict(dMatrix, strictShape: true);
+        return ExtractMultiOutputPredictions(raw);
     }
 }

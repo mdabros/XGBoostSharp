@@ -22,7 +22,7 @@ public static partial class TestUtils
 
     public static void AssertAreEqual(float[] expected, float[] actual)
     {
-        Assert.AreEqual(expected.Length, actual.Length);
+        Assert.HasCount(expected.Length, actual);
         for (var i = 0; i < expected.Length; i++)
         {
             Assert.AreEqual(expected[i], actual[i], Delta);
@@ -31,12 +31,12 @@ public static partial class TestUtils
 
     public static void AssertAreEqual(float[][] expecteds, float[][] actuals)
     {
-        Assert.AreEqual(expecteds.Length, actuals.Length);
+        Assert.HasCount(expecteds.Length, actuals);
         for (var row = 0; row < expecteds.Length; row++)
         {
             var expected = expecteds[row];
             var actual = actuals[row];
-            Assert.AreEqual(expected.Length, actual.Length);
+            Assert.HasCount(expected.Length, actual);
             for (var col = 0; col < expected.Length; col++)
             {
                 Assert.AreEqual(expected[col], actual[col], Delta);
@@ -46,7 +46,7 @@ public static partial class TestUtils
 
     public static void AssertAreEqual(string[] expected, string[] actual)
     {
-        Assert.AreEqual(expected.Length, actual.Length);
+        Assert.HasCount(expected.Length, actual);
         for (var i = 0; i < expected.Length; i++)
         {
             Assert.AreEqual(expected[i], actual[i]);
@@ -57,7 +57,7 @@ public static partial class TestUtils
         Dictionary<string, float> expected,
         Dictionary<string, float> actual)
     {
-        Assert.AreEqual(expected.Count, actual.Count);
+        Assert.HasCount(expected.Count, actual);
         foreach (var key in expected.Keys)
         {
             Assert.IsTrue(actual.ContainsKey(key));

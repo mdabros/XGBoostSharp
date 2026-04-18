@@ -59,6 +59,27 @@ public abstract class XGBModelBase : IDisposable
         string importanceType = Parameters.ImportanceType.Weight) =>
             m_booster.FeatureScore(importanceType);
 
+    /// <summary>
+    /// Converts a multi-output prediction <see cref="Array"/> (returned by
+    /// <see cref="Predict(DMatrix,bool,bool,bool,bool,bool,bool,ValueTuple{int,int},bool)"/> with
+    /// <c>strictShape: true</c>) into a jagged <c>float[][]</c> shaped
+    /// <c>[n_samples, n_outputs]</c>.
+    /// </summary>
+    protected static float[][] ExtractMultiOutputPredictions(Array predictions)
+    {
+        var array2D = (float[,])predictions;
+        var sampleCount = array2D.GetLength(0);
+        var outputCount = array2D.GetLength(1);
+        var rowByteCount = outputCount * sizeof(float);
+        var result = new float[sampleCount][];
+        for (var i = 0; i < sampleCount; i++)
+        {
+            result[i] = new float[outputCount];
+            Buffer.BlockCopy(array2D, i * rowByteCount, result[i], 0, rowByteCount);
+        }
+        return result;
+    }
+
     void DisposeManagedResources()
     {
         m_booster?.Dispose();
