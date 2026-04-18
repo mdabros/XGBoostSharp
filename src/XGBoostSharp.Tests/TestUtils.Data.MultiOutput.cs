@@ -2,7 +2,7 @@
 
 public static partial class TestUtils
 {
-    // 20 samples, 2 features. Used for both multi-output regression and multi-label classification.
+    // 20 samples, 2 features. Used for both multi-output regression and multi-output classification.
     public static float[][] DataTrainMultiOutput =>
         [
             [0.1f, 0.2f],

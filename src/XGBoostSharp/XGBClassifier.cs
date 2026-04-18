@@ -170,12 +170,12 @@ public class XGBClassifier : XGBModelBase
     }
 
     /// <summary>
-    ///   Fit the gradient boosting model for multi-label classification.
-    ///   Each row of <paramref name="labels"/> contains one binary (0/1) value per label.
+    ///   Fit the gradient boosting model for multi-output classification.
+    ///   Each row of <paramref name="labels"/> contains one binary (0/1) value per output.
     /// </summary>
     /// <param name="data">Feature matrix shaped <c>[n_samples, n_features]</c>.</param>
     /// <param name="labels">
-    ///   Multi-label indicators shaped <c>[n_samples, n_labels]</c>, values are 0 or 1.
+    ///   Multi-output indicators shaped <c>[n_samples, n_outputs]</c>, values are 0 or 1.
     /// </param>
     public void Fit(float[][] data, float[][] labels)
     {
