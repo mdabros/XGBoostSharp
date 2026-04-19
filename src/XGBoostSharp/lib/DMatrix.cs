@@ -87,10 +87,20 @@ public class DMatrix : IDisposable
     /// <c>filePath?format=csv</c> per the XGBoost URI convention.
     /// </summary>
     /// <param name="filePath">Path to the CSV file.</param>
+    /// <param name="labelColumn">
+    /// Zero-based index of the column to use as the label. When <c>null</c> (default),
+    /// no label column is inferred from the file; labels can be assigned afterwards via
+    /// <see cref="Label"/>.
+    /// </param>
     /// <param name="silent">If <c>true</c>, suppresses XGBoost loading messages.</param>
     /// <exception cref="DllFailException">Thrown when the native XGBoost library encounters an error during matrix creation.</exception>
-    public static DMatrix FromCsvFile(string filePath, bool silent = true) =>
-        FromFile(filePath + "?format=csv", silent);
+    public static DMatrix FromCsvFile(string filePath, int? labelColumn = null, bool silent = true)
+    {
+        var uri = labelColumn.HasValue
+            ? filePath + "?format=csv&label_column=" + labelColumn.Value
+            : filePath + "?format=csv";
+        return FromFile(uri, silent);
+    }
 
     /// <summary>
     /// Creates a DMatrix from a LIBSVM file. The file path is passed to XGBoost as

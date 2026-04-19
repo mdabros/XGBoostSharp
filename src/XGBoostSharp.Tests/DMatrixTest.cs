@@ -61,6 +61,16 @@ public class DMatrixTest
     }
 
     [TestMethod]
+    public void DMatrix_FromCsvFile_WithLabelColumn_LoadsMatrixWithLabel()
+    {
+        using var sut = DMatrix.FromCsvFile("TestData/test.csv", labelColumn: 0);
+
+        var labels = sut.Label;
+        Assert.HasCount(1, labels);
+        Assert.AreEqual(1f, labels[0], TestUtils.Delta);
+    }
+
+    [TestMethod]
     public void DMatrix_FromLibSvmFile_LoadsMatrixWithLabel()
     {
         using var sut = DMatrix.FromLibSvmFile("TestData/test.libsvm");
