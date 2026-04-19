@@ -82,6 +82,38 @@ public class DMatrix : IDisposable
     {
     }
 
+    /// <summary>
+    /// Creates a DMatrix from a CSV file. The file path is passed to XGBoost as
+    /// <c>filePath?format=csv</c> per the XGBoost URI convention.
+    /// </summary>
+    /// <param name="filePath">Path to the CSV file.</param>
+    /// <param name="silent">If <c>true</c>, suppresses XGBoost loading messages.</param>
+    /// <exception cref="DllFailException">Thrown when the native XGBoost library encounters an error during matrix creation.</exception>
+    public static DMatrix FromCsvFile(string filePath, bool silent = true) =>
+        FromFile(filePath + "?format=csv", silent);
+
+    /// <summary>
+    /// Creates a DMatrix from a LIBSVM file. The file path is passed to XGBoost as
+    /// <c>filePath?format=libsvm</c> per the XGBoost URI convention.
+    /// </summary>
+    /// <param name="filePath">Path to the LIBSVM file.</param>
+    /// <param name="silent">If <c>true</c>, suppresses XGBoost loading messages.</param>
+    /// <exception cref="DllFailException">Thrown when the native XGBoost library encounters an error during matrix creation.</exception>
+    public static DMatrix FromLibSvmFile(string filePath, bool silent = true) =>
+        FromFile(filePath + "?format=libsvm", silent);
+
+    static DMatrix FromFile(string uri, bool silent)
+    {
+        var output = NativeMethods.XGDMatrixCreateFromFile(uri, silent ? 1 : 0, out var handle);
+        ThrowIfError(output);
+        return new DMatrix(new SafeDMatrixHandle(handle));
+    }
+
+    DMatrix(SafeDMatrixHandle handle)
+    {
+        m_safeDMatrixHandle = handle;
+    }
+
     static float[] Flatten2DArray(float[][] data2D) =>
         data2D.SelectMany(row => row).ToArray();
 
