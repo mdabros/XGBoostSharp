@@ -46,4 +46,37 @@ public class DMatrixTest
         var actual = sut.Label;
         TestUtils.AssertAreEqual(expected, actual);
     }
+
+    [TestMethod]
+    public void DMatrix_FromCsvFile_LoadsMatrixWithLabel()
+    {
+        using var sut = DMatrix.FromCsvFile("TestData/test.csv");
+
+        // CSV format does not embed labels, so assign one explicitly
+        sut.Label = [1f];
+        var labels = sut.Label;
+
+        Assert.HasCount(1, labels);
+        Assert.AreEqual(1f, labels[0], TestUtils.Delta);
+    }
+
+    [TestMethod]
+    public void DMatrix_FromCsvFile_WithLabelColumn_LoadsMatrixWithLabel()
+    {
+        using var sut = DMatrix.FromCsvFile("TestData/test.csv", labelColumn: 0);
+
+        var labels = sut.Label;
+        Assert.HasCount(1, labels);
+        Assert.AreEqual(1f, labels[0], TestUtils.Delta);
+    }
+
+    [TestMethod]
+    public void DMatrix_FromLibSvmFile_LoadsMatrixWithLabel()
+    {
+        using var sut = DMatrix.FromLibSvmFile("TestData/test.libsvm");
+
+        var labels = sut.Label;
+        Assert.HasCount(1, labels);
+        Assert.AreEqual(1f, labels[0], TestUtils.Delta);
+    }
 }

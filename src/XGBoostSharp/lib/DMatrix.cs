@@ -82,6 +82,56 @@ public class DMatrix : IDisposable
     {
     }
 
+    /// <summary>
+    /// Creates a DMatrix from a CSV file. The file path is passed to XGBoost as
+    /// <c>filePath?format=csv</c> per the XGBoost URI convention.
+    /// </summary>
+    /// <param name="filePath">Path to the CSV file.</param>
+    /// <param name="labelColumn">
+    /// Zero-based index of the column to use as the label. When <c>null</c> (default),
+    /// no label column is inferred from the file; labels can be assigned afterwards via
+    /// <see cref="Label"/>.
+    /// </param>
+    /// <param name="silent">If <c>true</c>, suppresses XGBoost loading messages.</param>
+    /// <exception cref="DllFailException">Thrown when the native XGBoost library encounters an error during matrix creation.</exception>
+    public static DMatrix FromCsvFile(string filePath, int? labelColumn = null, bool silent = true)
+    {
+        var uri = labelColumn.HasValue
+            ? filePath + "?format=csv&label_column=" + labelColumn.Value
+            : filePath + "?format=csv";
+        return FromFile(uri, silent);
+    }
+
+    /// <summary>
+    /// Creates a DMatrix from a LIBSVM file. The file path is passed to XGBoost as
+    /// <c>filePath?format=libsvm</c> per the XGBoost URI convention.
+    /// </summary>
+    /// <param name="filePath">Path to the LIBSVM file.</param>
+    /// <param name="silent">If <c>true</c>, suppresses XGBoost loading messages.</param>
+    /// <exception cref="DllFailException">Thrown when the native XGBoost library encounters an error during matrix creation.</exception>
+    public static DMatrix FromLibSvmFile(string filePath, bool silent = true) =>
+        FromFile(filePath + "?format=libsvm", silent);
+
+    public void SetFeatureNames(string[] featureNames) => SetFeatureInfo(featureNames, Fields.feature_name);
+
+    public string[] GetFeatureNames() => GetFeatureInfo(Fields.feature_name);
+
+    public void SetFeatureTypes(string[] featureTypes) => SetFeatureInfo(featureTypes, Fields.feature_type);
+
+    public string[] GetFeatureTypes() => GetFeatureInfo(Fields.feature_type);
+
+    static DMatrix FromFile(string uri, bool silent)
+    {
+        var output = NativeMethods.XGDMatrixCreateFromFile(uri, silent ? 1 : 0, out var handle);
+        ThrowIfError(output);
+        return new DMatrix(new SafeDMatrixHandle(handle));
+    }
+
+    DMatrix(SafeDMatrixHandle handle)
+    {
+        m_safeDMatrixHandle = handle;
+    }
+
     static float[] Flatten2DArray(float[][] data2D) =>
         data2D.SelectMany(row => row).ToArray();
 
@@ -104,14 +154,6 @@ public class DMatrix : IDisposable
         var output = NativeMethods.XGDMatrixSetFloatInfo(Handle, field, floatInfo, length);
         ThrowIfError(output);
     }
-
-    public void SetFeatureNames(string[] featureNames) => SetFeatureInfo(featureNames, Fields.feature_name);
-
-    public string[] GetFeatureNames() => GetFeatureInfo(Fields.feature_name);
-
-    public void SetFeatureTypes(string[] featureTypes) => SetFeatureInfo(featureTypes, Fields.feature_type);
-
-    public string[] GetFeatureTypes() => GetFeatureInfo(Fields.feature_type);
 
     void SetFeatureInfo(string[] featureInfo, string field)
     {
