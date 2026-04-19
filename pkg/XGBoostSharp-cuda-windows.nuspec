@@ -4,7 +4,7 @@
     <id>XGBoostSharp-cuda-windows</id>
     <version>$version$</version>
     <authors>mdabros</authors>
-    <description>XGBoostSharp for CUDA on Windows. Includes the CUDA-enabled XGBoost native library and required CUDA 12 runtime dependencies.</description>
+    <description>XGBoostSharp for CUDA 12.8 on Windows.</description>
     <dependencies>
       <dependency id="XGBoostSharp" version="$version$" />
       <dependency id="libxgboost-3.2.0-win-x64" version="$version$" />
