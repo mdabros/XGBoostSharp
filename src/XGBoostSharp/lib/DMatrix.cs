@@ -102,6 +102,14 @@ public class DMatrix : IDisposable
     public static DMatrix FromLibSvmFile(string filePath, bool silent = true) =>
         FromFile(filePath + "?format=libsvm", silent);
 
+    public void SetFeatureNames(string[] featureNames) => SetFeatureInfo(featureNames, Fields.feature_name);
+
+    public string[] GetFeatureNames() => GetFeatureInfo(Fields.feature_name);
+
+    public void SetFeatureTypes(string[] featureTypes) => SetFeatureInfo(featureTypes, Fields.feature_type);
+
+    public string[] GetFeatureTypes() => GetFeatureInfo(Fields.feature_type);
+
     static DMatrix FromFile(string uri, bool silent)
     {
         var output = NativeMethods.XGDMatrixCreateFromFile(uri, silent ? 1 : 0, out var handle);
@@ -136,14 +144,6 @@ public class DMatrix : IDisposable
         var output = NativeMethods.XGDMatrixSetFloatInfo(Handle, field, floatInfo, length);
         ThrowIfError(output);
     }
-
-    public void SetFeatureNames(string[] featureNames) => SetFeatureInfo(featureNames, Fields.feature_name);
-
-    public string[] GetFeatureNames() => GetFeatureInfo(Fields.feature_name);
-
-    public void SetFeatureTypes(string[] featureTypes) => SetFeatureInfo(featureTypes, Fields.feature_type);
-
-    public string[] GetFeatureTypes() => GetFeatureInfo(Fields.feature_type);
 
     void SetFeatureInfo(string[] featureInfo, string field)
     {
