@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>XGBoostSharp-cuda-windows</id>
+    <version>$version$</version>
+    <authors>mdabros</authors>
+    <description>XGBoostSharp for CUDA on Windows. Includes the CUDA-enabled XGBoost native library and required CUDA 12 runtime dependencies.</description>
+    <dependencies>
+      <dependency id="XGBoostSharp" version="$version$" />
+      <dependency id="libxgboost-3.2.0-win-x64" version="$version$" />
+      <!-- CUDA 12 runtime dependencies via NtvLibs (https://www.nuget.org/profiles/nietras) -->
+      <!-- Meta-package: includes cudart64_12, cublas64_12, cublasLt64_12, cufft64_11, nvrtc64_120_0 -->
+      <dependency id="NtvLibs.cuda12.cublas.runtime.win-x64" version="12.8.1" />
+      <!-- cuSPARSE: required for sparse matrix operations in XGBoost GPU tree methods -->
+      <dependency id="NtvLibs.cuda12.cusparse64_12.runtime.win-x64" version="12.8.1" />
+      <!-- cuDNN: required for GPU histogram and neural network boosters -->
+      <dependency id="NtvLibs.cuDNN.cuda12.runtime.win-x64" version="9.8.0.87" />
+    </dependencies>
+  </metadata>
+</package>

@@ -12,6 +12,7 @@
     <File Path="pkg/libxgboost-osx-x64.targets" />
     <File Path="pkg/libxgboost-win-x64.nuspec" />
     <File Path="pkg/README-NATIVE.md" />
+    <File Path="pkg/XGBoostSharp-cuda-windows.nuspec" />
     <File Path="pkg\XGBoostSharp-cpu.nuspec" />
   </Folder>
   <Folder Name="/root/">
