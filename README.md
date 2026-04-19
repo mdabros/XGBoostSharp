@@ -53,6 +53,29 @@ regressor.SaveModelToFile(modelFileName)
 var loadedRegressor = XGBRegressor.LoadFromFile(modelFileName);
 ```
 
+## DMatrix
+```csharp
+// Create from a 2D float array.
+using var dmatrix = new DMatrix(data, labels);
+
+// Create from a 1D float array with explicit dimensions.
+using var dmatrix = new DMatrix(data1D, nrows: 100, ncols: 4, labels);
+
+// Load from a CSV file. Labels are not embedded in CSV, so assign them separately.
+using var dmatrix = DMatrix.FromCsvFile("train.csv");
+dmatrix.Label = labels;
+
+// Load from a CSV file with a dedicated label column (0-based index).
+using var dmatrix = DMatrix.FromCsvFile("train.csv", labelColumn: 0);
+
+// Load from a LIBSVM file. Labels are read automatically from the file.
+using var dmatrix = DMatrix.FromLibSvmFile("train.libsvm");
+
+// Set feature names and types.
+dmatrix.SetFeatureNames(["age", "fare", "pclass", "sibsp"]);
+dmatrix.SetFeatureTypes([FeatureType.Integer, FeatureType.Float, FeatureType.Integer, FeatureType.Integer]);
+```
+
 ## Installation
 
 1. Get the latest version of the managed packages from nuget.org.
