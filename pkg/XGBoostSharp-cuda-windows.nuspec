@@ -8,7 +8,6 @@
     <dependencies>
       <dependency id="XGBoostSharp" version="$version$" />
       <dependency id="libxgboost-3.2.0-win-x64" version="$version$" />
-      <!-- CUDA 12 runtime dependencies via NtvLibs (https://www.nuget.org/profiles/nietras) -->
       <!-- Meta-package: includes cudart64_12, cublas64_12, cublasLt64_12, cufft64_11, nvrtc64_120_0 -->
       <dependency id="NtvLibs.cuda12.cublas.runtime.win-x64" version="12.8.1" />
       <!-- cuSPARSE: required for sparse matrix operations in XGBoost GPU tree methods -->
