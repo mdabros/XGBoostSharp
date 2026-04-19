@@ -62,7 +62,6 @@ var loadedRegressor = XGBRegressor.LoadFromFile(modelFileName);
      packages for cpu for win-x64, linux-x64, osx-x64, and osx-arm64.
    - https://www.nuget.org/packages/XGBoostSharp-cuda-windows: This comes with native
      packages for win-x64 and packages for CUDA 12.8 on Windows.
-
 2. If using the XGBoostSharp package the native packages can be installed
    separately from nuget.org.
    - x64 packages:
