@@ -90,6 +90,9 @@ jobs:
     - name: Pack XGBoostSharp-cpu
       if: ${{ github.event.inputs.version != ''  && github.actor == 'mdabros'}}
       run: nuget pack pkg/XGBoostSharp-cpu.nuspec -Version ${{ github.event.inputs.version }} -OutputDirectory ${{ env.NuGetDirectory }}
+    - name: Pack XGBoostSharp-cuda-windows
+      if: ${{ github.event.inputs.version != ''  && github.actor == 'mdabros'}}
+      run: nuget pack pkg/XGBoostSharp-cuda-windows.nuspec -Version ${{ github.event.inputs.version }} -OutputDirectory ${{ env.NuGetDirectory }}
     - uses: actions/upload-artifact@v6
       with:
         name: nuget
@@ -142,6 +145,15 @@ jobs:
         asset_path: ${{ env.NuGetDirectory }}/XGBoostSharp-cpu.${{ github.event.inputs.version }}.nupkg
         asset_name: XGBoostSharp-cpu.${{ github.event.inputs.version }}.nupkg
         asset_content_type: application/zip
+    - name: Upload XGBoostSharp-cuda-windows package
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.ACTION_GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ${{ env.NuGetDirectory }}/XGBoostSharp-cuda-windows.${{ github.event.inputs.version }}.nupkg
+        asset_name: XGBoostSharp-cuda-windows.${{ github.event.inputs.version }}.nupkg
+        asset_content_type: application/zip
     - name: Setup .NET
       uses: actions/setup-dotnet@v5
       with:
@@ -150,3 +162,5 @@ jobs:
       run: dotnet nuget push ${{ env.NuGetDirectory }}/XGBoostSharp.${{ github.event.inputs.version }}.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
     - name: Push XGBoostSharp-cpu package
       run: dotnet nuget push ${{ env.NuGetDirectory }}/XGBoostSharp-cpu.${{ github.event.inputs.version }}.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+    - name: Push XGBoostSharp-cuda-windows package
+      run: dotnet nuget push ${{ env.NuGetDirectory }}/XGBoostSharp-cuda-windows.${{ github.event.inputs.version }}.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
