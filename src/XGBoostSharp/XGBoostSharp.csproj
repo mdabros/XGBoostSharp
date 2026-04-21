@@ -12,7 +12,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="System.Text.Json" Version="11.0.0-preview.2.26159.112" />
+    <PackageReference Include="System.Text.Json" Version="11.0.0-preview.3.26207.106" />
   </ItemGroup>
 
   <ItemGroup>
